@@ -5,11 +5,12 @@ import {
   InteractionManager,
   View
 } from 'react-native';
-import {window} from '../common/constants';
-import MainContainer from '../containers/MainContainer';
-
-const {height, width} = window;
-const splashImg = require('../images/splash.png');
+import TimerMixin from 'react-timer-mixin';
+import {connect} from 'react-redux';
+import SplashScreen from 'react-native-splash-screen'
+import UI from '../common/UI';
+import ViewPages from '../components/ViewPages';
+const splashImg = require('../images/splash/LaunchScreen_640_960.png');
 
 class Splash extends Component {
   constructor(props) {
@@ -17,26 +18,24 @@ class Splash extends Component {
   }
 
   componentDidMount() {
+    SplashScreen.hide();
     const {navigator} = this.props;
-    this.timer = setTimeout(() => {
+    this.timer = TimerMixin.setTimeout(() => {
       InteractionManager.runAfterInteractions(() => {
-        navigator.resetTo({
-          component: MainContainer,
-          name: 'Main'
-        });
+        navigator.resetTo(ViewPages.home());
       });
     }, 1000);
   }
 
   componentWillUnmount() {
-    this.timer && clearTimeout(this.timer);
+    this.timer && TimerMixin.clearTimeout(this.timer);
   }
 
   render() {
     return (
       <View style={{flex: 1}}>
         <Image
-          style={{flex: 1, width: width, height: height}}
+          style={{flex: 1, width: UI.Size.window.width, height: UI.Size.window.height}}
           source={splashImg}
         />
       </View>
@@ -44,4 +43,8 @@ class Splash extends Component {
   }
 }
 
-export default Splash;
+export default connect((state, props) => ({
+}), dispatch => ({
+}), null, {
+  withRef: true
+})(Splash);

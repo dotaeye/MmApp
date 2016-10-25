@@ -1,4 +1,4 @@
-import {config} from '../../common/constants';
+import {config} from '../common/constants';
 import Storage from './Storage';
 
 const methods = ['get', 'post', 'put', 'patch', 'delete'];

@@ -1,18 +1,14 @@
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
+import * as RouterSceneConfig from './routerScene';
 
 const config = {
   token: 'token',
   apiRoot: 'http://192.168.0.104/dotaeye/api'
 };
 
-
-const window = {
-  width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height
-};
-
-
 export default {
   config,
-  window
+  RouterSceneConfig:{
+    ...RouterSceneConfig
+  }
 };
