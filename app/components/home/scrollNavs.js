@@ -48,6 +48,8 @@ export default class ScrollNavs extends Component {
       <View style={UI.CommonStyles.scroll_nav}>
         <ListView
           horizontal={true}
+          showsHorizontalScrollIndicator ={false}
+          showsVerticalScrollIndicator ={false}
           dataSource={this.state.dataSource.cloneWithRows(this.props.navs)}
           renderRow={this.renderRow}
           contentContainerStyle={[UI.CommonStyles.nowrap_list,UI.CommonStyles.scroll_nav]}

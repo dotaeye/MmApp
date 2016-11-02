@@ -71,7 +71,7 @@ const Size = {
 
   homeSwiper: {
     //高宽比
-    scale: 240 / 670
+    scale: 435 / 750
   }
 
 };
@@ -79,8 +79,7 @@ const Size = {
 const CommonStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
-    flexDirection: 'column'
+    backgroundColor: Colors.white
   },
 
   columnContainer: {
@@ -92,6 +91,99 @@ const CommonStyles = StyleSheet.create({
   rowContainer: {
     backgroundColor: Colors.white,
     flexDirection: 'row'
+  },
+
+  /*****
+   * navbar
+   ******/
+  navBarContainer: {
+    height: Size.navBar.height + Size.statusBar.height,
+    width: width,
+    backgroundColor: Colors.white,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: Size.statusBar.height
+  },
+  navBarText: {
+    fontSize: Size.font.md,
+    color: Colors.black
+  },
+  navBarWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  navBarWrapperRight: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+
+  navBarWrapperLeft: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+
+  navBarWrapperCenter: {
+    flex: 2
+  },
+
+  /************
+   * TabBar
+   ************/
+  tabBar: {
+    backgroundColor: Colors.white
+  },
+
+  tabBarText: {
+    color: Colors.gray
+  },
+
+  tabBarTextSelected: {
+    color: Colors.danger
+  },
+
+  tabBarIcon: {
+    width: 24,
+    height: 24
+  },
+
+  tabBarIconPlus: {
+    width: 50,
+    height: 40,
+    marginBottom: -8
+  },
+
+
+  /************
+   * Button
+   ************/
+
+  btnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 14,
+    height: Size.navBar.height
+  },
+
+  btnPositionLeft: {
+    justifyContent: 'flex-start'
+  },
+  btnPositionRight: {
+    justifyContent: 'flex-end'
+  },
+  btnPositionCenter: {
+    justifyContent: 'center'
+  },
+
+  btnImg: {},
+  btnIcon: {},
+  btnText: {
+    color: Colors.black
   },
 
   nowrap_list: {
@@ -108,6 +200,15 @@ const CommonStyles = StyleSheet.create({
     justifyContent: 'space-between',
     width: Size.window.width
   },
+
+  /******
+   * SlidePanel
+   */
+
+  slidePanel: {
+    position: 'absolute'
+  },
+
 
   /***************
    * scrollNavs  *
@@ -194,8 +295,188 @@ const CommonStyles = StyleSheet.create({
     height: 25,
     width: Size.getPercent(Size.window.width, 33.33),
     justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  /********
+   * select car
+   ********/
+
+  select_car_hot: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: 50
+  },
+
+  select_car_hot_title: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 20
+  },
+
+  select_car_hot_title_text: {},
+
+  select_car_hot_container: {},
+
+  select_car_hot_item: {},
+  select_car_hot_item_text: {},
+  select_car_row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    width: Size.window.width,
+    backgroundColor: Colors.white
+  },
+  select_car_row_img_container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 40
+  },
+  select_car_row_img: {
+    height: 24,
+    width: 24
+  },
+  select_car_row_right: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    flex: 1,
+    height: 50,
+    marginLeft: 10,
+    marginRight: Size.getPercent(Size.window.width, 8),
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: Size.border.size
+  },
+  select_car_row_text: {
+    color: Colors.danger,
+    fontSize: Size.font.small
+  },
+  select_car_section: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.gray,
+    height: 24
+  },
+  select_car_section_text: {
+    color: Colors.black,
+    paddingHorizontal: 8
+  },
+  select_car_section_modal: {
+    position: 'absolute',
+    height: 60,
+    width: 60,
+    top: (Size.window.height - Size.navBar.height - 60) / 2,
+    left: (Size.window.width - 60) / 2,
+    backgroundColor: Colors.black,
+    opacity: 0.6,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  select_car_section_modal_text: {
+    color: Colors.white,
+    fontSize: Size.font.eg
+  },
+
+  select_car_letter: {
+    position: 'absolute',
+    height: Size.window.height - Size.navBar.height - Size.statusBar.height,
+    width: Size.getPercent(Size.window.width, 6),
+    top: 0,
+    bottom: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  select_car_letter_item: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: Size.getPercent(Size.window.width, 6)
+  },
+
+  select_car_letter_item_text: {
+    textAlign: 'center',
+    fontSize: Size.font.ms
+  },
+
+  select_car_panel: {
+    flex: 1,
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+    borderLeftWidth: Size.border.size,
+    borderLeftColor: Colors.gray,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray
+  },
+
+  select_car_panel_group: {},
+
+  select_car_panel_group_title: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.gray,
+    height: 24,
+    paddingLeft: 10
+  },
+
+  select_car_panel_group_child: {},
+
+  select_car_panel_group_item: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: 40,
+    paddingLeft: 20,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray
+  },
+
+  select_car_modal: {
+    height: 260
+  },
+
+  select_car_modal_title: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: 40,
+    paddingLeft: 10,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray
+  },
+
+  select_car_modal_title_left: {
+    color: Colors.muted,
+    paddingHorizontal: 10
+  },
+
+  select_car_modal_title_right: {
+    color: Colors.gray
+  },
+
+  select_car_modal_item: {
+    paddingLeft: 20,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: 36,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray
+  },
+
+  /********
+   * search_box
+   */
+  search_box: {
+    backgroundColor: Colors.gray,
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
+
 
   flex_1: {
     flex: 1

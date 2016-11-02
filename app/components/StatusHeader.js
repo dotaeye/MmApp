@@ -53,12 +53,8 @@ class StatusHeader extends Component {
 
   render() {
     return (
-      <View>
-        <StatusBar
-          translucent={ true }
-          backgroundColor="rgba(0, 0, 0, 0.2)"
-          barStyle="light-content"/>
-      </View>
+      <StatusBar
+        barStyle="light-content"/>
     );
   }
 }

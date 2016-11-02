@@ -6,7 +6,7 @@ import React, {
 } from 'react-native';
 
 import TimerMixin from 'react-timer-mixin';
-import { RouterSceneConfig } from '../common/constants';
+import * as routerScene from '../common/routerScene';
 
 class Router {
   constructor(navigator) {
@@ -66,7 +66,7 @@ class Router {
 
   setRoute(route, props = {}){
     route.props = props;
-    route.sceneConfig = route.sceneConfig ? route.sceneConfig : RouterSceneConfig.customPushFromRight;
+    route.sceneConfig = route.sceneConfig ? route.sceneConfig : routerScene.customPushFromRight;
     route.component = route.component;
   }
 
