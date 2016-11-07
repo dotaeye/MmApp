@@ -22,7 +22,7 @@ class Splash extends Component {
     const {navigator} = this.props;
     this.timer = TimerMixin.setTimeout(() => {
       InteractionManager.runAfterInteractions(() => {
-        navigator.resetTo(ViewPages.main());
+        navigator.resetTo(ViewPages.list());
       });
     }, 1000);
   }

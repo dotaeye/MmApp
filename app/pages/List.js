@@ -8,15 +8,20 @@ import {
   TouchableOpacity,
   View,
   Text,
+  TextInput,
   PanResponder
 } from 'react-native';
 
 import _ from 'lodash';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import Icon from 'react-native-vector-icons/Ionicons';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
+import FadePanel from '../components/FadePanel';
+import ViewPage from '../components/ViewPages';
+
 
 class List extends Component {
 
@@ -25,14 +30,23 @@ class List extends Component {
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
-  getSearchView() {
+  renderSearchView() {
     return (
-      <TouchableOpacity style={UI.CommonStyles.search_box}>
-        <View>
-          <Image source={require('../images/icon/search@2x.png')} style={{width:15,height:15}}/>
-          <Text>搜索</Text>
-        </View>
-      </TouchableOpacity>
+      <View style={UI.CommonStyles.search_box}>
+        <Icon
+          style={UI.CommonStyles.search_box_icon}
+          name="ios-search"
+          size={16}
+          color={UI.Colors.grayFont}
+        />
+        <TextInput
+          underlineColorAndroid={'transparent'}
+          autoCapitalize={'none'}
+          autoCorrect={false}
+          placeholder="搜索"
+          style={UI.CommonStyles.search_box_input}
+        />
+      </View>
     )
   }
 
@@ -49,10 +63,6 @@ class List extends Component {
           router.pop();
         }
       }],
-      Center: [{
-        isView: true,
-        view: this.getSearchView()
-      }],
       Right: [{
         source: require('../images/icon/shopCar@2x.png'),
         style: {
@@ -60,14 +70,17 @@ class List extends Component {
           height: 20
         },
         onPress: ()=> {
-          router.pop();
+
+          // router.push(ViewPage.product());
         }
       }]
     };
 
     return (
       <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.gray}]}>
-        <NavBar options={nav}/>
+        <NavBar options={nav}>
+          {this.renderSearchView()}
+        </NavBar>
       </View>
     )
   }

@@ -2,6 +2,7 @@ import {
   StyleSheet,
   PixelRatio,
   Platform,
+  Image,
   Dimensions
 } from 'react-native';
 
@@ -9,15 +10,19 @@ const {width, height}=Dimensions.get('window');
 
 const Colors = {
   primary: 'rgba(60, 177, 158, 1)',
-  danger: 'rgba(199, 85, 74, 1)',
-  warning: 'rgba(216, 196, 128, 1)',
+  danger: 'rgb(230, 50, 54)',
+  warning: 'rgb(242, 142, 38)',
   success: 'rgba(69, 190, 174, 1)',
   white: 'rgba(255, 255, 255, 1)',
   light: 'rgba(255, 255, 255, 0.6)',
   muted: 'rgba(0, 0, 0, 0.4)',
   gray: 'rgb(233,234,235)',
+
   dark: 'rgba(0, 0, 0, 0.7)',
-  black: 'rgba(0, 0, 0, 0.8)'
+  black: 'rgba(0, 0, 0, 0.8)',
+  background: 'rgb(238,242,243)',
+  grayFont: 'rgb(150,151,155)'
+
 };
 
 const Size = {
@@ -93,6 +98,21 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row'
   },
 
+  nowrap_list: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'nowrap'
+  },
+
+  wrap_list: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    width: Size.window.width
+  },
+
   /*****
    * navbar
    ******/
@@ -166,7 +186,7 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 14,
+    paddingHorizontal: 10,
     height: Size.navBar.height
   },
 
@@ -186,20 +206,6 @@ const CommonStyles = StyleSheet.create({
     color: Colors.black
   },
 
-  nowrap_list: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'nowrap'
-  },
-
-  wrap_list: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    width: Size.window.width
-  },
 
   /******
    * SlidePanel
@@ -209,6 +215,46 @@ const CommonStyles = StyleSheet.create({
     position: 'absolute'
   },
 
+  /****
+   * Fade Panel
+   */
+
+  fadePanel: {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
+    backgroundColor: 'transparent'
+  },
+
+
+  fadePanel_top_overlay: {
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 0,
+    position: 'absolute',
+    backgroundColor: 'transparent'
+  },
+
+  fadePanel_bottom_overlay: {
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 0,
+    backgroundColor: Colors.black,
+    position: 'absolute'
+  },
+
+  fadePanel_back: {
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 0,
+    overflow: 'hidden',
+    position: 'absolute'
+  },
 
   /***************
    * scrollNavs  *
@@ -466,15 +512,431 @@ const CommonStyles = StyleSheet.create({
     borderBottomColor: Colors.gray
   },
 
+  /***
+   * product
+   */
+
+  product_tab: {
+    flex: 1,
+    backgroundColor: Colors.background,
+    marginBottom: 50
+  },
+
+  product_title: {
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    marginBottom: 10,
+    backgroundColor: Colors.white
+  },
+
+  product_price: {
+    color: Colors.danger,
+    fontWeight: 'bold',
+    marginTop: 10
+  },
+
+  product_price_number: {
+    fontSize: Size.font.lg
+  },
+
+  product_select: {
+    padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    backgroundColor: Colors.white,
+    marginBottom: 10,
+  },
+
+  product_select_label: {
+    color: Colors.grayFont,
+    paddingHorizontal: 10
+  },
+
+  product_select_text: {
+    flex: 1
+  },
+
+  product_select_button: {
+    paddingHorizontal: 10
+  },
+
+  product_desc: {
+    padding: 5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    backgroundColor: Colors.white
+  },
+
+  product_desc_row: {
+    flexDirection: 'row',
+    padding: 5
+
+  },
+
+  product_desc_row_item: {
+    flexDirection: 'row',
+    paddingHorizontal: 5
+  },
+
+  product_desc_row_item_icon: {
+    marginRight: 5
+  },
+
+  product_desc_row_item_text: {
+    color: Colors.grayFont
+  },
+
+
+  product_suggest: {},
+
+  product_suggest_list: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    width: Size.window.width,
+    backgroundColor: Colors.white
+  },
+
+  product_suggest_item: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    width: Size.getPercent(Size.window.width, 50),
+    borderRightColor: Colors.gray,
+    borderRightWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: Size.border.size
+  },
+
+  product_suggest_item_img_wrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    width: Size.getPercent(Size.window.width, 50)
+  },
+
+  product_suggest_item_img: {
+    height: 150,
+    width: 150
+  },
+
+  product_suggest_item_text: {
+    padding: 5,
+    width: Size.getPercent(Size.window.width, 50)
+  },
+
+
+  product_suggest_item_price: {
+    paddingBottom: 5,
+    fontWeight: 'bold',
+    color: Colors.black
+  },
+
+
+  product_details_img: {
+    width: Size.window.width,
+    height: 200,
+    resizeMode: Image.resizeMode.stretch
+  },
+
+
+  product_tool: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: Size.window.width,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    backgroundColor: Colors.white,
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+  },
+
+  product_tool_price: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 50
+  },
+
+  product_tool_price_text: {
+    color: Colors.danger,
+    fontSize: Size.font.ms
+  },
+
+  product_tool_price_text_number: {
+    fontSize: Size.font.md
+  },
+
+  product_tool_car: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    height: 50
+  },
+
+  product_tool_add: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    height: 50,
+    backgroundColor: Colors.warning
+  },
+
+  product_tool_add_text: {
+    color: Colors.white,
+    fontSize: Size.font.md,
+    fontWeight: 'bold'
+  },
+
+  product_tool_checkout: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: Colors.danger,
+    height: 50
+  },
+
+  product_tool_checkout_text: {
+    color: Colors.white,
+    fontSize: Size.font.lg,
+    fontWeight: 'bold'
+  },
+
+
+  product_modal: {
+    height: 350
+  },
+
+  product_modal_close: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 24,
+    height: 24
+  },
+
+  product_focus_box: {
+    width: 80,
+    height: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    borderColor: 'rgb(189,189,189)',
+    borderWidth: Size.border.size,
+    position: 'absolute',
+    backgroundColor: Colors.white,
+    top: -20,
+    left: 10
+  },
+
+  product_focus_img: {
+    width: 70,
+    height: 70
+  },
+
+  product_modal_button: {
+    height: 50,
+    backgroundColor: Colors.danger,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  product_modal_button_text: {
+    color: Colors.white
+  },
+
+  product_modal_header: {
+    paddingLeft: 100,
+    paddingTop: 20,
+    height: 70,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+  },
+
+  product_modal_header_price: {
+    color: Colors.danger,
+    fontWeight: 'bold',
+    marginBottom: 5
+  },
+
+  product_modal_header_num: {
+    color: Colors.grayFont
+  },
+
+  product_attr_box: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    padding: 10,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray
+  },
+
+  product_attr_label: {
+    color: Colors.grayFont
+  },
+
+  product_number_box: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+  },
+
+  product_number_label: {
+    color: Colors.grayFont,
+    marginBottom: 10
+  },
+
   /********
    * search_box
    */
   search_box: {
+    flex: 7,
     backgroundColor: Colors.gray,
+    height: 30,
     borderRadius: 5,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+
+  search_box_icon: {
+    marginLeft: 10,
+    marginRight: 5
+  },
+
+  search_box_input: {
+    flex: 1,
+    fontSize: Size.font.xs
+  },
+
+  /***
+   * line wrap
+   */
+  line_wrap: {
+    flex: 1,
+
+    flexDirection: 'row',
+    height: 30,
     alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  line_wrap_line: {
+    flex: 2,
+    marginHorizontal: 10,
+    borderTopColor: Colors.gray,
+    borderTopWidth: 1,
+    height: 1
+  },
+
+  line_wrap_text: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  line_wrap_icon: {
+    marginRight: 5
+  },
+
+
+  /****
+   * check_box_list
+   */
+
+  check_box_list: {
+    flex: 1,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
+  },
+
+  check_box_item: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderColor: 'rgb(189,189,189)',
+    borderWidth: Size.border.size,
+    borderRadius: 2,
+    marginRight: 10,
+    marginTop: 10
+  },
+
+  check_box_item_text: {},
+
+  check_box_item_selected: {
+    borderColor: Colors.danger
+  },
+
+  check_box_item_text_selected: {
+    color: Colors.danger
+  },
+
+
+  /***
+   * stepper
+   */
+
+  stepper: {
+    width: 90,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: 'rgb(189,189,189)',
+    borderWidth: Size.border.size,
+    borderRadius: 2
+  },
+
+  stepper_left: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRightColor: 'rgb(189,189,189)',
+    borderRightWidth: Size.border.size
+  },
+
+  stepper_right: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderLeftColor: 'rgb(189,189,189)',
+    borderLeftWidth: Size.border.size
+  },
+
+  stepper_input: {
+    height: 25,
+    lineHeight: 25,
+    fontSize: Size.font.sm,
+    width: 30,
+    textAlign: 'center'
   },
 
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
-  View, 
-  Text, 
+  View,
+  Text,
   TouchableOpacity
 } from 'react-native';
 import Button from '../components/Button';
@@ -14,6 +14,9 @@ class NavBar extends Component {
     const navs = this.props.options || {};
 
     return ['Left', 'Center', 'Right'].map((position)=> {
+      if (position === 'Center' && this.props.children) {
+        return this.props.children;
+      }
       const navPart = navs[position];
       if (navPart && navPart.length > 0) {
         return (

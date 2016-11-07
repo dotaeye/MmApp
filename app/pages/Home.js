@@ -23,7 +23,7 @@ export default class Home extends Component {
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
-  renderRow(item, index) {
+  renderBannerRow(item, index) {
     return (
       <Image key={index} source={item.uri}
              style={{
@@ -37,7 +37,7 @@ export default class Home extends Component {
     return (
       <SwiperBox
         height={UI.Size.window.width*UI.Size.homeSwiper.scale}
-        renderRow={this.renderRow.bind(this)}
+        renderRow={this.renderBannerRow.bind(this)}
         source={[
               {uri:require('../images/banner/1.jpg'),id:1},
               {uri:require('../images/banner/2.jpg'),id:2},

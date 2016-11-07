@@ -25,6 +25,12 @@ export default ViewPage = {
       name: 'list'
     }
   },
+  product: ()=> {
+    return {
+      component: Pages.Product,
+      name: 'product'
+    }
+  },
   splash: ()=> {
     return {
       component: Pages.Splash,
