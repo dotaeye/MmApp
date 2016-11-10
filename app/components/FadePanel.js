@@ -3,7 +3,8 @@ import {
   View,
   Animated,
   Easing,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Platform
 } from 'react-native';
 
 import UI from '../common/UI';
@@ -27,7 +28,7 @@ class FadePanel extends Component {
       const {duration}=this.props;
       Animated.parallel([
         Animated.timing(this.state.fade, {
-            toValue: 1,
+            toValue: 0.9,
             duration: duration
           },
         ),
@@ -69,11 +70,10 @@ class FadePanel extends Component {
     });
     this.background.setNativeProps({
       style: {
-        height: UI.Size.window.height - height - this.props.top
+        height: UI.Size.window.height - height - this.props.top-(Platform.OS=='ios'?0: 23)
       }
     })
   }
-
 
   render() {
     const {visible}=this.state;

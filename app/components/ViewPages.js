@@ -25,6 +25,12 @@ export default ViewPage = {
       name: 'list'
     }
   },
+  search: ()=> {
+    return {
+      component: Pages.Search,
+      name: 'search'
+    }
+  },
   product: ()=> {
     return {
       component: Pages.Product,

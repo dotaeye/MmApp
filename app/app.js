@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   View,
   NetInfo,
-  Navigator
+  Navigator,
+  StatusBar
 } from 'react-native';
 import { connect } from 'react-redux';
 import Router from './components/Router';
@@ -10,7 +11,7 @@ import StatusHeader from './components/StatusHeader';
 import ViewPage from './components/ViewPages';
 import UI from './common/UI';
 
-const defaultRoute = ViewPage.splash();
+const defaultRoute = ViewPage.list();
 
 class App extends Component {
 
@@ -50,7 +51,9 @@ class App extends Component {
   render() {
     return (
       <View style={ UI.CommonStyles.container }>
-        <StatusHeader />
+        <StatusBar
+          barStyle="default"
+        />
         <Navigator
           initialRoute={ defaultRoute }
           configureScene={ this.configureScene.bind(this) }

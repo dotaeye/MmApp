@@ -23,7 +23,7 @@ function getStringParams(data) {
   return result;
 }
 
-export default class ApiClient {
+export default class Request {
 
   constructor() {
 

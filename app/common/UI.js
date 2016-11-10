@@ -21,7 +21,8 @@ const Colors = {
   dark: 'rgba(0, 0, 0, 0.7)',
   black: 'rgba(0, 0, 0, 0.8)',
   background: 'rgb(238,242,243)',
-  grayFont: 'rgb(150,151,155)'
+  grayFont: 'rgb(150,151,155)',
+  transparent: 'transparent'
 
 };
 
@@ -49,7 +50,8 @@ const Size = {
     md: 18,
     sm: 16,
     xs: 14,
-    ms: 12
+    ms: 12,
+    min: 10
   },
   space: {
     eg: 30,
@@ -123,7 +125,7 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: Size.statusBar.height
+    paddingTop: 20
   },
   navBarText: {
     fontSize: Size.font.md,
@@ -206,12 +208,110 @@ const CommonStyles = StyleSheet.create({
     color: Colors.black
   },
 
+  /***
+   * list bar
+   */
+  list_bar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 40,
+    borderTopColor: Colors.gray,
+    borderTopWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: Size.border.size,
+    backgroundColor: Colors.white
+  },
+
+  list_bar_item: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 70
+  },
+
+  list_bar_item_icon: {
+    marginLeft: 5
+  },
+
+  product_list_cell: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 230,
+    width: Size.getPercent(Size.window.width, 50),
+    borderRightColor: Colors.gray,
+    borderRightWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: Size.border.size,
+    backgroundColor: Colors.white
+  },
+
+  product_list_img: {
+    width: 140,
+    height: 140
+  },
+
+  product_list_name: {
+    padding: 10
+  },
+
+  product_list_price: {
+    color: Colors.danger,
+  },
+
+
+  /*****
+   * end tag
+   */
+  endTag: {
+    padding: 20,
+    width: Size.window.width,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  endTag_text: {
+    textAlign: 'center',
+    color: Colors.black
+  },
+
+
+  spinner: {
+    flexDirection: 'row',
+    padding: 20,
+    width: Size.window.width,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  spinner_text: {
+    marginLeft: 10,
+    color: Colors.black
+  },
 
   /******
    * SlidePanel
    */
 
   slidePanel: {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
+    backgroundColor: 'transparent'
+  },
+
+  slidePanel_back: {
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
+    backgroundColor: Colors.black
+  },
+  slidePanel_content: {
     position: 'absolute'
   },
 
@@ -822,9 +922,8 @@ const CommonStyles = StyleSheet.create({
     flex: 7,
     backgroundColor: Colors.gray,
     height: 30,
-    borderRadius: 5,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center'
   },
 
@@ -835,7 +934,145 @@ const CommonStyles = StyleSheet.create({
 
   search_box_input: {
     flex: 1,
-    fontSize: Size.font.xs
+    paddingTop: 8,
+    paddingBottom: 8,
+    fontSize: Size.font.ms,
+    height: 30,
+    textAlignVertical: 'center'
+  },
+
+  search_box_input_empty: {
+    color: Colors.grayFont
+  },
+
+  search_hot_title: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+  },
+
+  search_hot_title_text:{
+    color: Colors.black,
+    fontWeight: 'bold'
+  },
+
+  search_hot: {
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+    backgroundColor: Colors.white
+  },
+
+  search_hot_item: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 2,
+    marginRight: 10,
+    marginTop: 10,
+    backgroundColor: Colors.gray
+  },
+
+  search_hot_item_text: {
+    color: Colors.grayFont
+  },
+  search_history_title: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+  },
+
+  search_history_title_text:{
+    color: Colors.black,
+    fontWeight: 'bold'
+  },
+
+  search_item: {
+    marginLeft: 10,
+    paddingVertical: 10,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray,
+    backgroundColor: Colors.white
+  },
+
+  search_item_text:{
+
+  },
+
+  /***
+   * home nav
+   */
+  home_nav: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingTop: Size.statusBar.height,
+    height: Size.navBar.height + Size.statusBar.height,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  home_nav_back: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: Size.navBar.height + Size.statusBar.height,
+    backgroundColor: Colors.white,
+    opacity: 0,
+    borderBottomWidth: Size.border.size,
+    borderBottomColor: Colors.gray
+  },
+
+  home_nav_left: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.transparent,
+    flex: 1,
+    height: Size.navBar.height
+  },
+
+  home_nav_icon: {},
+
+  home_nav_text: {
+    color: Colors.white,
+    fontSize: Size.font.min
+  },
+
+  home_nav_right: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.transparent,
+    flex: 1,
+    height: Size.navBar.height
+  },
+
+  home_nav_search: {
+    flex: 7,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    height: Size.navBar.height - 16,
+    alignItems: 'center',
+    backgroundColor: Colors.gray,
+    opacity: 0.6
+  },
+
+  home_nav_search_icon: {
+    marginLeft: 10,
+    marginRight: 5
+  },
+
+  home_nav_search_input: {
+    color: Colors.white,
+    flex: 1
   },
 
   /***

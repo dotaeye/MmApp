@@ -54,7 +54,8 @@ class StatusHeader extends Component {
   render() {
     return (
       <StatusBar
-        barStyle="light-content"/>
+        hidden={true}
+      />
     );
   }
 }

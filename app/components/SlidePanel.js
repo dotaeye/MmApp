@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import {
   View,
   Animated,
-  Easing
+  Easing,
+  TouchableWithoutFeedback
 } from 'react-native';
 import UI from '../common/UI';
 
@@ -10,7 +11,9 @@ class SlidePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      offset: new Animated.Value(-props.offset)
+      offset: new Animated.Value(-props.offset),
+      backOffset: new Animated.Value(0),
+      backFade: new Animated.Value(0)
     }
   }
 
@@ -20,30 +23,51 @@ class SlidePanel extends Component {
 
 
   open() {
-    if(!this.state.visible){
+    if (!this.state.visible) {
       this.setState({
-        visible:true
-      })
-      const {duration}=this.props;
-      Animated.timing(this.state.offset, {
-          toValue: 0,
+        visible: true
+      });
+      const {duration, offset}=this.props;
+      Animated.parallel([
+        Animated.timing(this.state.offset, {
+            toValue: 0,
+            duration: duration
+          },
+        ),
+        Animated.timing(this.state.backFade, {
+          toValue: 0.6,
           duration: duration
-        },
-      ).start();
+        }),
+        Animated.timing(this.state.backOffset, {
+          toValue: UI.Size.window.width - offset,
+          duration: duration
+        })
+      ]).start();
     }
   }
 
   close() {
-    if(this.state.visible){
-      this.setState({
-        visible:false
-      })
+    if (this.state.visible) {
       const {duration, offset}=this.props;
-      Animated.timing(this.state.offset, {
-          toValue: -offset,
+      Animated.parallel([
+        Animated.timing(this.state.offset, {
+            toValue: -offset,
+            duration: duration
+          },
+        ),
+        Animated.timing(this.state.backFade, {
+          toValue: 0,
           duration: duration
-        },
-      ).start();
+        }),
+        Animated.timing(this.state.backOffset, {
+          toValue: 0,
+          duration: duration
+        })
+      ]).start(()=> {
+        this.setState({
+          visible: false
+        });
+      });
     }
   }
 
@@ -56,24 +80,50 @@ class SlidePanel extends Component {
   }
 
   render() {
-    return (
-      <Animated.View style={[UI.CommonStyles.slidePanel,this.props.style,this.getStyles()]}>
-        {this.props.children}
-      </Animated.View>
-    )
+    const {modal}=this.props;
+    if (!modal) {
+      return (
+        <Animated.View style={[UI.CommonStyles.slidePanel_content,this.props.style,this.getStyles()]}>
+          {this.props.children}
+        </Animated.View>
+      )
+    } else {
+      if (!this.state.visible) return <View/>;
+      return (
+
+        <View style={UI.CommonStyles.slidePanel}>
+          <TouchableWithoutFeedback
+            onPress={()=>{
+              this.close()
+            }}
+          >
+            <Animated.View
+              style={[UI.CommonStyles.slidePanel_back,{opacity:this.state.backFade,right:this.state.backOffset}]}>
+            </Animated.View>
+          </TouchableWithoutFeedback>
+          <Animated.View style={[UI.CommonStyles.slidePanel_content,this.props.style,this.getStyles()]}>
+            {this.props.children}
+          </Animated.View>
+        </View>
+
+      )
+    }
+
   }
 }
 const propTypes = {
   position: PropTypes.string,
   duration: PropTypes.number,
-  offset: PropTypes.number
+  offset: PropTypes.number,
+  modal: PropTypes.bool
 };
 
 SlidePanel.propTypes = propTypes;
 
 SlidePanel.defaultProps = {
   position: 'right',
-  duration: 200
+  modal: true,
+  duration: 300
 };
 
 

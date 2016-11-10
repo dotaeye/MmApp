@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 import product from './product';
-import banner from './banner';
-
+import search from './search';
 export default reducers = combineReducers({
   product,
-  banner
+  search
 })

@@ -14,6 +14,8 @@ import UI from '../common/UI';
 import ViewPages from '../components/ViewPages'
 import Home from './Home';
 import SelectCar from './SelectCar'
+import SplashScreen from 'react-native-splash-screen'
+
 
 class Main extends Component {
 
@@ -24,6 +26,10 @@ class Main extends Component {
     };
   }
 
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+  
   render() {
 
     const { dispatch, router} = this.props;

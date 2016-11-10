@@ -1,35 +1,27 @@
 import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import createLogger from 'redux-logger';
-import ApiClient from '../utils/ApiClient';
-import clientMiddleware from '../middlewares/clientMiddleware';
-import commonMiddleware from '../middlewares/commonMiddleware';
-import reducers from '../reducers';
-const isDebuggingInBrowser = __DEV__ && !!window.navigator.userAgent;
+import createSagaMiddleware, { END } from 'redux-saga';
+
+import rootReducer from '../reducers';
 
 const middlewares = [];
+const createLogger = require('redux-logger');
 
-middlewares.push(clientMiddleware(new ApiClient()));
-middlewares.push(thunk);
-middlewares.push(commonMiddleware);
+// configuring saga middleware
+const sagaMiddleware = createSagaMiddleware();
+
+middlewares.push(sagaMiddleware);
 
 if (process.env.NODE_ENV === 'development') {
   const logger = createLogger();
   middlewares.push(logger);
 }
-
 const createStoreWithMiddleware = applyMiddleware(...middlewares)(createStore);
 
-const store =createStoreWithMiddleware(reducers);
+export default function configureStore(initialState) {
+  const store = createStoreWithMiddleware(rootReducer, initialState);
+  // install saga run
+  store.runSaga = sagaMiddleware.run; //createStoreWithMiddleware 后调用装载 自定义saga
+  store.close = () => store.dispatch(END);
 
-if (module.hot) {
-  module.hot.accept(() => {
-    store.replaceReducer(reducers);
-  });
+  return store;
 }
-
-if (isDebuggingInBrowser) {
-  window.store = store;
-}
-
-export default store

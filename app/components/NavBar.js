@@ -63,7 +63,7 @@ class NavBar extends Component {
   render() {
     return (
       <View
-        style={UI.CommonStyles.navBarContainer}>
+        style={[UI.CommonStyles.navBarContainer,this.props.style]}>
         {this.renderNavBar()}
       </View>
     )
