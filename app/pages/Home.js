@@ -21,6 +21,7 @@ import SwiperBox from '../components/SwiperBox';
 import ScrollNavs from '../components/home/ScrollNavs';
 import SixBox from '../components/home/SixBox';
 import UI from '../common/UI';
+
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
 const SCROLL_HEIGHT = UI.Size.window.width * UI.Size.homeSwiper.scale - UI.Size.statusBar.height - UI.Size.navBar.height;
@@ -41,7 +42,6 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    StatusBar.setBarStyle('light-content', false);
     this.barStyleDefault = false;
   }
 
@@ -146,13 +146,15 @@ export default class Home extends Component {
     if (scrollY.value > DISTANCE) {
       if (!this.barStyleDefault) {
         StatusBar.setBarStyle('default', false);
+        this.barStyleDefault = true;
       }
-      this.barStyleDefault = true;
+
     } else {
       if (this.barStyleDefault) {
         StatusBar.setBarStyle('light-content', false);
+        this.barStyleDefault = false;
       }
-      this.barStyleDefault = false;
+
     }
   }
 
@@ -191,6 +193,7 @@ export default class Home extends Component {
         </ScrollView>
         {this.renderNavBarBack()}
         {this.renderNavBar()}
+
       </View>
     )
   }

@@ -1,5 +1,5 @@
 import {put, take, call, fork} from 'redux-saga/effects';
-import Toast from 'react-native-toast';
+import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes';
 import Request from '../utils/Request';
 import FakeRequest from '../utils/FakeRequest';
@@ -30,7 +30,7 @@ function* searchList(payload) {
   } catch (error) {
     if (error && error.message !== '') {
       console.log(error.message);
-      // Toast.show(error.message);
+      Toast.info(error.message);
     }
   }
 }

@@ -7,32 +7,8 @@ import Storage from '../utils/Storage';
 import jsonData from '../data/product.json';
 
 
-function* productDetail(payload) {
+function* homeList(payload) {
   try {
-    const tempData = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
-    yield put({
-      type: actionTypes.PRODUCT_DETAIL_SUCCESS,
-      product: {}
-    });
-    if (payload.success) {
-      yield call(payload.success);
-    }
-    return tempData;
-  } catch (error) {
-    if (error && error.message !== '') {
-      Toast.info(error.message);
-    }
-  }
-}
-
-function* searchProduct(payload) {
-  try {
-
-    console.log(payload);
-
     let results = [];
     for (var i = 0; i < 10; i++) {
       results = results.concat(jsonData);
@@ -62,18 +38,10 @@ function* searchProduct(payload) {
 }
 
 
-export function* watchProductDetail() {
+export function* watchHomeList() {
   while (true) {
-    const {payload} = yield take(actionTypes.PRODUCT_DETAIL);
-    yield fork(productDetail, payload);
-  }
-}
-
-
-export function* watchSearchProduct() {
-  while (true) {
-    const {payload} = yield take(actionTypes.SEARCH_PRODUCT);
-    yield fork(searchProduct, payload);
+    const {payload} = yield take(actionTypes.HOME_LIST);
+    yield fork(homeList, payload);
   }
 }
 

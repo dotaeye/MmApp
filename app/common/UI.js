@@ -125,7 +125,7 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 20
+    paddingTop: Size.statusBar.height
   },
   navBarText: {
     fontSize: Size.font.md,
@@ -926,6 +926,9 @@ const CommonStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  search_box_category: {
+    marginHorizontal: 10
+  },
 
   search_box_icon: {
     marginLeft: 10,
@@ -952,7 +955,7 @@ const CommonStyles = StyleSheet.create({
     borderTopColor: Colors.gray,
   },
 
-  search_hot_title_text:{
+  search_hot_title_text: {
     color: Colors.black,
     fontWeight: 'bold'
   },
@@ -986,7 +989,7 @@ const CommonStyles = StyleSheet.create({
     borderBottomColor: Colors.gray,
   },
 
-  search_history_title_text:{
+  search_history_title_text: {
     color: Colors.black,
     fontWeight: 'bold'
   },
@@ -999,9 +1002,84 @@ const CommonStyles = StyleSheet.create({
     backgroundColor: Colors.white
   },
 
-  search_item_text:{
+  search_item_text: {},
 
+  /****
+   * category
+   */
+
+  category: {
+    borderTopWidth: Size.border.size,
+    borderTopColor: Colors.gray,
+    flex: 1
   },
+
+  category_nav: {
+    width: 80,
+    borderRightWidth: Size.border.size,
+    borderRightColor: Colors.gray,
+    paddingVertical: 10,
+    justifyContent: 'flex-start'
+  },
+
+  category_nav_item: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginVertical: 10
+  },
+
+  category_nav_item_selected: {
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.danger
+  },
+
+  category_nav_item_text: {},
+  category_nav_item_text_selected: {
+    color: Colors.danger
+  },
+
+
+  category_list: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'flex-start'
+  },
+
+  category_banner_img: {
+    width: Size.window.width - 100,
+    height: 70
+  },
+
+  category_list_grid: {
+    width: Size.window.width - 100
+  },
+
+  category_item: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    height: 130,
+    width: Size.getPercent(Size.window.width - 100, 33.33)
+  },
+
+  category_item_img: {
+    height: 90,
+    width: 90
+  },
+
+  category_item_text: {
+    marginTop: 10,
+    fontSize: Size.font.ms
+  },
+
+  category_line_wrap: {
+    width: Size.window.width - 100,
+    flexDirection: 'row',
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
 
   /***
    * home nav
@@ -1080,9 +1158,8 @@ const CommonStyles = StyleSheet.create({
    */
   line_wrap: {
     flex: 1,
-
     flexDirection: 'row',
-    height: 30,
+    paddingVertical: 5,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -1091,8 +1168,8 @@ const CommonStyles = StyleSheet.create({
     flex: 2,
     marginHorizontal: 10,
     borderTopColor: Colors.gray,
-    borderTopWidth: 1,
-    height: 1
+    borderTopWidth: Size.border.size,
+    height: Size.border.size
   },
 
   line_wrap_text: {

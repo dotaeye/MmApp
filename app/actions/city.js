@@ -1,10 +1,8 @@
 import * as actionTypes  from '../common/actionTypes';
 
-export function getCategories(payload) {
+export function getCities(payload) {
   return {
-    type: actionTypes.CATEGORY_LIST,
+    type: actionTypes.CITY_LIST,
     payload
   };
 }
-
-  

@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "name": "男鞋",
+    "children": [
+      {
+        "id": 3,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮皮鞋"
+      },
+      {
+        "id": 4,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮板鞋"
+      },
+      {
+        "id": 5,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮工装鞋"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "女鞋",
+    "children": [
+      {
+        "id": 23,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮皮鞋"
+      },
+      {
+        "id": 24,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮板鞋"
+      },
+      {
+        "id": 25,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮工装鞋"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "高帮鞋",
+    "children": [
+      {
+        "id": 33,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮皮鞋"
+      },
+      {
+        "id": 34,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮板鞋"
+      },
+      {
+        "id": 35,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮工装鞋"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "哇哈哈",
+    "children": [
+      {
+        "id": 43,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "哇哈哈"
+      },
+      {
+        "id": 44,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "哇哈哈"
+      },
+      {
+        "id": 45,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "哇哈哈"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "男鞋",
+    "children": [
+      {
+        "id": 53,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮皮鞋"
+      },
+      {
+        "id": 54,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮板鞋"
+      },
+      {
+        "id": 55,
+        "img": "https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png",
+        "name": "高帮工装鞋"
+      }
+    ]
+  }
+]

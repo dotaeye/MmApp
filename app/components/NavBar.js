@@ -52,11 +52,7 @@ class NavBar extends Component {
           </View>
         )
       }
-      return (
-        <View key={position} style={[UI.CommonStyles.navBarWrapper, UI.CommonStyles['navBarWrapper'+position]]}>
-
-        </View>
-      )
+      return null;
     })
   }
 

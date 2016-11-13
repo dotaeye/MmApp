@@ -11,7 +11,7 @@ import StatusHeader from './components/StatusHeader';
 import ViewPage from './components/ViewPages';
 import UI from './common/UI';
 
-const defaultRoute = ViewPage.list();
+const defaultRoute = ViewPage.main();
 
 class App extends Component {
 

@@ -9,6 +9,7 @@
   "dependencies": {
     "antd-mobile": "^0.9.6",
     "lodash": "^4.16.4",
+    "rc-form": "^1.0.1",
     "react": "15.3.2",
     "react-addons-pure-render-mixin": "^15.3.2",
     "react-native": "0.35.0",

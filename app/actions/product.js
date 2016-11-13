@@ -1,6 +1,6 @@
 import * as actionTypes  from '../common/actionTypes';
 
-export function getProductDetail(payload) {
+export function productDetail(payload) {
   return {
     type: actionTypes.PRODUCT_DETAIL,
     payload

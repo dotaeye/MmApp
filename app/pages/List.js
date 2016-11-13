@@ -29,8 +29,6 @@ import Loading from '../components/Loading';
 import EndTag from '../components/EndTag';
 import ViewPage from '../components/ViewPages';
 import * as productActions from '../actions/product';
-import SplashScreen from 'react-native-splash-screen'
-
 
 const RadioItem = Radio.RadioItem;
 
@@ -49,7 +47,6 @@ class ProductList extends Component {
   }
 
   componentDidMount() {
-    SplashScreen.hide();
     this.fetchData();
   }
 
@@ -134,6 +131,114 @@ class ProductList extends Component {
     }
   }
 
+
+  renderToolBar() {
+
+    return (
+      <View style={UI.CommonStyles.list_bar}>
+        <TouchableOpacity
+          style={UI.CommonStyles.list_bar_item}
+          onPress={()=>{
+              this.panel.open();
+            }}
+        >
+          <Text>综合</Text>
+          <Icon
+            style={UI.CommonStyles.list_bar_item_icon}
+            name="md-arrow-dropdown"
+            size={12}
+          />
+        </TouchableOpacity>
+        <View style={UI.CommonStyles.list_bar_item}>
+          <Text>销量</Text>
+        </View>
+        <View style={UI.CommonStyles.list_bar_item}>
+          <Text>价格</Text>
+        </View>
+        <TouchableOpacity
+          style={UI.CommonStyles.list_bar_item}
+          onPress={()=>{
+              this.slide.open();
+            }}
+        >
+          <Text>筛选</Text>
+          <Icon
+            style={UI.CommonStyles.list_bar_item_icon}
+            name="ios-funnel-outline"
+            size={12}
+          />
+        </TouchableOpacity>
+      </View>
+    )
+
+  }
+
+  renderOrder() {
+    return (
+      <FadePanel
+        ref={ref=>this.panel=ref}
+        top={UI.Size.navBar.height+UI.Size.statusBar.height+40}
+      >
+        <List >
+          <RadioItem
+            style={{minHeight:40}}
+            checked={true}
+          >
+            综合排序
+          </RadioItem>
+          <RadioItem
+            style={{minHeight:40}}
+          >
+            新品优先
+          </RadioItem>
+        </List>
+      </FadePanel>
+    )
+  }
+
+  renderFilter() {
+    return (
+      <SlidePanel
+        ref={ref=>this.slide=ref}
+        style={{
+            top:0,
+            width:UI.Size.window.width-60,
+            height:UI.Size.window.height,
+            backgroundColor:UI.Colors.white
+          }}
+        position={'right'}
+        offset={UI.Size.window.width-60}
+      >
+        <CheckBoxList
+          ref="attribute"
+          value={1}
+          options={[{
+                  label:'红色',
+                  value:1
+                },{
+                  label:'黄色',
+                  value:2
+                },{
+                  label:'蓝色',
+                  value:3
+                },{
+                  label:'黑色',
+                  value:4
+                },{
+                  label:'特别长的啊舍得离开家啊收到',
+                  value:11
+                },{
+                  label:'特别长的啊舍得离开家啊收到',
+                  value:22
+                },{
+                  label:'看不见',
+                  value:33
+                }]}
+        />
+      </SlidePanel>
+    )
+  }
+
   render() {
     const {router, product}=this.props;
     const nav = {
@@ -165,99 +270,11 @@ class ProductList extends Component {
         <NavBar options={nav}>
           {this.renderSearchView()}
         </NavBar>
-        
 
+        {this.renderToolBar()}
+        {this.renderOrder()}
+        {this.renderFilter()}
 
-        <View style={UI.CommonStyles.list_bar}>
-          <TouchableOpacity
-            style={UI.CommonStyles.list_bar_item}
-            onPress={()=>{
-              this.panel.open();
-            }}
-          >
-            <Text>综合</Text>
-            <Icon
-              style={UI.CommonStyles.list_bar_item_icon}
-              name="md-arrow-dropdown"
-              size={12}
-            />
-          </TouchableOpacity>
-          <View style={UI.CommonStyles.list_bar_item}>
-            <Text>销量</Text>
-          </View>
-          <View style={UI.CommonStyles.list_bar_item}>
-            <Text>价格</Text>
-          </View>
-          <TouchableOpacity
-            style={UI.CommonStyles.list_bar_item}
-            onPress={()=>{
-              this.slide.open();
-            }}
-          >
-            <Text>筛选</Text>
-            <Icon
-              style={UI.CommonStyles.list_bar_item_icon}
-              name="ios-funnel-outline"
-              size={12}
-            />
-          </TouchableOpacity>
-        </View>
-        <FadePanel
-          ref={ref=>this.panel=ref}
-          top={UI.Size.navBar.height+UI.Size.statusBar.height+40}
-        >
-          <List >
-            <RadioItem
-              style={{minHeight:40}}
-              checked={true}
-            >
-              综合排序
-            </RadioItem>
-            <RadioItem
-              style={{minHeight:40}}
-            >
-              新品优先
-            </RadioItem>
-          </List>
-        </FadePanel>
-        <SlidePanel
-          ref={ref=>this.slide=ref}
-          style={{
-            top:0,
-            width:UI.Size.window.width-60,
-            height:UI.Size.window.height,
-            backgroundColor:UI.Colors.white
-          }}
-          position={'right'}
-          offset={UI.Size.window.width-60}
-        >
-          <CheckBoxList
-            ref="attribute"
-            value={1}
-            options={[{
-                  label:'红色',
-                  value:1
-                },{
-                  label:'黄色',
-                  value:2
-                },{
-                  label:'蓝色',
-                  value:3
-                },{
-                  label:'黑色',
-                  value:4
-                },{
-                  label:'特别长的啊舍得离开家啊收到',
-                  value:11
-                },{
-                  label:'特别长的啊舍得离开家啊收到',
-                  value:22
-                },{
-                  label:'看不见',
-                  value:33
-                }]}
-          />
-        </SlidePanel>
         {product.listLoaded ? (
           <ListView
             ref={(view)=> this.listView = view }

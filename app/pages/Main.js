@@ -4,18 +4,18 @@ import {
   View,
   Text,
   Image,
+  StatusBar
 } from 'react-native';
 import _ from 'lodash';
 import TabNavigator from 'react-native-tab-navigator';
 import {bindActionCreators} from 'redux';
-import * as BannerAction from '../actions/banner';
 import {connect} from 'react-redux';
 import UI from '../common/UI';
 import ViewPages from '../components/ViewPages'
 import Home from './Home';
-import SelectCar from './SelectCar'
+import List from './List';
+import Category from './Category';
 import SplashScreen from 'react-native-splash-screen'
-
 
 class Main extends Component {
 
@@ -36,6 +36,7 @@ class Main extends Component {
 
     return (
       <View style={{flex:1}}>
+      
         <TabNavigator tabBarStyle={UI.CommonStyles.tabBar}>
           <TabNavigator.Item
             title="首页"
@@ -55,6 +56,7 @@ class Main extends Component {
             renderIcon={() => <Image source={require("../images/icon/category@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
             renderSelectedIcon={() => <Image source={require("../images/icon/category_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
             onPress={() => this.setState({ selectedTab: 'category' })}>
+            <Category {...this.props}/>
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={false}
@@ -68,7 +70,7 @@ class Main extends Component {
             titleStyle={UI.CommonStyles.tabBarTextSelected}
             renderIcon={() => <Image source={require("../images/icon/message@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
             renderSelectedIcon={() => <Image source={require("../images/icon/message_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => router.push(ViewPages.list()) }
+            onPress={() => router.push(ViewPages.product()) }
           >
           </TabNavigator.Item>
           <TabNavigator.Item
@@ -87,9 +89,9 @@ class Main extends Component {
 }
 
 export default connect((state, props) => ({
-  banner: state.banner
+
 }), dispatch => ({
-  bannerAction: bindActionCreators(BannerAction, dispatch)
+
 }), null, {
   withRef: true
 })(Main);
