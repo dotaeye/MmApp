@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+import _ from 'lodash';
 import Button from '../components/Button';
 import UI from '../common/UI';
 
@@ -18,7 +19,7 @@ class NavBar extends Component {
         return this.props.children;
       }
       const navPart = navs[position];
-      if (navPart && navPart.length > 0) {
+      if (navPart && _.isArray(navPart)) {
         return (
           <View
             key={position}

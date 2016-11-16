@@ -27,7 +27,7 @@ import CheckBoxList from '../components/CheckBoxList'
 import Spinner from '../components/Spinner';
 import Loading from '../components/Loading';
 import EndTag from '../components/EndTag';
-import ViewPage from '../components/ViewPages';
+import ViewPages from '../components/ViewPages';
 import * as productActions from '../actions/product';
 
 const RadioItem = Radio.RadioItem;
@@ -90,7 +90,7 @@ class ProductList extends Component {
       <TouchableOpacity
         style={UI.CommonStyles.search_box}
         onPress={()=>{
-          router.push(ViewPage.search());
+          router.push(ViewPages.search());
         }}
       >
         <Icon

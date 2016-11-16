@@ -1,0 +1,956 @@
+[
+  {
+    "label": "汽车配件",
+    "value": "5",
+    "key": null,
+    "parentId": null,
+    "children": [
+      {
+        "label": "油品化学养护",
+        "value": "7",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "机油",
+            "value": "22",
+            "key": null,
+            "parentId": "7",
+            "children": [
+              {
+                "label": "Castro/嘉实多",
+                "value": "65",
+                "key": null,
+                "parentId": "22",
+                "children": [
+                  {
+                    "label": "极护",
+                    "value": "66",
+                    "key": null,
+                    "parentId": "65",
+                    "children": null
+                  },
+                  {
+                    "label": "磁护",
+                    "value": "67",
+                    "key": null,
+                    "parentId": "65",
+                    "children": null
+                  },
+                  {
+                    "label": "金嘉护",
+                    "value": "68",
+                    "key": null,
+                    "parentId": "65",
+                    "children": null
+                  },
+                  {
+                    "label": "银嘉护",
+                    "value": "69",
+                    "key": null,
+                    "parentId": "65",
+                    "children": null
+                  },
+                  {
+                    "label": "嘉力",
+                    "value": "70",
+                    "key": null,
+                    "parentId": "65",
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "壳牌/SHELL",
+                "value": "78",
+                "key": null,
+                "parentId": "22",
+                "children": [
+                  {
+                    "label": "灰壳",
+                    "value": "79",
+                    "key": null,
+                    "parentId": "78",
+                    "children": null
+                  },
+                  {
+                    "label": "蓝壳HX7",
+                    "value": "80",
+                    "key": null,
+                    "parentId": "78",
+                    "children": null
+                  },
+                  {
+                    "label": "黄壳",
+                    "value": "81",
+                    "key": null,
+                    "parentId": "78",
+                    "children": null
+                  },
+                  {
+                    "label": "红壳HX3",
+                    "value": "82",
+                    "key": null,
+                    "parentId": "78",
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "107",
+                "key": null,
+                "parentId": "22",
+                "children": null
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "123",
+                "key": null,
+                "parentId": "22",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "保护剂",
+            "value": "23",
+            "key": null,
+            "parentId": "7",
+            "children": null
+          },
+          {
+            "label": "刹车油",
+            "value": "29",
+            "key": null,
+            "parentId": "7",
+            "children": [
+              {
+                "label": "菲罗多/Ferodo",
+                "value": "115",
+                "key": null,
+                "parentId": "29",
+                "children": null
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "116",
+                "key": null,
+                "parentId": "29",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "齿轮油",
+            "value": "30",
+            "key": null,
+            "parentId": "7",
+            "children": null
+          },
+          {
+            "label": "处理剂",
+            "value": "31",
+            "key": null,
+            "parentId": "7",
+            "children": null
+          },
+          {
+            "label": "防冻液",
+            "value": "34",
+            "key": null,
+            "parentId": "7",
+            "children": [
+              {
+                "label": "冠军/Champion",
+                "value": "124",
+                "key": null,
+                "parentId": "34",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "防锈降噪剂",
+            "value": "35",
+            "key": null,
+            "parentId": "7",
+            "children": null
+          },
+          {
+            "label": "化清剂",
+            "value": "39",
+            "key": null,
+            "parentId": "7",
+            "children": [
+              {
+                "label": "冠军/Champion",
+                "value": "125",
+                "key": null,
+                "parentId": "39",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "密封剂",
+            "value": "49",
+            "key": null,
+            "parentId": "7",
+            "children": [
+              {
+                "label": "泰克/TECH",
+                "value": "128",
+                "key": null,
+                "parentId": "49",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "制动系统",
+        "value": "8",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "制动前盘",
+            "value": "25",
+            "key": null,
+            "parentId": "8",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "102",
+                "key": null,
+                "parentId": "25",
+                "children": null
+              },
+              {
+                "label": "菲罗多/Ferodo",
+                "value": "110",
+                "key": null,
+                "parentId": "25",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "制动后盘",
+            "value": "26",
+            "key": null,
+            "parentId": "8",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "103",
+                "key": null,
+                "parentId": "26",
+                "children": null
+              },
+              {
+                "label": "菲罗多/Ferodo",
+                "value": "111",
+                "key": null,
+                "parentId": "26",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "制动前片/刹车蹄片",
+            "value": "27",
+            "key": null,
+            "parentId": "8",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "104",
+                "key": null,
+                "parentId": "27",
+                "children": null
+              },
+              {
+                "label": "菲罗多/Ferodo",
+                "value": "112",
+                "key": null,
+                "parentId": "27",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "制动后片/刹车蹄片",
+            "value": "28",
+            "key": null,
+            "parentId": "8",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "105",
+                "key": null,
+                "parentId": "28",
+                "children": null
+              },
+              {
+                "label": "菲罗多/Ferodo",
+                "value": "113",
+                "key": null,
+                "parentId": "28",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "制动感应线",
+            "value": "37",
+            "key": null,
+            "parentId": "8",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "106",
+                "key": null,
+                "parentId": "37",
+                "children": null
+              },
+              {
+                "label": "菲罗多/Ferodo",
+                "value": "114",
+                "key": null,
+                "parentId": "37",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "照明系统",
+        "value": "9",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "灯泡",
+            "value": "32",
+            "key": null,
+            "parentId": "9",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "101",
+                "key": null,
+                "parentId": "32",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "发动机系统",
+        "value": "10",
+        "key": null,
+        "parentId": "5",
+        "children": null
+      },
+      {
+        "label": "传动系统",
+        "value": "11",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "分离轴承",
+            "value": "36",
+            "key": null,
+            "parentId": "11",
+            "children": null
+          },
+          {
+            "label": "离合器片",
+            "value": "48",
+            "key": null,
+            "parentId": "11",
+            "children": null
+          },
+          {
+            "label": "手动变速箱油",
+            "value": "58",
+            "key": null,
+            "parentId": "11",
+            "children": null
+          },
+          {
+            "label": "自动变速箱油",
+            "value": "64",
+            "key": null,
+            "parentId": "11",
+            "children": null
+          }
+        ]
+      },
+      {
+        "label": "转向系统",
+        "value": "12",
+        "key": null,
+        "parentId": "5",
+        "children": null
+      },
+      {
+        "label": "悬挂系统",
+        "value": "13",
+        "key": null,
+        "parentId": "5",
+        "children": null
+      },
+      {
+        "label": "点火系统",
+        "value": "14",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "点火线圈",
+            "value": "33",
+            "key": null,
+            "parentId": "14",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "99",
+                "key": null,
+                "parentId": "33",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "缸线",
+            "value": "38",
+            "key": null,
+            "parentId": "14",
+            "children": null
+          },
+          {
+            "label": "火花塞",
+            "value": "40",
+            "key": null,
+            "parentId": "14",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "100",
+                "key": null,
+                "parentId": "40",
+                "children": null
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "117",
+                "key": null,
+                "parentId": "40",
+                "children": null
+              },
+              {
+                "label": "沃达/VODA",
+                "value": "133",
+                "key": null,
+                "parentId": "40",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "电喷系统",
+        "value": "15",
+        "key": null,
+        "parentId": "5",
+        "children": null
+      },
+      {
+        "label": "电子电器系统",
+        "value": "16",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "喇叭",
+            "value": "45",
+            "key": null,
+            "parentId": "16",
+            "children": null
+          }
+        ]
+      },
+      {
+        "label": "空调系统",
+        "value": "17",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "空气净化剂",
+            "value": "42",
+            "key": null,
+            "parentId": "17",
+            "children": null
+          },
+          {
+            "label": "冷冻油",
+            "value": "46",
+            "key": null,
+            "parentId": "17",
+            "children": [
+              {
+                "label": "冠军/Champion",
+                "value": "126",
+                "key": null,
+                "parentId": "46",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "汽车冷媒",
+            "value": "47",
+            "key": null,
+            "parentId": "17",
+            "children": [
+              {
+                "label": "冠军/Champion",
+                "value": "127",
+                "key": null,
+                "parentId": "47",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "正时系统",
+        "value": "18",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "正时皮带",
+            "value": "63",
+            "key": null,
+            "parentId": "18",
+            "children": null
+          }
+        ]
+      },
+      {
+        "label": "雨刷系统",
+        "value": "19",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "玻璃水",
+            "value": "24",
+            "key": null,
+            "parentId": "19",
+            "children": null
+          },
+          {
+            "label": "雨刮片",
+            "value": "61",
+            "key": null,
+            "parentId": "19",
+            "children": [
+              {
+                "label": "法雷奥/Valeo",
+                "value": "91",
+                "key": null,
+                "parentId": "61",
+                "children": [
+                  {
+                    "label": "优美",
+                    "value": "134",
+                    "key": null,
+                    "parentId": "91",
+                    "children": null
+                  },
+                  {
+                    "label": "优感",
+                    "value": "135",
+                    "key": null,
+                    "parentId": "91",
+                    "children": null
+                  },
+                  {
+                    "label": "优选",
+                    "value": "136",
+                    "key": null,
+                    "parentId": "91",
+                    "children": null
+                  },
+                  {
+                    "label": "优视/SWF",
+                    "value": "137",
+                    "key": null,
+                    "parentId": "91",
+                    "children": null
+                  },
+                  {
+                    "label": "优静",
+                    "value": "138",
+                    "key": null,
+                    "parentId": "91",
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "97",
+                "key": null,
+                "parentId": "61",
+                "children": [
+                  {
+                    "label": "神翼",
+                    "value": "139",
+                    "key": null,
+                    "parentId": "97",
+                    "children": null
+                  },
+                  {
+                    "label": "火翼",
+                    "value": "140",
+                    "key": null,
+                    "parentId": "97",
+                    "children": null
+                  },
+                  {
+                    "label": "新风翼",
+                    "value": "141",
+                    "key": null,
+                    "parentId": "97",
+                    "children": null
+                  }
+                ]
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "122",
+                "key": null,
+                "parentId": "61",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "雨刷电机",
+            "value": "62",
+            "key": null,
+            "parentId": "19",
+            "children": [
+              {
+                "label": "法雷奥/Valeo",
+                "value": "92",
+                "key": null,
+                "parentId": "62",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "蓄电池",
+        "value": "20",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "博世/BOSCH",
+            "value": "98",
+            "key": null,
+            "parentId": "20",
+            "children": null
+          }
+        ]
+      },
+      {
+        "label": "过滤系统",
+        "value": "21",
+        "key": null,
+        "parentId": "5",
+        "children": [
+          {
+            "label": "机油滤芯",
+            "value": "41",
+            "key": null,
+            "parentId": "21",
+            "children": [
+              {
+                "label": "马勒",
+                "value": "83",
+                "key": null,
+                "parentId": "41",
+                "children": null
+              },
+              {
+                "label": "曼牌/MANNFILTER",
+                "value": "87",
+                "key": null,
+                "parentId": "41",
+                "children": null
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "93",
+                "key": null,
+                "parentId": "41",
+                "children": null
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "118",
+                "key": null,
+                "parentId": "41",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "空气滤芯",
+            "value": "43",
+            "key": null,
+            "parentId": "21",
+            "children": [
+              {
+                "label": "马勒",
+                "value": "84",
+                "key": null,
+                "parentId": "43",
+                "children": null
+              },
+              {
+                "label": "曼牌/MANNFILTER",
+                "value": "88",
+                "key": null,
+                "parentId": "43",
+                "children": null
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "94",
+                "key": null,
+                "parentId": "43",
+                "children": null
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "119",
+                "key": null,
+                "parentId": "43",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "空调滤芯",
+            "value": "44",
+            "key": null,
+            "parentId": "21",
+            "children": [
+              {
+                "label": "马勒",
+                "value": "85",
+                "key": null,
+                "parentId": "44",
+                "children": null
+              },
+              {
+                "label": "曼牌/MANNFILTER",
+                "value": "89",
+                "key": null,
+                "parentId": "44",
+                "children": null
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "95",
+                "key": null,
+                "parentId": "44",
+                "children": null
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "120",
+                "key": null,
+                "parentId": "44",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "汽油滤芯",
+            "value": "56",
+            "key": null,
+            "parentId": "21",
+            "children": [
+              {
+                "label": "马勒",
+                "value": "86",
+                "key": null,
+                "parentId": "56",
+                "children": null
+              },
+              {
+                "label": "曼牌/MANNFILTER",
+                "value": "90",
+                "key": null,
+                "parentId": "56",
+                "children": null
+              },
+              {
+                "label": "博世/BOSCH",
+                "value": "96",
+                "key": null,
+                "parentId": "56",
+                "children": null
+              },
+              {
+                "label": "冠军/Champion",
+                "value": "121",
+                "key": null,
+                "parentId": "56",
+                "children": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "汽车用品",
+    "value": "6",
+    "key": null,
+    "parentId": null,
+    "children": [
+      {
+        "label": "汽保工具",
+        "value": "50",
+        "key": null,
+        "parentId": "6",
+        "children": [
+          {
+            "label": "抛光轮",
+            "value": "51",
+            "key": null,
+            "parentId": "50",
+            "children": null
+          },
+          {
+            "label": "汽修工具",
+            "value": "54",
+            "key": null,
+            "parentId": "50",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "108",
+                "key": null,
+                "parentId": "54",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "汽修设备",
+            "value": "55",
+            "key": null,
+            "parentId": "50",
+            "children": [
+              {
+                "label": "博世/BOSCH",
+                "value": "109",
+                "key": null,
+                "parentId": "55",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "贴片",
+            "value": "129",
+            "key": null,
+            "parentId": "50",
+            "children": [
+              {
+                "label": "泰克/TECH",
+                "value": "131",
+                "key": null,
+                "parentId": "129",
+                "children": null
+              }
+            ]
+          },
+          {
+            "label": "蘑菇钉",
+            "value": "130",
+            "key": null,
+            "parentId": "50",
+            "children": [
+              {
+                "label": "泰克/TECH",
+                "value": "132",
+                "key": null,
+                "parentId": "130",
+                "children": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "汽车美容/养护",
+        "value": "52",
+        "key": null,
+        "parentId": "6",
+        "children": [
+          {
+            "label": "汽车蜡",
+            "value": "53",
+            "key": null,
+            "parentId": "52",
+            "children": null
+          },
+          {
+            "label": "润滑剂",
+            "value": "57",
+            "key": null,
+            "parentId": "52",
+            "children": null
+          },
+          {
+            "label": "添加剂",
+            "value": "59",
+            "key": null,
+            "parentId": "52",
+            "children": null
+          },
+          {
+            "label": "油漆及辅料",
+            "value": "60",
+            "key": null,
+            "parentId": "52",
+            "children": null
+          }
+        ]
+      }
+    ]
+  }
+]

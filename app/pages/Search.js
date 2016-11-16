@@ -22,7 +22,7 @@ import NavBar from '../components/NavBar'
 import Spinner from '../components/Spinner';
 import Loading from '../components/Loading';
 import EndTag from '../components/EndTag';
-import ViewPage from '../components/ViewPages';
+import ViewPages from '../components/ViewPages';
 import * as searchActions from '../actions/search';
 
 class Search extends Component {

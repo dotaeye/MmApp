@@ -8,18 +8,20 @@ import {
   ListView,
   TouchableOpacity,
   View,
+  RefreshControl,
   Text,
 } from 'react-native';
 
 import _ from 'lodash';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FaIcon from 'react-native-vector-icons/FontAwesome'
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
 import Loading from '../components/Loading'
-import Stepper from '../components/Stepper';
-import ViewPage from '../components/ViewPages'
+import ViewPages from '../components/ViewPages'
 import * as addressActions from '../actions/address';
 
 class AddressList extends Component {
@@ -45,9 +47,12 @@ class AddressList extends Component {
 
   onRefresh() {
     this.canLoadMore = false;
-    this.props.productActions.getAddressList({
+    this.props.addressActions.getAddressList({
       refreshing: true
     })
+  }
+
+  onToolButtonClick() {
   }
 
 
@@ -62,9 +67,10 @@ class AddressList extends Component {
           router.pop();
         }
       }],
-      Center: {
-        text: '地址管理'
-      },
+      Center: [{
+        text: '地址管理',
+        isText: true
+      }],
       Right: []
     };
 
@@ -74,39 +80,122 @@ class AddressList extends Component {
   }
 
   renderListRow(item) {
-    const {editEnabled, selectedIds}=this.state;
-    const iconName = selectedIds.includes(item.id) ? 'ios-checkbox' : 'ios-checkbox-outline';
+    const {router}=this.props;
+    const iconName = item.isDefault ? 'ios-checkbox' : 'ios-checkbox-outline';
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
-        <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
-          <Text>李先生</Text>
-          <Text>1382333333</Text>
+      <View style={[UI.CommonStyles.container,
+      UI.CommonStyles.columnContainer,
+      UI.CommonStyles.bt,
+      UI.CommonStyles.bb,
+      {
+        marginBottom:10
+      }]}>
+        <View style={[UI.CommonStyles.container,
+        UI.CommonStyles.rowContainer,
+        {
+          padding:10
+        }]}>
+          <Text style={{marginRight:30}}>{item.name}</Text>
+          <Text>{item.phoneNumber}</Text>
         </View>
-        <Text>啥话啊说的看哈撒多久啊开始的的全球额文化</Text>
-        <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
-          <View>
-            <Icon name={iconName} size={20} color={UI.Colors.grayFont}/>
+        <Text style={{
+          fontSize:UI.Size.font.min,
+          color:UI.Colors.grayFont,
+          marginBottom:15,
+          marginLeft:10,
+        }}>{item.street}</Text>
+        <View style={[UI.CommonStyles.container,
+        UI.CommonStyles.rowContainer,
+        UI.CommonStyles.bt,
+        {
+           padding:10
+        }
+        ]}>
+          <View
+            style={[
+            UI.CommonStyles.container,
+            UI.CommonStyles.rowContainer,
+            {
+              justifyContent:'flex-start',
+              alignItems:'center',
+              flex:1
+            }
+            ]}>
+            <Icon
+              name={iconName}
+              size={22}
+              color={UI.Colors.danger}
+              style={{
+                marginRight:5
+              }}
+            />
             <Text>默认地址</Text>
           </View>
-          <View>
-            <Icon name='ios-create-outline' size={20} color={UI.Colors.grayFont}/>
-            <Text>编辑</Text>
-          </View>
-          <View>
-            <FaIcon name='fa-trash-o' size={20} color={UI.Colors.grayFont}/>
-            <Text>删除</Text>
+
+          <View
+            style={[
+            UI.CommonStyles.rowContainer,
+            {
+              justifyContent:'flex-end',
+              alignItems:'center',
+              width:110
+            }
+            ]}>
+            <TouchableOpacity
+              style={[
+              UI.CommonStyles.container,
+              UI.CommonStyles.rowContainer,
+              {
+                justifyContent:'flex-start',
+                alignItems:'center',
+                marginRight:10
+              }
+              ]}
+              onPress={()=>{
+                router.push(ViewPages.address(),{
+                  id:item.id
+                })
+              }}
+            >
+              <Icon
+                name='ios-create-outline'
+                size={22}
+                color={UI.Colors.grayFont}
+                style={{
+                marginRight:5
+              }}
+              />
+              <Text>编辑</Text>
+            </TouchableOpacity>
+            <View
+              style={[
+            UI.CommonStyles.container,
+            UI.CommonStyles.rowContainer,
+            {
+              justifyContent:'flex-start',
+              alignItems:'center'
+            }
+            ]}>
+              <FaIcon
+                name='trash-o'
+                size={22}
+                color={UI.Colors.grayFont}
+                style={{
+                marginRight:5
+              }}
+              />
+              <Text>删除</Text>
+            </View>
           </View>
         </View>
       </View>
     )
   }
 
-  renerList() {
-    const {address}=this.state;
-    if (address.listLoaded) return <Loading/>;
-
+  renderList() {
+    const {address}=this.props;
+    if (!address.hasLoaded) return <Loading/>;
     return (
-
       <ListView
         ref={(view)=> this.listView = view }
         removeClippedSubviews
@@ -115,7 +204,7 @@ class AddressList extends Component {
         initialListSize={ 10 }
         pageSize={ 10 }
         pagingEnabled={ false }
-        contentContainerStyle={[UI.CommonStyles.wrap_list]}
+
         dataSource={ this.state.dataSource.cloneWithRows(address.list) }
         renderRow={this.renderListRow.bind(this)}
         refreshControl={
@@ -130,13 +219,43 @@ class AddressList extends Component {
   }
 
   renderBottom() {
+    const {router}=this.props;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
+
+      <View
+        style={[
+          UI.CommonStyles.bt,
+          {
+            backgroundColor:UI.Colors.white,
+            padding:10,
+            height:60,
+          }]}
+      >
         <TouchableOpacity
-          onPress={this.onToolButtonClick.bind(this)}
-          style={}>
-          <Icon name="ios-add" size={20}/>
-          <Text>新增地址</Text>
+          style={[
+          UI.CommonStyles.container,
+          UI.CommonStyles.rowContainer,
+          UI.CommonStyles.center,
+          {
+            borderColor:UI.Colors.danger,
+            borderWidth:UI.Size.border.size,
+            backgroundColor:UI.Colors.white
+          }]}
+          onPress={()=>{
+            router.push(ViewPages.address())
+          }}
+        >
+
+          <Icon
+            name="ios-add"
+            size={26}
+            color={UI.Colors.danger}
+          />
+          <Text
+            style={{
+            marginLeft:10,
+            color:UI.Colors.danger
+          }}>新增地址</Text>
         </TouchableOpacity>
       </View>
     )
@@ -144,7 +263,9 @@ class AddressList extends Component {
 
   render() {
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
+      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
+        backgroundColor:UI.Colors.gray
+      }]}>
         {this.renderNav()}
         {this.renderList()}
         {this.renderBottom()}

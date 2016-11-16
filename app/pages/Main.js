@@ -80,7 +80,7 @@ class Main extends Component {
             titleStyle={UI.CommonStyles.tabBarTextSelected}
             renderIcon={() => <Image source={require("../images/icon/my@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
             renderSelectedIcon={() => <Image source={require("../images/icon/my_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => this.setState({ selectedTab: 'my' })}>
+            onPress={() => router.push(ViewPages.shopCart()) }>
           </TabNavigator.Item>
         </TabNavigator>
       </View>

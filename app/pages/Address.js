@@ -12,12 +12,14 @@ import {
 } from 'react-native';
 
 import _ from 'lodash';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import {Picker, List, InputItem} from 'antd-mobile';
 import {createForm} from 'rc-form';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
-import ViewPage from '../components/ViewPages'
+import ViewPages from '../components/ViewPages'
 import * as addressActions from '../actions/address';
 import * as cityActions from '../actions/city';
 
@@ -51,10 +53,10 @@ class Address extends Component {
           router.pop();
         }
       }],
-      Center: {
+      Center: [{
         text: '新建地址',
         isText: true
-      },
+      }],
       Right: [{
         text: '保存',
         onPress: ()=> {
@@ -69,9 +71,13 @@ class Address extends Component {
   }
 
   renderForm() {
+    const {city}=this.props;
     const {getFieldProps} = this.props.form;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
+      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,
+      {
+        justifyContent:'flex-start'
+      }]}>
         <List>
           <InputItem
             {...getFieldProps('name')}
@@ -80,15 +86,21 @@ class Address extends Component {
           <InputItem
             type="number"
             {...getFieldProps('phoneNumber')}
-          >手机号码</InputItem>
+          >手机</InputItem>
 
-          <Picker data={["123","34","12333"]} cols={1} {...getFieldProps('district3')} >
+          <Picker data={[{
+            label:'123',
+            value:'123'
+          },{
+            label:'234',
+            value:'234'
+          }]} col={1} {...getFieldProps('district3')} >
             <List.Item arrow="horizontal">省市区</List.Item>
           </Picker>
 
           <InputItem
             {...getFieldProps('street')}
-          >详细地址</InputItem>
+          >地址</InputItem>
 
         </List>
       </View>
@@ -97,7 +109,12 @@ class Address extends Component {
 
   render() {
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
+      <View style={[
+      UI.CommonStyles.container,
+      UI.CommonStyles.columnContainer,
+      {
+        justifyContent:'flex-start'
+      }]}>
         {this.renderNav()}
         {this.renderForm()}
       </View>

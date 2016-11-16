@@ -5,7 +5,7 @@ import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
 import FakeRequest from '../utils/FakeRequest';
 import Storage from '../utils/Storage';
-import jsonData from '../data/category.json';
+import jsonData from '../data/city.json';
 
 
 function* getCities(payload) {
@@ -16,7 +16,7 @@ function* getCities(payload) {
     //  data
     // });
     yield put({
-      type: actionTypes.CARCATE_LIST_SUCCESS,
+      type: actionTypes.CITY_LIST_SUCCESS,
       list: tempData
     });
     if (payload.success) {

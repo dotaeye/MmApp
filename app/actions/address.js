@@ -15,6 +15,13 @@ export function addAddress(payload) {
   };
 }
 
+export function updateAddress(payload) {
+  return {
+    type: actionTypes.UPDATE_ADDRESS,
+    payload
+  };
+}
+
 
 export function deleteAddress(payload) {
   return {

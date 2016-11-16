@@ -22,8 +22,8 @@ const Colors = {
   black: 'rgba(0, 0, 0, 0.8)',
   background: 'rgb(238,242,243)',
   grayFont: 'rgb(150,151,155)',
-  transparent: 'transparent'
-
+  transparent: 'transparent',
+  link: '#00abea'
 };
 
 const Size = {
@@ -100,6 +100,7 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row'
   },
 
+
   nowrap_list: {
     justifyContent: 'center',
     flexDirection: 'row',
@@ -114,6 +115,29 @@ const CommonStyles = StyleSheet.create({
     justifyContent: 'space-between',
     width: Size.window.width
   },
+
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  /***
+   * button
+   */
+
+  button: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 4,
+    borderWidth: Size.border.size,
+    borderColor: Colors.danger
+  },
+
+  button_text:{
+    
+  },
+  
+
 
   /*****
    * navbar
@@ -1153,6 +1177,96 @@ const CommonStyles = StyleSheet.create({
     flex: 1
   },
 
+  /****
+   * Login
+   */
+  logoText: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 104,
+    marginBottom: 48
+  },
+
+  logo: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    borderColor: Colors.border,
+    borderWidth: Size.border.size,
+    width: 81,
+    height: 81,
+    borderRadius: 40,
+    marginTop: 88
+  },
+
+  logo_img: {
+    width: 70,
+    height: 70
+  },
+
+
+  /****
+   * Login
+   */
+  form: {
+    marginTop: 50,
+    marginHorizontal: 15
+  },
+
+  formItem: {
+    flexDirection: 'row',
+    height: 40,
+    alignItems: 'center',
+    borderBottomColor: Colors.border,
+    borderBottomWidth: Size.border.size,
+    marginBottom: 20
+  },
+
+  formLabel: {
+    paddingRight: 15
+  },
+
+  formItemInput: {
+    height: 40,
+    flex: 1,
+    marginLeft: 15
+  },
+
+
+  formButton: {
+    backgroundColor: Colors.link,
+    borderRadius: 4
+  },
+
+  formButtonTouch: {
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+
+  formButtonText: {
+    fontSize: Size.font.md,
+    color: Colors.white
+  },
+
+  linkButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 50,
+    justifyContent: 'flex-end'
+  },
+
+  linkButtonTouch: {
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+
+  linkButtonText: {
+    fontSize: Size.font.md,
+    color: Colors.link
+  },
+
   /***
    * line wrap
    */
@@ -1248,7 +1362,7 @@ const CommonStyles = StyleSheet.create({
   stepper_input: {
     height: 25,
     lineHeight: 25,
-    fontSize: Size.font.sm,
+    fontSize: Size.font.xs,
     width: 30,
     textAlign: 'center'
   },
@@ -1265,7 +1379,25 @@ const CommonStyles = StyleSheet.create({
   },
   flex_4: {
     flex: 4
+  },
+
+  br: {
+    borderRightColor: Colors.gray,
+    borderRightWidth: Size.border.size
+  },
+  bb: {
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: Size.border.size
+  },
+  bt: {
+    borderTopColor: Colors.gray,
+    borderTopWidth: Size.border.size
+  },
+  bl: {
+    borderLeftColor: Colors.gray,
+    borderLeftWidth: Size.border.size
   }
+
 });
 
 export default {

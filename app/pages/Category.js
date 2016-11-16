@@ -17,7 +17,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
 import Loading from '../components/Loading'
-import ViewPage from '../components/ViewPages'
+import ViewPages from '../components/ViewPages'
 import * as categoryActions from '../actions/category';
 
 class Category extends Component {
@@ -60,7 +60,7 @@ class Category extends Component {
       <TouchableOpacity
         style={[UI.CommonStyles.search_box,UI.CommonStyles.search_box_category]}
         onPress={()=>{
-          router.push(ViewPage.search());
+          router.push(ViewPages.search());
         }}
       >
         <Icon

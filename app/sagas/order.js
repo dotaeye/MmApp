@@ -5,25 +5,25 @@ import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
 import FakeRequest from '../utils/FakeRequest';
 import Storage from '../utils/Storage';
-import jsonData from '../data/addresslist.json';
+import jsonData from '../data/order.json';
 
-function* getAddressList(payload) {
+function* getOrderList(payload) {
   try {
-
+    console.log('getOrderList')
     let results = [];
-
     for (var i = 0; i < 5; i++) {
       results = results.concat(jsonData);
     }
-
-
     const tempData = yield call(FakeRequest, results, 2000);
     // yield call(new Request().get, 'user/verification', {
     //  data
     // });
     yield put({
-      type: actionTypes.ADDRESS_LIST_SUCCESS,
-      list: tempData
+      type: actionTypes.ORDER_LIST_SUCCESS,
+      status: payload.status,
+      list: tempData,
+      hasMore: payload.pageIndex < 2,
+      loadMore: payload.loadMore
     });
     if (payload.success) {
       yield call(payload.success);
@@ -36,21 +36,21 @@ function* getAddressList(payload) {
   }
 }
 
-function* addAddress(payload, getState) {
+function* addOrder(payload, getState) {
   try {
 
-    const address = yield call(FakeRequest, {}, 2000);
+    const order = yield call(FakeRequest, {}, 2000);
     // yield call(new Request().get, 'user/verification', {
     //  data
     // });
     yield put({
-      type: actionTypes.ADD_ADDRESS_SUCCESS,
-      address
+      type: actionTypes.ADD_ORDER_SUCCESS,
+      order
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return address;
+    return order;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -58,7 +58,7 @@ function* addAddress(payload, getState) {
   }
 }
 
-function* deleteAddress(payload) {
+function* deleteOrder(payload) {
   try {
 
     const list = yield call(FakeRequest, {}, 2000);
@@ -66,7 +66,7 @@ function* deleteAddress(payload) {
     //  data
     // });
     yield put({
-      type: actionTypes.DELETE_ADDRESS_SUCCESS,
+      type: actionTypes.DELETE_ORDER_SUCCESS,
       list
     });
     if (payload.success) {
@@ -80,21 +80,20 @@ function* deleteAddress(payload) {
   }
 }
 
-function* setDefaultAddress(payload) {
+function* cancelOrder(payload) {
   try {
 
-    const list = yield call(FakeRequest, {}, 2000);
+    yield call(FakeRequest, {}, 2000);
     // yield call(new Request().get, 'user/verification', {
     //  data
     // });
     yield put({
-      type: actionTypes.DELETE_ADDRESS_SUCCESS,
-      list
+      type: actionTypes.CANCEL_ORDER_SUCCESS,
+
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return list;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -102,31 +101,32 @@ function* setDefaultAddress(payload) {
   }
 }
 
-export function* watchGetAddressList() {
+export function* watchGetOrderList() {
   while (true) {
-    const {payload} = yield take(actionTypes.ADDRESS_LIST);
-    yield fork(getAddressList, payload);
+    console.log('watchGetOrderList')
+    const {payload} = yield take(actionTypes.ORDER_LIST);
+    yield fork(getOrderList, payload);
   }
 }
 
-export function* watchAddAddress() {
+export function* watchAddOrder() {
   while (true) {
-    const {payload} = yield take(actionTypes.ADD_ADDRESS);
-    yield fork(addAddress, payload);
+    const {payload} = yield take(actionTypes.ADD_ORDER);
+    yield fork(addOrder, payload);
   }
 }
 
-export function* watchDeleteAddress() {
+export function* watchDeleteOrder() {
   while (true) {
-    const {payload} = yield take(actionTypes.DELETE_ADDRESS);
-    yield fork(deleteAddress, payload);
+    const {payload} = yield take(actionTypes.DELETE_ORDER);
+    yield fork(deleteOrder, payload);
   }
 }
 
-export function* watchSetDefaultAddress() {
+export function* watchCancelOrder() {
   while (true) {
-    const {payload} = yield take(actionTypes.SET_DEFAULT_ADDRESS);
-    yield fork(setDefaultAddress, payload);
+    const {payload} = yield take(actionTypes.CANCEL_ORDER);
+    yield fork(cancelOrder, payload);
   }
 }
 

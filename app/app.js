@@ -8,10 +8,10 @@ import {
 import { connect } from 'react-redux';
 import Router from './components/Router';
 import StatusHeader from './components/StatusHeader';
-import ViewPage from './components/ViewPages';
+import ViewPages from './components/ViewPages';
 import UI from './common/UI';
 
-const defaultRoute = ViewPage.main();
+const defaultRoute = ViewPages.main();
 
 class App extends Component {
 

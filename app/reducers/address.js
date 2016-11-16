@@ -1,9 +1,11 @@
 import * as actionTypes  from '../common/actionTypes';
+import {updateArrayItem} from '../utils';
 
 const initialState = {
   loading: false,
   list: [],
-  hasLoaded: false
+  hasLoaded: false,
+  refreshing: false
 };
 
 export default function address(state = initialState, action = {}) {
@@ -45,6 +47,24 @@ export default function address(state = initialState, action = {}) {
         loading: false,
         error: action.error
       };
+    case actionTypes.UPDATE_ADDRESS:
+      return {
+        ...state,
+        loading: true
+      };
+    case actionTypes.UPDATE_ADDRESS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        list: updateArrayItem(state.list, action.address)
+      };
+    case actionTypes.UPDATE_ADDRESS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: action.error
+      };
+
 
     case actionTypes.DELETE_ADDRESS:
       return {

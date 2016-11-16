@@ -42,5 +42,41 @@ export default ViewPage = {
       component: Pages.Splash,
       name: 'splash'
     }
+  },
+  address: ()=> {
+    return {
+      component: Pages.Address,
+      name: 'address'
+    }
+  },
+  addressList: ()=> {
+    return {
+      component: Pages.AddressList,
+      name: 'addressList'
+    }
+  },
+  order: ()=> {
+    return {
+      component: Pages.Order,
+      name: 'order'
+    }
+  },
+  orderDetail: ()=> {
+    return {
+      component: Pages.OrderDetail,
+      name: 'orderDetail'
+    }
+  },
+  checkOut: ()=> {
+    return {
+      component: Pages.CheckOut,
+      name: 'checkOut'
+    }
+  },
+  shopCart: ()=> {
+    return {
+      component: Pages.ShopCart,
+      name: 'shopCart'
+    }
   }
 }

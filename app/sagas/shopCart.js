@@ -5,25 +5,23 @@ import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
 import FakeRequest from '../utils/FakeRequest';
 import Storage from '../utils/Storage';
-import jsonData from '../data/category.json';
+import jsonData from '../data/shopCart.json';
 
 
 function* getShopCartList(payload) {
   try {
 
-    let results = [];
-
-    for (var i = 0; i < 10; i++) {
-      results = results.concat(jsonData);
-    }
-
+    let results = [].concat(jsonData);
     const tempData = yield call(FakeRequest, results, 2000);
     // yield call(new Request().get, 'user/verification', {
     //  data
     // });
     yield put({
       type: actionTypes.SHOP_CART_LIST_SUCCESS,
-      list: tempData
+      list: tempData,
+      loadMore: payload.loadMore,
+      hasMore: payload.pageIndex < 2,
+      refreshing: false
     });
     if (payload.success) {
       yield call(payload.success);

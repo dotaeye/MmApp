@@ -5,20 +5,25 @@ import {
   Animated,
   InteractionManager,
   ScrollView,
+  RefreshControl,
   ListView,
   TouchableOpacity,
   View,
   Text,
 } from 'react-native';
 
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import _ from 'lodash';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
-import Loading from '../components/Loading'
+import Loading from '../components/Loading';
+import EndTag from '../components/EndTag';
+import Spinner from '../components/Spinner';
 import Stepper from '../components/Stepper';
-import ViewPage from '../components/ViewPages'
+import ViewPages from '../components/ViewPages'
 import * as shopCartActions from '../actions/shopCart';
 
 class ShopCart extends Component {
@@ -32,6 +37,8 @@ class ShopCart extends Component {
       })
     };
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.canLoadMore = false;
+    this.prevLoadMoreTime = 0;
   }
 
   componentDidMount() {
@@ -39,11 +46,55 @@ class ShopCart extends Component {
   }
 
   fetchData() {
-    this.props.shopCartActions.getShopCartList({})
+    this.props.shopCartActions.getShopCartList({
+      pageIndex: 1
+    });
+  }
+
+  onRefresh() {
+    this.canLoadMore = false;
+    this.props.shopCartActions.getShopCartList({
+      pageIndex: 1,
+      refreshing: true
+    });
+  }
+
+
+  onScroll() {
+    if (!this.canLoadMore) {
+      this.canLoadMore = true;
+    }
+  }
+
+  onEndReached() {
+    const {shopCart, shopCartActions}=this.props;
+    const now = Date.parse(new Date()) / 1000;
+    if (shopCart.hasMore && this.canLoadMore && now - this.prevLoadMoreTime > 2) {
+      shopCartActions.getShopCartList({
+        pageIndex: shopCart.pageIndex + 1,
+        loadMore: true
+      });
+      this.prevLoadMoreTime = Date.parse(new Date()) / 1000;
+      this.canLoadMore = false;
+    }
+  }
+
+  renderFooter() {
+    const {shopCart}=this.props;
+    if (shopCart.loadMore) {
+      return <Spinner/>;
+    }
+    if (shopCart.refreshing !== true
+      && shopCart.hasMore !== true
+      && shopCart.list.length) {
+      return <EndTag/>;
+    }
   }
 
   onEditComplete() {
-
+    this.setState({
+      editEnabled: false
+    })
   }
 
   onEdit() {
@@ -52,15 +103,48 @@ class ShopCart extends Component {
     })
   }
 
-  onRefresh() {
-    this.canLoadMore = false;
-    this.props.productActions.getShopCartList({
-      refreshing: true
-    })
-  }
-
   onToolButtonClick() {
 
+  }
+
+  onSelectAll() {
+    const {shopCart}=this.props;
+    const {selectedIds}=this.state;
+    if (selectedIds.length == shopCart.list.length) {
+      this.setState({
+        selectedIds: []
+      })
+    } else {
+      this.setState({
+        selectedIds: shopCart.list.map(x=>x.id)
+      })
+    }
+  }
+
+  onSelectItem(id) {
+    const {selectedIds}=this.state;
+    if (selectedIds.includes(id)) {
+      let index = _.indexOf(selectedIds, id);
+      this.setState({
+        selectedIds: [...selectedIds.slice(0, index), ...selectedIds.slice(index + 1)]
+      })
+    } else {
+      this.setState({
+        selectedIds: [...selectedIds, id]
+      })
+    }
+  }
+
+  getTotal() {
+    let total = 0;
+    const {selectedIds}=this.state;
+    const {shopCart}=this.props;
+    shopCart.list.forEach(item=> {
+      if (selectedIds.includes(item.id)) {
+        total += item.price * item.count;
+      }
+    });
+    return total;
   }
 
   renderNav() {
@@ -75,9 +159,10 @@ class ShopCart extends Component {
           router.pop();
         }
       }],
-      Center: {
-        text: '购物车'
-      },
+      Center: [{
+        text: '购物车',
+        isText: true
+      }],
       Right: [editEnabled ? {
         text: '完成',
         style: {
@@ -104,29 +189,75 @@ class ShopCart extends Component {
     const {editEnabled, selectedIds}=this.state;
     const iconName = selectedIds.includes(item.id) ? 'ios-checkbox' : 'ios-checkbox-outline';
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
-        <Icon name={iconName} size={20} color={UI.Colors.grayFont}/>
-        <Image source={require('../images/products/product.jpg')}/>
-        <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
-          <Text>{item.name}</Text>
-          <Text>{item.attribute}</Text>
-          <Text>{item.price}</Text>
-        </View>
-        <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
-          <Text>X 1</Text>
-          {editEnabled && <Stepper value={1} max={20}/>}
+      <View style={[
+        UI.CommonStyles.rowContainer,
+        UI.CommonStyles.bb,
+        {
+          padding:10,
+          alignItems:'center'
+        }
+      ]}>
+        <TouchableOpacity
+          style={{
+            paddingHorizontal:8,
+            height:60,
+            alignItems:'center',
+            justifyContent:'center'
+          }}
+          onPress={this.onSelectItem.bind(this,item.id)}
+        >
+          <Icon name={iconName} size={20} color={UI.Colors.danger}/>
+        </TouchableOpacity>
+        <View
+          style={[UI.CommonStyles.rowContainer,{flex:1}]}>
+          <Image
+            source={require('../images/products/product.jpg')}
+            style={{
+              width:60,
+              height:60
+            }}/>
+          <View style={[
+            UI.CommonStyles.container,
+            UI.CommonStyles.columnContainer]}>
+            <View style={[
+                UI.CommonStyles.rowContainer,
+                {
+                  justifyContent:'space-between'
+                }]}>
+              <Text>{item.name}</Text>
+              <Text>x{item.count}</Text>
+            </View>
+
+            <Text style={{
+                fontSize:UI.Size.font.ms,
+                color:UI.Colors.grayFont,
+                marginTop:5
+              }}>共{item.count}个商品</Text>
+
+            <View style={[
+                UI.CommonStyles.rowContainer,
+                {
+                  justifyContent:'space-between',
+                  alignItems:'center',
+                  height:28
+                }]}>
+              <Text>￥{item.price}</Text>
+              {editEnabled && <Stepper value={1} max={20}/>}
+            </View>
+          </View>
         </View>
       </View>
     )
   }
 
-  renerList() {
-    const {shopCart}=this.state;
-    if (shopCart.listLoaded) return <Loading/>;
-
+  renderList() {
+    const {shopCart}=this.props;
+    if (!shopCart.hasLoaded) return <Loading/>;
     return (
-
       <ListView
+        style={{
+          marginTop:10
+        }}
         ref={(view)=> this.listView = view }
         removeClippedSubviews
         enableEmptySections={ true }
@@ -134,7 +265,6 @@ class ShopCart extends Component {
         initialListSize={ 10 }
         pageSize={ 10 }
         pagingEnabled={ false }
-        contentContainerStyle={[UI.CommonStyles.wrap_list]}
         dataSource={ this.state.dataSource.cloneWithRows(shopCart.list) }
         renderRow={this.renderListRow.bind(this)}
         refreshControl={
@@ -148,31 +278,65 @@ class ShopCart extends Component {
 
   }
 
+
   renderBottom() {
     const {editEnabled, selectedIds}=this.state;
-    const iconName = selectedIds.length>0 ? 'ios-checkbox' : 'ios-checkbox-outline';
+    const iconName = selectedIds.length > 0 ? 'ios-checkbox' : 'ios-checkbox-outline';
 
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
-        <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
-          <Icon name={iconName} size={20} color={UI.Colors.grayFont}/>
-          <Text>已选 ({selectedIds.length})</Text>
-        </View>
-        <View style={[UI.CommonStyles.container,UI.CommonStyles.rowContainer]}>
-          <Text>￥ 188.8</Text>
+      <View style={[UI.CommonStyles.rowContainer,
+      UI.CommonStyles.bt,
+      {
+        height:50,
+        position:'absolute',
+        bottom:0,
+        left:0,
+        right:0,
+        alignItems:'center'
+      }]}>
+        <View style={[UI.CommonStyles.rowContainer,{
+          justifyContent:'space-between',
+          flex:1,
+          height:50,
+          alignItems:'center'
+        }]}>
           <TouchableOpacity
-            onPress={this.onToolButtonClick.bind(this)}
-            style={[UI.CommonStyles.shop_cart_button,selectedIds.length>0&&UI.CommonStyles.shop_cart_button_enabled]}>
-            <Text>{editEnabled ? "删除所选" : "下单"}</Text>
+            onPress={this.onSelectAll.bind(this)}
+            style={[UI.CommonStyles.rowContainer,{paddingLeft:10}]}>
+            <Icon name={iconName} size={20} color={UI.Colors.danger}/>
+            <Text style={{
+              marginLeft:10
+            }}>已选 ({selectedIds.length})</Text>
           </TouchableOpacity>
+          <View style={{flex:1}}>
+            <Text style={{marginRight:10,textAlign:'right'}}>￥{this.getTotal()}</Text>
+          </View>
+
         </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor:UI.Colors.danger,
+            height:50,
+            width:80,
+            alignItems:'center',
+            justifyContent:'center'
+          }}
+          onPress={this.onToolButtonClick.bind(this)}
+        >
+          <Text style={{color:UI.Colors.white}}>{editEnabled ? "删除所选" : "下单"}</Text>
+        </TouchableOpacity>
       </View>
     )
   }
 
   render() {
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
+      <View style={[
+      UI.CommonStyles.container,
+      UI.CommonStyles.columnContainer,
+      {
+        backgroundColor:UI.Colors.gray
+      }]}>
         {this.renderNav()}
         {this.renderList()}
         {this.renderBottom()}
