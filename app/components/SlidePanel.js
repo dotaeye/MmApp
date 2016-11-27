@@ -17,11 +17,6 @@ class SlidePanel extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.state.offset.setValue(-nextProps.offset);
-  }
-
-
   open() {
     if (!this.state.visible) {
       this.setState({

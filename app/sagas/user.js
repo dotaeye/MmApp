@@ -1,19 +1,35 @@
 import {put, take, call, fork} from 'redux-saga/effects';
 import * as actionTypes from '../common/actionTypes'
+import config from '../common/config';
 import Request from '../utils/Request';
-import FakeRequest from '../utils/FakeRequest';
+import Storage from '../utils/Storage';
 import {Toast} from 'antd-mobile';
 
 
 function* login(payload) {
   try {
-    //const token = yield call(request, 'POST', 'user/login', data);
-    const token = yield call(FakeRequest, {}, 2000);
-    if(payload.success){
+    const token = yield call(new Request().post, 'account/login', {
+      data: {
+        username: payload.telephone,
+        password: payload.loginPassword,
+        grant_type: 'password'
+      },
+      login: true
+    });
+    Storage.save(config.token, token);
+    yield put({
+      type: actionTypes.LOGIN_SUCCESS,
+      user: token
+    });
+
+    if (payload.success) {
       yield call(payload.success);
     }
 
   } catch (error) {
+    yield put({
+      type: actionTypes.LOGIN_FAIL
+    });
     if (error && error.message !== '') {
       Toast.info(error.message)
     }
@@ -22,13 +38,25 @@ function* login(payload) {
 
 function* register(payload) {
   try {
-    //const token = yield call(request, 'POST', 'user/login', data);
-    const token = yield call(FakeRequest, {}, 2000);
-    if(payload.success){
+    yield call(new Request().post, 'account/register', {
+      data: {
+        email: payload.telephone,
+        password: payload.loginPassword,
+        smsCode: payload.telVerifyCode
+      },
+      formJson: true
+    });
+    yield put({
+      type: actionTypes.REGISTER_SUCCESS
+    });
+    if (payload.success) {
       yield call(payload.success);
     }
 
   } catch (error) {
+    yield put({
+      type: actionTypes.REGISTER_FAIL
+    });
     if (error && error.message !== '') {
       Toast.info(error.message)
     }
@@ -38,8 +66,11 @@ function* register(payload) {
 
 function* verificationCode(data) {
   try {
-    yield call(FakeRequest, {}, 2000);
-    // yield call(request, 'POST', 'user/verification', data);
+    yield call(new Request().post, 'account/smscode', {
+      data,
+      formJson: true,
+      formString: true
+    });
   } catch (error) {
     if (error && typeof error.message == 'string') {
       Toast.info(error.message)

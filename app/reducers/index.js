@@ -7,7 +7,8 @@ import carCate from './carCate';
 import address from './address';
 import city from './city';
 import order from './order'
-import shopCart from './shopCart'
+import shopCart from './shopCart';
+import user from './user'
 
 export default reducers = combineReducers({
   product,
@@ -18,5 +19,6 @@ export default reducers = combineReducers({
   address,
   city,
   order,
-  shopCart
+  shopCart,
+  user
 })

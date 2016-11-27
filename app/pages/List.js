@@ -14,7 +14,6 @@ import {
   PanResponder
 } from 'react-native';
 import {List, Radio} from 'antd-mobile';
-import _ from 'lodash';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,14 +28,18 @@ import Loading from '../components/Loading';
 import EndTag from '../components/EndTag';
 import ViewPages from '../components/ViewPages';
 import * as productActions from '../actions/product';
+import {getImageUrl} from '../utils'
 
 const RadioItem = Radio.RadioItem;
+const pageSize = 20;
 
 class ProductList extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      categoryId: props.categoryId,
+      keywords: props.keywords,
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
       })
@@ -47,15 +50,22 @@ class ProductList extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    InteractionManager.runAfterInteractions(() => {
+      this.fetchData();
+    });
   }
 
-  fetchData() {
-    this.props.productActions.searchProduct({
-      pageIndex: 1
-    })
+  fetchData(options) {
+    const {productActions}=this.props;
+    const {categoryId, keywords}=this.state;
+    const params = Object.assign({}, {
+      pageIndex: 0,
+      pageSize,
+      categoryId,
+      keywords
+    }, options);
+    productActions.searchProduct(params)
   }
-
 
   onScroll() {
     if (!this.canLoadMore) {
@@ -67,7 +77,7 @@ class ProductList extends Component {
     const {product}=this.props;
     const now = Date.parse(new Date()) / 1000;
     if (product.hasMore && this.canLoadMore && now - this.prevLoadMoreTime > 2) {
-      this.props.productActions.searchProduct({
+      this.fetchData({
         pageIndex: product.pageIndex + 1,
         loadMore: true
       });
@@ -78,10 +88,9 @@ class ProductList extends Component {
 
   onRefresh() {
     this.canLoadMore = false;
-    this.props.productActions.searchProduct({
-      pageIndex: 1,
+    this.fetchData({
       refreshing: true
-    })
+    });
   }
 
   renderSearchView() {
@@ -109,14 +118,12 @@ class ProductList extends Component {
   renderListRow(product) {
     return (
       <View style={UI.CommonStyles.product_list_cell}>
-
-        <Image source={require('../images/products/product.jpg')} style={UI.CommonStyles.product_list_img}/>
-
+        <Image source={{uri:getImageUrl(product.imageUrl)}} style={UI.CommonStyles.product_list_img}/>
         <Text
           style={UI.CommonStyles.product_list_name}
           numberOfLines={2}
-        >{product.des}</Text>
-        <Text style={UI.CommonStyles.product_list_price}>￥{product.trueprice}</Text>
+        >{product.name}</Text>
+        <Text style={UI.CommonStyles.product_list_price}>￥{product.price}</Text>
       </View>
     )
   }
@@ -126,7 +133,7 @@ class ProductList extends Component {
     if (product.loadMore) {
       return <Spinner/>;
     }
-    if (product.refreshing !== true && product.hasMore !== true && product.list.length) {
+    if (product.refreshing !== true && product.hasMore !== true && product.list.products.length) {
       return <EndTag/>;
     }
   }
@@ -275,7 +282,9 @@ class ProductList extends Component {
         {this.renderOrder()}
         {this.renderFilter()}
 
-        {product.listLoaded ? (
+        {!product.loaded ? (
+          <Loading/>
+        ) : (
           <ListView
             ref={(view)=> this.listView = view }
             removeClippedSubviews
@@ -287,7 +296,7 @@ class ProductList extends Component {
             scrollRenderAheadDistance={ 230 }
             onScroll={this.onScroll.bind(this)}
             contentContainerStyle={[UI.CommonStyles.wrap_list]}
-            dataSource={ this.state.dataSource.cloneWithRows(product.list) }
+            dataSource={ this.state.dataSource.cloneWithRows(product.list.products) }
             renderRow={this.renderListRow.bind(this)}
             renderFooter={this.renderListFooter.bind(this)}
             onEndReached={this.onEndReached.bind(this)}
@@ -298,11 +307,7 @@ class ProductList extends Component {
             />
            }
           />
-
-        ) : (
-          <Loading/>
         )}
-
       </View>
     )
   }

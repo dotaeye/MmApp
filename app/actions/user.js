@@ -7,6 +7,14 @@ export function login(payload) {
   };
 }
 
+
+export function loginSuccess(user) {
+  return {
+    type: actionTypes.LOGIN_SUCCESS,
+    user
+  };
+}
+
 export function verificationCode(payload) {
   return {
     type: actionTypes.VERIFICATION_CODE,

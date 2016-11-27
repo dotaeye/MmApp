@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   PixelRatio,
+  StatusBar,
   ScrollView,
   Dimensions,
   ListView,
@@ -19,6 +20,7 @@ import NavBar from '../components/NavBar'
 import Loading from '../components/Loading'
 import ViewPages from '../components/ViewPages'
 import * as categoryActions from '../actions/category';
+import {getImageUrl} from '../utils';
 
 class Category extends Component {
 
@@ -39,9 +41,9 @@ class Category extends Component {
   }
 
   onCateNavClick(cate) {
-    if (cate.id != this.state.selectedId) {
+    if (cate.value != this.state.selectedId) {
       this.setState({
-        selectedId: cate.id
+        selectedId: cate.value
       })
     }
   }
@@ -85,7 +87,7 @@ class Category extends Component {
       >
         <ScrollView>
           {category.list.map((cate, index)=> {
-            const selected = ((index === 0 && selectedId === null) || selectedId === cate.id);
+            const selected = ((index === 0 && selectedId == null) || selectedId == cate.value);
             return (
               <TouchableOpacity
                 key={index}
@@ -94,7 +96,7 @@ class Category extends Component {
                 onPress={this.onCateNavClick.bind(this,cate)}>
                 <Text
                   style={[UI.CommonStyles.category_nav_item_text,selected&&UI.CommonStyles.category_nav_item_text_selected]}>
-                  {cate.name}
+                  {cate.label}
                 </Text>
               </TouchableOpacity>
             )
@@ -106,28 +108,36 @@ class Category extends Component {
 
   renderListRow(cate, index) {
     return (
-      <View key={index} style={[UI.CommonStyles.columnContainer,UI.CommonStyles.category_item]}>
-        <Image source={require('../images/products/product.jpg')} style={UI.CommonStyles.category_item_img}/>
+      <TouchableOpacity
+        key={index}
+        style={[UI.CommonStyles.columnContainer,UI.CommonStyles.category_item]}
+        onPress={()=>{
+          this.props.router.push(ViewPages.list(),{
+            categoryId:cate.value
+          })
+        }}
+      >
+        <Image source={{uri:getImageUrl(cate.imageUrl)}} style={UI.CommonStyles.category_item_img}/>
         <Text style={UI.CommonStyles.category_item_text}>
-          {cate.name}
+          {cate.label}
         </Text>
-      </View>
+      </TouchableOpacity>
     )
   }
 
   renderList() {
     const {category}=this.props;
     const {selectedId}=this.state;
-    let data = [];
+    let parent = null;
     if (selectedId === null) {
-      data = category.list[0].children;
+      parent = category.list[0];
     } else {
-      data = category.list.find(x=>x.id === selectedId).children;
+      parent = category.list.find(x=>x.value == selectedId);
     }
     return (
       <View style={[UI.CommonStyles.columnContainer,UI.CommonStyles.category_list]}>
         <ScrollView>
-          <Image style={UI.CommonStyles.category_banner_img} source={require('../images/banner/2.jpg')}/>
+          <Image style={UI.CommonStyles.category_banner_img} source={{uri:getImageUrl(parent.imageUrl)}}/>
           <View style={UI.CommonStyles.category_line_wrap}>
             <View style={UI.CommonStyles.line_wrap_line}/>
             <View style={UI.CommonStyles.line_wrap_text}>
@@ -136,7 +146,7 @@ class Category extends Component {
             <View style={UI.CommonStyles.line_wrap_line}/>
           </View>
           <View style={[UI.CommonStyles.wrap_list,UI.CommonStyles.category_list_grid]}>
-            {data.map((cate, index)=> {
+            {parent.children.map((cate, index)=> {
               return this.renderListRow(cate, index)
             })}
           </View>
@@ -149,8 +159,11 @@ class Category extends Component {
     const {category}=this.props;
     return (
       <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.white}]}>
+        <StatusBar
+          barStyle="default"
+        />
         {this.renderNav()}
-        {category.hasLoaded ? (
+        {category.loaded ? (
           <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.category]}>
             {this.renderCateNav()}
             {this.renderList()}

@@ -78,5 +78,29 @@ export default ViewPage = {
       component: Pages.ShopCart,
       name: 'shopCart'
     }
+  },
+  login: ()=> {
+    return {
+      component: Pages.Login,
+      name: 'login'
+    }
+  },
+  codeLogin: ()=> {
+    return {
+      component: Pages.CodeLogin,
+      name: 'codeLogin'
+    }
+  },
+  register: ()=> {
+    return {
+      component: Pages.Register,
+      name: 'register'
+    }
+  },
+  about: ()=> {
+    return {
+      component: Pages.About,
+      name: 'about'
+    }
   }
 }

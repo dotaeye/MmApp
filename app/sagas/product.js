@@ -30,29 +30,20 @@ function* productDetail(payload) {
 
 function* searchProduct(payload) {
   try {
-
-    console.log(payload);
-
-    let results = [];
-    for (var i = 0; i < 10; i++) {
-      results = results.concat(jsonData);
-    }
-    const tempData = yield call(FakeRequest, results, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const list = yield call(new Request().get, 'category/list', {
+      params: payload
+    });
     yield put({
       type: actionTypes.SEARCH_PRODUCT_SUCCESS,
-      list: tempData,
+      list: list,
       loadMore: payload.loadMore,
-      hasMore: payload.pageIndex < 2,
-      refreshing: false
+      hasMore: list.totalCount > (payload.pageIndex + 1) * payload.pageSize
     });
 
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return list;
   } catch (error) {
     if (error && error.message !== '') {
       console.log(error.message);

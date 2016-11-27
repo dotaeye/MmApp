@@ -2,36 +2,23 @@ import {put, take, call, fork} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes';
 import Request from '../utils/Request';
-import FakeRequest from '../utils/FakeRequest';
-import Storage from '../utils/Storage';
-import jsonData from '../data/product.json';
-
-
 function* homeList(payload) {
   try {
-    let results = [];
-    for (var i = 0; i < 10; i++) {
-      results = results.concat(jsonData);
-    }
-    const tempData = yield call(FakeRequest, results, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    
+    const list = yield call(new Request().get, 'app/home', {
+    });
     yield put({
-      type: actionTypes.SEARCH_PRODUCT_SUCCESS,
-      list: tempData,
-      loadMore: payload.loadMore,
-      hasMore: payload.pageIndex < 2,
-      refreshing: false
+      type: actionTypes.HOME_LIST_SUCCESS,
+      list: list,
+      loadMore: payload.loadMore
     });
 
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return list;
   } catch (error) {
     if (error && error.message !== '') {
-      console.log(error.message);
       Toast.info(error.message);
     }
   }

@@ -6,16 +6,20 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-import _ from 'lodash';
+import Icon from 'react-native-vector-icons/Ionicons';
 import TabNavigator from 'react-native-tab-navigator';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import config from '../common/config';
 import UI from '../common/UI';
 import ViewPages from '../components/ViewPages'
 import Home from './Home';
-import List from './List';
 import Category from './Category';
-import SplashScreen from 'react-native-splash-screen'
+import My from './My';
+import Storage from '../utils/Storage';
+
+import * as homeActions from '../actions/home';
+import * as userActions from '../actions/user';
 
 class Main extends Component {
 
@@ -26,17 +30,31 @@ class Main extends Component {
     };
   }
 
-  componentDidMount() {
-    SplashScreen.hide();
+  componentWillMount() {
+    Storage.get(config.token).then((user)=> {
+      if (user) {
+        this.props.userActions.loginSuccess(user);
+      }
+    })
   }
-  
+
+  onMyTabPress() {
+    const {user, router}=this.props;
+    if (user.user) {
+      this.setState({
+        selectedTab: 'my'
+      })
+    } else {
+      router.push(ViewPages.login());
+    }
+  }
+
   render() {
 
-    const { dispatch, router} = this.props;
-
+    const {router} = this.props;
     return (
       <View style={{flex:1}}>
-      
+
         <TabNavigator tabBarStyle={UI.CommonStyles.tabBar}>
           <TabNavigator.Item
             title="首页"
@@ -70,7 +88,7 @@ class Main extends Component {
             titleStyle={UI.CommonStyles.tabBarTextSelected}
             renderIcon={() => <Image source={require("../images/icon/message@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
             renderSelectedIcon={() => <Image source={require("../images/icon/message_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => router.push(ViewPages.product()) }
+            onPress={() => router.push(ViewPages.login()) }
           >
           </TabNavigator.Item>
           <TabNavigator.Item
@@ -80,7 +98,8 @@ class Main extends Component {
             titleStyle={UI.CommonStyles.tabBarTextSelected}
             renderIcon={() => <Image source={require("../images/icon/my@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
             renderSelectedIcon={() => <Image source={require("../images/icon/my_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => router.push(ViewPages.shopCart()) }>
+            onPress={this.onMyTabPress.bind(this)}>
+            <My {...this.props}/>
           </TabNavigator.Item>
         </TabNavigator>
       </View>
@@ -89,9 +108,11 @@ class Main extends Component {
 }
 
 export default connect((state, props) => ({
-
+  home: state.home,
+  user: state.user
 }), dispatch => ({
-
+  homeActions: bindActionCreators(homeActions, dispatch),
+  userActions: bindActionCreators(userActions, dispatch)
 }), null, {
   withRef: true
 })(Main);

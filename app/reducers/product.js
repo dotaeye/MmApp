@@ -1,9 +1,13 @@
 import * as actionTypes  from '../common/actionTypes';
 
 const initialState = {
-  listLoaded: false,
+  loaded: false,
   entity: {},
-  list: [],
+  list: {
+    products: [],
+    filteredItems: [],
+    availableSortOptions: []
+  },
   hasMore: true,
   pageIndex: 1,
   refreshing: false
@@ -25,10 +29,10 @@ export default function product(state = initialState, action = {}) {
         ...state,
         loading: false,
         hasMore: action.hasMore,
-        refreshing: action.refreshing,
-        list: action.loadMore ? state.list.concat(action.list) : action.list,
+        refreshing: false,
+        list: action.loadMore ? loadMore(state, action) : action.list,
         loadMore: false,
-        listLoaded: true
+        loaded: true
       };
     case actionTypes.SEARCH_PRODUCT_FAIL:
       return {
@@ -40,22 +44,24 @@ export default function product(state = initialState, action = {}) {
     case actionTypes.PRODUCT_DETAIL:
       return {
         ...state,
-        loading: true
       };
     case actionTypes.PRODUCT_DETAIL_SUCCESS:
       return {
         ...state,
-        loading: false,
-        entity: action.entity,
+        entity: action.entity
 
       };
     case actionTypes.PRODUCT_DETAIL_FAIL:
       return {
         ...state,
-        loading: false,
         error: action.error
       };
     default:
       return state;
   }
+}
+
+function loadMore(state, action) {
+  state.list.products = state.list.products.concat(action.list.products);
+  return state.list;
 }

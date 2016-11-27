@@ -17,7 +17,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as userActions from '../actions/user';
 import {Toast} from 'antd-mobile';
-import {validPhone} from '../utils/Validator';
+import {validPhone, validPassword} from '../utils/Validator';
 import ViewPages from '../components/ViewPages';
 import UI from '../common/UI';
 
@@ -34,7 +34,7 @@ class Register extends Component {
   }
 
   onRegister() {
-    const {dispatch, user:{loggingIn}}=this.props;
+    const {user:{loggingIn}, userActions}=this.props;
     const {disabledSubmit}=this.state;
     if (loggingIn || disabledSubmit) return;
     if (!validPhone(this.state.telephone)) {
@@ -48,13 +48,15 @@ class Register extends Component {
     let data = {
       telephone: this.state.telephone,
       telVerifyCode: this.state.telVerifyCode,
-      loginPassword: this.state.loginPassword
+      loginPassword: this.state.loginPassword,
+      success: this.registerSuccess.bind(this)
     };
-    dispatch(userActions.register(data, this.registerSuccess.bind(this)))
+    userActions.register(data)
   }
 
   registerSuccess() {
-
+    const {router}=this.props;
+    router.replace(ViewPages.login())
   }
 
   componentWillUnmount() {
@@ -62,7 +64,7 @@ class Register extends Component {
   }
 
   onGetSmsCode() {
-    const {dispatch}=this.props;
+    const {userActions}=this.props;
     const {telVerifyCodeSecond, telephone}=this.state;
 
     if (!validPhone(telephone)) {
@@ -71,10 +73,7 @@ class Register extends Component {
     }
 
     if (telVerifyCodeSecond > 0) return;
-    dispatch(userActions.verificationCode({
-      telephone,
-      type: 0
-    }));
+    userActions.verificationCode(telephone);
     this.setState({
       telVerifyCodeSecond: 60
     }, ()=> {
@@ -119,9 +118,11 @@ class Register extends Component {
     const {registering}=this.props.user;
     const {showPassword, telVerifyCodeSecond, disabledSubmit}=this.state;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
+      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
+        justifyContent:'flex-start'
+      }]}>
         <View style={[UI.CommonStyles.logoText]}>
-          <Text style={{fontSize:UI.Size.font.lg}}>手机号快捷注册</Text>
+          <Text style={{fontSize:UI.Size.font.lg}}>手机号注册</Text>
         </View>
         <View style={UI.CommonStyles.form}>
           <View style={UI.CommonStyles.formItem}>
@@ -201,19 +202,24 @@ class Register extends Component {
             </TouchableHighlight>
           </View>
         </View>
-        <View style={styles.other}>
-          <View style={styles.otherContent}>
-            <Text style={{fontSize:13,color:UI.Colors.grayFont}}>轻触上面“注册”按钮，即表示您同意</Text>
-            <View style={styles.otherBottom}>
-              <TouchableOpacity onPress={()=>{}}>
-                <Text style={{fontSize:13,color:UI.Colors.link, marginRight:15}}>《服务协议》</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={()=>{}}>
-                <Text style={{fontSize:13,color:UI.Colors.link, marginRight:15}}>《隐私政策》</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        {/*
+         <View style={styles.other}>
+         <View style={styles.otherContent}>
+         <Text style={{fontSize:13,color:UI.Colors.grayFont}}>轻触上面“注册”按钮，即表示您同意</Text>
+         <View style={styles.otherBottom}>
+         <TouchableOpacity onPress={()=>{}}>
+         <Text style={{fontSize:13,color:UI.Colors.link, marginRight:15}}>《服务协议》</Text>
+         </TouchableOpacity>
+         <TouchableOpacity onPress={()=>{}}>
+         <Text style={{fontSize:13,color:UI.Colors.link, marginRight:15}}>《隐私政策》</Text>
+         </TouchableOpacity>
+         </View>
+         </View>
+         </View>
+
+
+         */}
+
         <View style={styles.close}>
           <TouchableOpacity
             style={styles.button}
@@ -242,7 +248,7 @@ const styles = StyleSheet.create({
     height: 15
   },
   button: {
-    padding: 8
+    padding: 15
   },
   other: {
     position: 'absolute',
@@ -275,4 +281,4 @@ export default connect((state, props) => ({
   userActions: bindActionCreators(userActions, dispatch)
 }), null, {
   withRef: true
-})(Login);
+})(Register);

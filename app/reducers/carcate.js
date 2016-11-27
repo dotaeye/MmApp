@@ -1,11 +1,13 @@
 import * as actionTypes  from '../common/actionTypes';
 
 const initialState = {
-  loading: false,
-  list: [],
-  hasLoaded: false,
+  rootCars: [],
+  childCars: [],
+  lastCars: [],
+  loaded: false,
   myCars: [],
-  myCarLoaded: false
+  myCarLoaded: false,
+  selectName: ''
 };
 
 export default function carCate(state = initialState, action = {}) {
@@ -13,21 +15,49 @@ export default function carCate(state = initialState, action = {}) {
   switch (action.type) {
     case actionTypes.CARCATE_LIST:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case actionTypes.CARCATE_LIST_SUCCESS:
       return {
         ...state,
-        loading: false,
-        list: action.list,
-        hasLoaded: true
+        rootCars: action.rootCars,
+        loaded: true
       };
     case actionTypes.CARCATE_LIST_FAIL:
       return {
+        ...state
+      };
+
+    case actionTypes.CARCATE_LIST_CHILD:
+      return {
+        ...state
+      };
+    case actionTypes.CARCATE_LIST_CHILD_SUCCESS:
+      return {
         ...state,
-        loading: false,
-        error: action.error
+        childCars: action.childCars,
+        childLoaded: true,
+        selectName: action.selectName
+      };
+    case actionTypes.CARCATE_LIST_CHILD_FAIL:
+      return {
+        ...state
+      };
+
+    case actionTypes.CARCATE_LIST_LAST:
+      return {
+        ...state
+      };
+    case actionTypes.CARCATE_LIST_LAST_SUCCESS:
+      return {
+        ...state,
+        lastCars: action.lastCars,
+        lastLoaded: true,
+        selectName: state.selectName + '-' + action.selectName
+      };
+    case actionTypes.CARCATE_LIST_LAST_FAIL:
+      return {
+        ...state
       };
 
     case actionTypes.SELECT_CAR:

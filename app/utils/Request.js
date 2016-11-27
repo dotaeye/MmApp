@@ -1,7 +1,9 @@
-import {config} from '../common/constants';
+import config from '../common/config';
 import Storage from './Storage';
 
 const methods = ['get', 'post', 'put', 'patch', 'delete'];
+
+const timeout = 15000;
 
 function formatUrl(path) {
   let adjustedPath = path[0] !== '/' ? '/' + path : path;
@@ -17,10 +19,30 @@ function getStringParams(data) {
   let result = '';
   if (data) {
     for (let key in data) {
-      result += `&${key}=${data[key]}`;
+      if(data[key]) {
+        result += `&${key}=${data[key]}`;
+      }
     }
   }
   return result;
+}
+
+function timeoutFetch(ms, promise) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("fetch time out"));
+    }, ms);
+    promise.then(
+      (res) => {
+        clearTimeout(timer);
+        resolve(res);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      }
+    );
+  })
 }
 
 export default class Request {
@@ -35,12 +57,16 @@ export default class Request {
           data,
           headers,
           auth,
+          login,
+          formJson,
+          formString,
           saved,
-          saveKey
+          saveKey,
+          fullPath
 
         } = {}) => {
 
-        let path = formatUrl(endpoint);
+        let path = fullPath ? endpoint : formatUrl(endpoint);
 
         let options = {
           method: method.toUpperCase()
@@ -50,8 +76,15 @@ export default class Request {
           options.headers = headers
         }
 
+        if (formJson) {
+          options.headers = Object.assign({}, options.headers, {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          });
+        }
+
         if (auth) {
-          const bearerToken = storage.get(configs.authToken).access_token;
+          const bearerToken = Storage.get(config.token).access_token;
           options.headers = Object.assign({}, options.headers, {
             'Authorization': 'Bearer ' + bearerToken
           });
@@ -63,7 +96,11 @@ export default class Request {
         }
 
         if (data) {
-          options.body = getStringParams(data).substr(1);
+          if (formJson) {
+            options.body = formString ? data : JSON.stringify(data);
+          } else {
+            options.body = getStringParams(data).substr(1);
+          }
         }
         if (saved) {
           let storeKey = saveKey || getSaveKey(endpoint, params, data);
@@ -72,11 +109,27 @@ export default class Request {
               .then(source=>JSON.parse(source))
               .then(res=> {
                 if (!res) {
-                  fetch(path, options)
+                  timeoutFetch(timeout, fetch(path, options))
+                    .then((response)=> {
+                      if (response.ok) {
+                        return response;
+                      } else {
+                        throw new Error('server handle error');
+                      }
+                    })
                     .then((response)=>response.json())
-                    .then(responseJSON=> {
-                      Storage.save(storeKey, JSON.stringify(responseJSON));
-                      resolve(responseJSON);
+                    .then(result=> {
+                      if (login) {
+                        resolve(result);
+                      } else {
+                        if (result.code == 0) {
+                          Storage.save(storeKey, JSON.stringify(result.data));
+                          resolve(result.data);
+                        }
+                        else {
+                          reject(result.info)
+                        }
+                      }
                     })
                     .catch(err=> {
                       console.log(err);
@@ -95,12 +148,28 @@ export default class Request {
 
         } else {
           return new Promise((resolve, reject) => {
-            fetch(path, options)
-              .then((response) => {
-                return response.json();
+            timeoutFetch(timeout, fetch(path, options))
+              .then((response)=> {
+                if (response.ok) {
+                  return response;
+                } else {
+                  throw new Error('server handle error');
+                }
               })
-              .then((responseData) => {
-                resolve(responseData);
+              .then((response)=> {
+                return response.json()
+              })
+              .then((result) => {
+                if (login) {
+                  resolve(result);
+                } else {
+                  if (result.code == 0) {
+                    resolve(result.data);
+                  }
+                  else {
+                    reject(result.info)
+                  }
+                }
               })
               .catch((error) => {
                 reject(error);

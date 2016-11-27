@@ -20,6 +20,9 @@ import UI from '../common/UI';
 import list from '../data/list.json';
 import NavBar from '../components/NavBar'
 import SlidePanel from '../components/SlidePanel';
+import * as carCateActions from '../actions/carCate';
+import Loading from '../components/Loading'
+import {getImageUrl} from '../utils';
 
 class SelectCar extends Component {
 
@@ -37,32 +40,48 @@ class SelectCar extends Component {
       rowHasChanged: (row1, row2) => row1 !== row2,
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2
     });
-    const data = this._getData();
-    const dataBlob = {};
-    const sectionIds = _.uniq(data.map(d=>d.pinyin[0]).sort());
-    const rowIds = [];
-    sectionIds.forEach((p, sectionIndex)=> {
-      dataBlob[p] = p;
-      const rows = data.filter(d=>d.pinyin[0] === p);
-      rowIds[sectionIndex] = [];
-      rows.forEach((r, rowIndex)=> {
-        let rowId = p + '_' + rowIndex;
-        rowIds[sectionIndex].push(rowId);
-        dataBlob[rowId] = r.name;
-      })
-    });
-    this.letterHeight = UI.Size.getPercent(UI.Size.window.height - UI.Size.navBar.height - UI.Size.statusBar.height,
-      1 / sectionIds.length * 100);
     this.state = {
-      sectionIds,
-      rowIds,
-      dataSource: dataSource.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)
+      sectionIds: [],
+      rowIds: [],
+      dataSource
     };
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.carCateActions.getRootCars({
+        success: this.onRootCarLoad.bind(this)
+      })
+    });
+  }
 
+  onRootCarLoad() {
+    const {rootCars}=this.props.carCate;
+    const dataBlob = {};
+    const sectionIds = _.uniq(rootCars.map(d=>d.pinYin).sort());
+    const rowIds = [];
+    sectionIds.forEach((p, sectionIndex)=> {
+      dataBlob[p] = p;
+      const rows = rootCars.filter(d=>d.pinYin === p);
+      rowIds[sectionIndex] = [];
+      rows.forEach((r, rowIndex)=> {
+        let rowId = p + '_' + rowIndex;
+        rowIds[sectionIndex].push(rowId);
+        dataBlob[rowId] = r;
+      })
+    });
+    this.letterHeight = UI.Size.getPercent(UI.Size.window.height - 100 - UI.Size.navBar.height - UI.Size.statusBar.height,
+      1 / sectionIds.length * 100);
+    this.setState({
+      sectionIds,
+      rowIds,
+      dataBlob
+    });
+
+  }
+
+  componentWillMount() {
     const scroll = (evt, gestureState)=> {
       const y = evt.nativeEvent.pageY;
       const first = this.getFirstLetterPosition();
@@ -86,11 +105,7 @@ class SelectCar extends Component {
   }
 
   getFirstLetterPosition() {
-    return UI.Size.navBar.height + UI.Size.statusBar.height;
-  }
-
-  _getData() {
-    return list.filter(l=>l.zip.length === 3);
+    return UI.Size.navBar.height + UI.Size.statusBar.height + 50;
   }
 
   scrollTo(sectionIndex) {
@@ -115,16 +130,32 @@ class SelectCar extends Component {
     });
   }
 
-  onCarItemPress() {
-    this.slider.open()
+  onCarItemPress(row) {
+    this.slider.open();
+    InteractionManager.runAfterInteractions(() => {
+      this.props.carCateActions.getChildCars({
+        id: row.id,
+        selectName: row.name
+      });
+    });
   }
 
-  onCarGroupPress() {
+  onCarGroupPress(item, group) {
     this.modal.open();
+    InteractionManager.runAfterInteractions(() => {
+      this.props.carCateActions.getLastCars({
+        id: item.value,
+        selectName: group.label + '-' + item.label
+      });
+    });
   }
 
   onScroll() {
     this.slider.close();
+  }
+
+  onSelectCarPress(car) {
+    this.props.router.pop();
   }
 
   setVisibleListHeight(offset) {
@@ -135,14 +166,14 @@ class SelectCar extends Component {
     return (
       <TouchableOpacity
         style={UI.CommonStyles.select_car_row}
-        onPress={this.onCarItemPress.bind(this)}
+        onPress={this.onCarItemPress.bind(this,rowData)}
       >
         <View style={UI.CommonStyles.select_car_row_img_container}>
-          <Image source={require('../images/car/car@2x.png')} style={UI.CommonStyles.select_car_row_img}/>
+          <Image source={require('../images/car/car.png')} style={UI.CommonStyles.select_car_row_img}/>
         </View>
         <View style={UI.CommonStyles.select_car_row_right}>
           <Text style={UI.CommonStyles.select_car_row_text}>
-            {rowData}
+            {rowData.name}
           </Text>
         </View>
       </TouchableOpacity>
@@ -187,16 +218,120 @@ class SelectCar extends Component {
     );
   }
 
+  renderListView() {
+    const {carCate}=this.props;
+    if (!carCate.loaded) return <Loading/>;
+    const {sectionIds, letterIndex, visible, dataBlob, rowIds}=this.state;
+    return (
+      <View style={UI.CommonStyles.container}>
+        <ListView
+          ref={ref=>this._listView=ref}
+          dataSource={this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionIds, rowIds)}
+          renderSectionHeader={this.renderSectionHeader}
+          renderRow={this.renderRow.bind(this)}
+          onScroll={this.onScroll.bind(this)}
+          initialListSize={20}
+          scrollRenderAheadDistance={500}
+          onLayout={({ nativeEvent: { layout: { y: offset } } }) => this.setVisibleListHeight(offset)}
+        />
+        <View style={UI.CommonStyles.select_car_letter} {...this._panResponder.panHandlers}>
+          {sectionIds.map((letter, index) => this.renderLetters(letter, index))}
+        </View>
+        {visible && (
+          <View style={UI.CommonStyles.select_car_section_modal}>
+            <Text style={UI.CommonStyles.select_car_section_modal_text}>
+              {sectionIds[letterIndex]}
+            </Text>
+          </View>
+        )}
+        {this.renderSlidePanel()}
+      </View>
+    )
+  }
+
+  renderSlidePanel() {
+    const {carCate}=this.props;
+    return (
+      <SlidePanel
+        ref={ref=>this.slider=ref}
+        style={[{
+              top:0,
+              width:UI.Size.window.width-50,
+              height:UI.Size.window.height-UI.Size.navBar.height-UI.Size.statusBar.height,
+              backgroundColor:UI.Colors.white
+            },UI.CommonStyles.select_car_panel]}
+        position={'right'}
+        offset={UI.Size.window.width-50}
+      >
+        {carCate.childLoaded ? (
+          <ScrollView style={{flex:1}}>
+            {carCate.childCars.map((group, gIndex)=> {
+              return (
+                <View style={UI.CommonStyles.select_car_panel_group} key={gIndex}>
+                  <View style={UI.CommonStyles.select_car_panel_group_title}>
+                    <Text>{group.label}</Text>
+                  </View>
+                  <View style={UI.CommonStyles.select_car_panel_group_child}>
+                    {group.children.map((dataItem, dataIndex)=> {
+                      return (
+                        <TouchableOpacity
+                          key={dataIndex}
+                          style={UI.CommonStyles.select_car_panel_group_item}
+                          onPress={this.onCarGroupPress.bind(this, dataItem, group)}
+                        >
+                          <Text>{dataItem.label}</Text>
+                        </TouchableOpacity>
+                      )
+                    })}
+                  </View>
+                </View>
+              )
+            })}
+          </ScrollView>
+        ) : <Loading/>}
+
+      </SlidePanel>
+    )
+  }
+
+  renderModal() {
+    const {carCate}=this.props;
+    return (
+      <Modal
+        ref={ref=>this.modal=ref}
+        style={UI.CommonStyles.select_car_modal}
+        swipeToClose={false}
+        position="bottom"
+      >
+        <View style={UI.CommonStyles.select_car_modal_title}>
+          <Text style={UI.CommonStyles.select_car_modal_title_left}>已选车型</Text>
+          <Text style={UI.CommonStyles.select_car_modal_title_right}>{carCate.selectName}</Text>
+        </View>
+        {carCate.lastLoaded ? (
+          <ScrollView>
+            {carCate.lastCars.map((car, index)=> {
+              return (
+                <TouchableOpacity
+                  onPress={this.onSelectCarPress.bind(this)}
+                  key={index}
+                  style={UI.CommonStyles.select_car_modal_item}>
+                  <Text>{car.name}</Text>
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
+        ) : <Loading/>}
+      </Modal>
+    )
+  }
+
   render() {
     const {router}=this.props;
-    const {sectionIds, letterIndex, visible}=this.state;
     const nav = {
       Left: [{
-        source: require('../images/icon/back@2x.png'),
-        style: {
-          width: 13,
-          height: 15
-        },
+        iconName: 'ios-arrow-back',
+        iconSize: 20,
+        iconColor: UI.Colors.black,
         onPress: ()=> {
           router.pop();
         }
@@ -204,204 +339,15 @@ class SelectCar extends Component {
       Center: [{
         isText: true,
         text: '选择你的爱车'
-      }]
+      }],
+      Right: []
     };
-
-    const childScheme = [{
-      name: '奥迪',
-      data: [{
-        name: 'A3'
-      }, {
-        name: 'A4'
-      }, {
-        name: 'A5'
-      }, {
-        name: 'A6'
-      }]
-    }, {
-      name: '奥迪进口',
-      data: [{
-        name: 'Q3'
-      }, {
-        name: 'Q4'
-      }, {
-        name: 'Q5'
-      }, {
-        name: 'Q6'
-      }]
-    }, {
-      name: '奥迪',
-      data: [{
-        name: 'A3'
-      }, {
-        name: 'A4'
-      }, {
-        name: 'A5'
-      }, {
-        name: 'A6'
-      }]
-    }, {
-      name: '奥迪进口',
-      data: [{
-        name: 'Q3'
-      }, {
-        name: 'Q4'
-      }, {
-        name: 'Q5'
-      }, {
-        name: 'Q6'
-      }]
-    }, {
-      name: '奥迪',
-      data: [{
-        name: 'A3'
-      }, {
-        name: 'A4'
-      }, {
-        name: 'A5'
-      }, {
-        name: 'A6'
-      }]
-    }, {
-      name: '奥迪进口',
-      data: [{
-        name: 'Q3'
-      }, {
-        name: 'Q4'
-      }, {
-        name: 'Q5'
-      }, {
-        name: 'Q6'
-      }]
-    }, {
-      name: '奥迪',
-      data: [{
-        name: 'A3'
-      }, {
-        name: 'A4'
-      }, {
-        name: 'A5'
-      }, {
-        name: 'A6'
-      }]
-    }, {
-      name: '奥迪进口',
-      data: [{
-        name: 'Q3'
-      }, {
-        name: 'Q4'
-      }, {
-        name: 'Q5'
-      }, {
-        name: 'Q6'
-      }]
-    }];
-
-    const carItems = [{
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }, {
-      name: '2014-标准版'
-    }];
 
     return (
       <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.gray}]}>
         <NavBar options={nav}/>
-        <View style={UI.CommonStyles.container}>
-          <ListView
-            ref={ref=>this._listView=ref}
-            dataSource={this.state.dataSource}
-            renderSectionHeader={this.renderSectionHeader}
-            renderRow={this.renderRow.bind(this)}
-            onScroll={this.onScroll.bind(this)}
-            initialListSize={20}
-            scrollRenderAheadDistance={500}
-            onLayout={({ nativeEvent: { layout: { y: offset } } }) => this.setVisibleListHeight(offset)}
-          />
-          <View style={UI.CommonStyles.select_car_letter} {...this._panResponder.panHandlers}>
-            {sectionIds.map((letter, index) => this.renderLetters(letter, index))}
-          </View>
-          {visible && (
-            <View style={UI.CommonStyles.select_car_section_modal}>
-              <Text style={UI.CommonStyles.select_car_section_modal_text}>
-                {sectionIds[letterIndex]}
-              </Text>
-            </View>
-          )}
-          <SlidePanel
-            ref={ref=>this.slider=ref}
-            style={[{
-              top:0,
-              width:UI.Size.window.width-50,
-              height:UI.Size.window.height-UI.Size.navBar.height-UI.Size.statusBar.height,
-              backgroundColor:UI.Colors.white
-            },UI.CommonStyles.select_car_panel]}
-            position={'right'}
-            offset={UI.Size.window.width-50}
-          >
-            <ScrollView>
-              {childScheme.map((group, gIndex)=> {
-                return (
-                  <View style={UI.CommonStyles.select_car_panel_group} key={gIndex}>
-                    <View style={UI.CommonStyles.select_car_panel_group_title}>
-                      <Text>{group.name}</Text>
-                    </View>
-                    <View style={UI.CommonStyles.select_car_panel_group_child}>
-                      {group.data.map((dataItem, dataIndex)=> {
-                        return (
-                          <TouchableOpacity
-                            key={dataIndex}
-                            style={UI.CommonStyles.select_car_panel_group_item}
-                            onPress={this.onCarGroupPress.bind(this)}
-                          >
-                            <Text>{dataItem.name}</Text>
-                          </TouchableOpacity>
-                        )
-                      })}
-                    </View>
-                  </View>
-                )
-              })}
-            </ScrollView>
-          </SlidePanel>
-        </View>
-        <Modal
-          ref={ref=>this.modal=ref}
-          style={UI.CommonStyles.select_car_modal}
-          swipeToClose={false}
-          position="bottom"
-        >
-          <View style={UI.CommonStyles.select_car_modal_title}>
-            <Text style={UI.CommonStyles.select_car_modal_title_left}>已选车型</Text>
-            <Text style={UI.CommonStyles.select_car_modal_title_right}>奥迪-奥迪进口-Q5-2.0T-2014年</Text>
-          </View>
-          <ScrollView>
-            {carItems.map((car, index)=> {
-              return (
-                <View
-                  key={index}
-                  style={UI.CommonStyles.select_car_modal_item}>
-                  <Text>{car.name}</Text>
-                </View>
-              )
-            })}
-          </ScrollView>
-        </Modal>
+        {this.renderListView()}
+        {this.renderModal()}
       </View>
     )
   }
@@ -409,6 +355,10 @@ class SelectCar extends Component {
 }
 
 
-export default connect((state, props) => ({}), dispatch => ({}), null, {
+export default connect((state, props) => ({
+  carCate: state.carCate
+}), dispatch => ({
+  carCateActions: bindActionCreators(carCateActions, dispatch)
+}), null, {
   withRef: true
 })(SelectCar);

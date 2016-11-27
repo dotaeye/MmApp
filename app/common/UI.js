@@ -133,10 +133,7 @@ const CommonStyles = StyleSheet.create({
     borderColor: Colors.danger
   },
 
-  button_text:{
-    
-  },
-  
+  button_text: {},
 
 
   /*****
@@ -1164,7 +1161,7 @@ const CommonStyles = StyleSheet.create({
     height: Size.navBar.height - 16,
     alignItems: 'center',
     backgroundColor: Colors.gray,
-    opacity: 0.6
+    opacity: 0.8
   },
 
   home_nav_search_icon: {
@@ -1183,25 +1180,22 @@ const CommonStyles = StyleSheet.create({
   logoText: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 104,
-    marginBottom: 48
+    height: 140
   },
 
   logo: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'center',
-    borderColor: Colors.border,
-    borderWidth: Size.border.size,
-    width: 81,
-    height: 81,
-    borderRadius: 40,
-    marginTop: 88
+    height: 200
   },
 
   logo_img: {
-    width: 70,
-    height: 70
+    borderColor: Colors.success,
+    borderWidth: Size.border.size,
+    width: 80,
+    height: 80,
+    borderRadius: 40
   },
 
 
@@ -1209,7 +1203,6 @@ const CommonStyles = StyleSheet.create({
    * Login
    */
   form: {
-    marginTop: 50,
     marginHorizontal: 15
   },
 
@@ -1217,13 +1210,14 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row',
     height: 40,
     alignItems: 'center',
-    borderBottomColor: Colors.border,
+    borderBottomColor: Colors.grayFont,
     borderBottomWidth: Size.border.size,
     marginBottom: 20
   },
 
   formLabel: {
     paddingRight: 15
+
   },
 
   formItemInput: {
@@ -1235,11 +1229,11 @@ const CommonStyles = StyleSheet.create({
 
   formButton: {
     backgroundColor: Colors.link,
-    borderRadius: 4
+    borderRadius: 2
   },
 
   formButtonTouch: {
-    height: 50,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -1263,7 +1257,6 @@ const CommonStyles = StyleSheet.create({
   },
 
   linkButtonText: {
-    fontSize: Size.font.md,
     color: Colors.link
   },
 

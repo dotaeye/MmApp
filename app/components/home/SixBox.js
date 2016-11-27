@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../../common/UI';
+import {getImageUrl} from '../../utils';
 
 
 export default class SixBox extends Component {
@@ -24,19 +25,22 @@ export default class SixBox extends Component {
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
 
-  renderRow(nav) {
+  renderRow(row) {
     return (
       <TouchableOpacity
         style={UI.CommonStyles.six_box_item}
         activeOpacity={0.75}
+        onPress={()=>{
+          this.props.onItemPress(row.id)
+        }}
       >
         <Image
-          source={nav.uri}
+          source={{uri:getImageUrl(row.imageUrl)}}
           resizeMode="cover"
           style={UI.CommonStyles.six_box_item_img}
         />
         <View style={UI.CommonStyles.six_box_item_text}>
-          <Text>名称</Text>
+          <Text>{row.name}</Text>
         </View>
       </TouchableOpacity>
     )

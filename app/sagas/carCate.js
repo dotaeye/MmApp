@@ -1,34 +1,68 @@
 import {put, take, call, fork} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
-import {config} from '../common/constants';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
 import FakeRequest from '../utils/FakeRequest';
-import Storage from '../utils/Storage';
-import jsonData from '../data/category.json';
 
-
-function* getCarCategories(payload) {
+function* getRootCars(payload) {
   try {
-
-    let results = [];
-
-    for (var i = 0; i < 10; i++) {
-      results = results.concat(jsonData);
-    }
-
-    const tempData = yield call(FakeRequest, results, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const rootCars = yield call(new Request().get, 'carcate/select', {
+      params: {
+        level: 1
+      }
+    });
     yield put({
       type: actionTypes.CARCATE_LIST_SUCCESS,
-      list: tempData
+      rootCars: rootCars
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return rootCars;
+  } catch (error) {
+    if (error && error.message !== '') {
+      Toast.info(error.message);
+    }
+  }
+}
+
+function* getChildCars(payload) {
+  try {
+    const childCars = yield call(new Request().get, 'carcate/all/' + payload.id, {});
+    yield put({
+      type: actionTypes.CARCATE_LIST_CHILD_SUCCESS,
+      selectName: payload.selectName,
+      childCars: childCars
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
+    return childCars;
+  } catch (error) {
+    if (error && error.message !== '') {
+      Toast.info(error.message);
+    }
+  }
+}
+
+
+function* getLastCars(payload) {
+  try {
+    const lastCars = yield call(new Request().get, 'carcate/select', {
+      params: {
+        level: 4,
+        parentId: payload.id
+      }
+    });
+    yield put({
+      type: actionTypes.CARCATE_LIST_LAST_SUCCESS,
+      selectName: payload.selectName,
+      lastCars: lastCars
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
+    return lastCars;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -129,10 +163,24 @@ function* getMyCars(payload) {
   }
 }
 
-export function* watchCarCategories() {
+export function* watchGetRootCars() {
   while (true) {
     const {payload} = yield take(actionTypes.CARCATE_LIST);
-    yield fork(getCarCategories, payload);
+    yield fork(getRootCars, payload);
+  }
+}
+
+export function* watchGetChildCars() {
+  while (true) {
+    const {payload} = yield take(actionTypes.CARCATE_LIST_CHILD);
+    yield fork(getChildCars, payload);
+  }
+}
+
+export function* watchGetLastCars() {
+  while (true) {
+    const {payload} = yield take(actionTypes.CARCATE_LIST_LAST);
+    yield fork(getLastCars, payload);
   }
 }
 

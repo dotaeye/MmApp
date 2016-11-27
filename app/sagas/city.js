@@ -1,6 +1,5 @@
 import {put, take, call, fork} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
-import {config} from '../common/constants';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
 import FakeRequest from '../utils/FakeRequest';

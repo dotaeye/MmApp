@@ -15,7 +15,6 @@ export default function user(state = initialState, action = {}) {
     case actionTypes.REGISTER_SUCCESS:
       return {
         ...state,
-        user: action.user,
         registering: false
       };
 

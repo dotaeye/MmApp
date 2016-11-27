@@ -106,7 +106,9 @@ class CodeLogin extends Component {
     const {loggingIn}=this.props.user;
     const {telVerifyCodeSecond, disabledSubmit}=this.state;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
+      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
+        justifyContent:'flex-start'
+      }]}>
         <View style={[UI.CommonStyles.logoText]}>
           <Text style={{fontSize:UI.Size.font.lg}}>使用验证码登录</Text>
         </View>

@@ -70,6 +70,11 @@ class Router {
     route.component = route.component;
   }
 
+  resetTo(route, props = {}){
+    this.setRoute(route, props);
+    this.navigator.resetTo(route);
+  }
+
   pop() {
     this.navigator.pop();
   }
@@ -78,10 +83,16 @@ class Router {
     this.navigator.popN(n);
   }
 
+  popTo(route, props = {}){
+    this.setRoute(route, props);
+    this.navigator.popToRoute(route);
+  }
+
   push(route, props = {}) {
     this.setRoute(route, props);
     this.navigator.push(route);
   }
+
 
   replace(route, props = {}){
     this.setRoute(route, props);

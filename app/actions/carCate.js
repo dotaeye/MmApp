@@ -1,8 +1,20 @@
 import * as actionTypes  from '../common/actionTypes';
 
-export function getCarCates(payload) {
+export function getRootCars(payload) {
   return {
     type: actionTypes.CARCATE_LIST,
+    payload
+  };
+}
+export function getChildCars(payload) {
+  return {
+    type: actionTypes.CARCATE_LIST_CHILD,
+    payload
+  };
+}
+export function getLastCars(payload) {
+  return {
+    type: actionTypes.CARCATE_LIST_LAST,
     payload
   };
 }

@@ -14,18 +14,18 @@ import {
   Platform
 } from 'react-native';
 
-import _ from 'lodash';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import SwiperBox from '../components/SwiperBox';
 import ScrollNavs from '../components/home/ScrollNavs';
 import SixBox from '../components/home/SixBox';
 import UI from '../common/UI';
-
+import {getImageUrl} from '../utils';
+import SplashScreen from 'react-native-splash-screen'
+import Loading from '../components/Loading';
+import ViewPages from '../components/ViewPages';
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-
 const SCROLL_HEIGHT = UI.Size.window.width * UI.Size.homeSwiper.scale - UI.Size.statusBar.height - UI.Size.navBar.height;
-
 const DISTANCE = SCROLL_HEIGHT / 2;
 
 export default class Home extends Component {
@@ -43,31 +43,43 @@ export default class Home extends Component {
 
   componentDidMount() {
     this.barStyleDefault = false;
+    this.props.homeActions.getHomeList({
+      success: this.onLoad.bind(this)
+    });
   }
 
   componentWillUnmount() {
-    this.state.scrollY.removeAllListeners();
+    if (Platform.OS == 'ios') {
+      this.state.scrollY.removeAllListeners();
+    }
+  }
+
+  onLoad() {
+    SplashScreen.hide();
   }
 
   renderBannerRow(item, index) {
     return (
-      <Image key={index} source={item.uri}
-             style={{
-             width:UI.Size.window.width,
-             height:UI.Size.window.width * UI.Size.homeSwiper.scale
-             }}/>
+      <Image
+        key={index} source={{uri:item.uri}}
+        style={{width:UI.Size.window.width,height:UI.Size.window.width * UI.Size.homeSwiper.scale}}/>
     )
   }
 
-  renderBanners() {
+  renderBanners(banners) {
+    const sources = banners.map(x=> {
+      return {
+        uri: getImageUrl(x.imageUrl),
+        id: x.id,
+        nativeRoute: x.nativeRoute,
+        param: x.url
+      }
+    });
     return (
       <SwiperBox
         height={UI.Size.window.width * UI.Size.homeSwiper.scale}
         renderRow={this.renderBannerRow.bind(this)}
-        source={[
-              {uri:require('../images/banner/2.jpg'),id:2},
-              {uri:require('../images/banner/3.jpg'),id:3}
-             ]}
+        source={sources}
       />
     )
   }
@@ -82,23 +94,18 @@ export default class Home extends Component {
   }
 
   renderNavBar() {
-
     const navTextColor = this.state.scrollY.interpolate({
       inputRange: [0, DISTANCE],
       outputRange: [UI.Colors.white, UI.Colors.grayFont]
     });
-
-
     const navSearchTextColor = this.state.scrollY.interpolate({
       inputRange: [0, DISTANCE],
       outputRange: [UI.Colors.white, UI.Colors.grayFont]
     });
-
     const navTextOpacity = this.state.scrollY.interpolate({
       inputRange: [0, SCROLL_HEIGHT],
       outputRange: [0.8, 1]
     });
-
     return (
       <View style={UI.CommonStyles.home_nav}>
 
@@ -134,7 +141,6 @@ export default class Home extends Component {
             name="ios-chatbubbles-outline"
             size={20}
             color={UI.Colors.white}
-
           />
           <Animated.Text style={[UI.CommonStyles.home_nav_text,{color:navTextColor}]}>消息</Animated.Text>
         </View>
@@ -158,21 +164,33 @@ export default class Home extends Component {
     }
   }
 
+  onCategoryPress(categoryId){
+    this.props.router.push(ViewPages.list(),{
+      categoryId
+    })
+  }
+
+  onManufacturePress(manufactureId){
+    this.props.router.push(ViewPages.list(),{
+      manufactureId
+    })
+  }
+  
   render() {
+    if (!this.props.home.loaded) {
+      return <Loading/>;
+    }
+    const {
+      banners,
+      hotCategories,
+      hotManufacturers
+    }=this.props.home.list;
+
     const navs = [
       {uri: require('../images/scrollNavs/1.png'), id: 1},
       {uri: require('../images/scrollNavs/2.png'), id: 2},
       {uri: require('../images/scrollNavs/3.png'), id: 3},
       {uri: require('../images/scrollNavs/4.png'), id: 4}];
-
-    const products = [
-      {uri: require('../images/products/1.png'), id: 1},
-      {uri: require('../images/products/2.png'), id: 2},
-      {uri: require('../images/products/3.png'), id: 3},
-      {uri: require('../images/products/4.png'), id: 4},
-      {uri: require('../images/products/5.png'), id: 5},
-      {uri: require('../images/products/6.png'), id: 6}];
-
 
     return (
       <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.gray}]}>
@@ -185,15 +203,21 @@ export default class Home extends Component {
             [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
           )}
         >
-          {this.renderBanners()}
+          {this.renderBanners(banners)}
           <ScrollNavs navs={navs}/>
-          <SixBox title="热门商品" rows={products}/>
-          <SixBox title="热门分类" rows={products}/>
-          <SixBox title="热门品牌" rows={products}/>
+          <SixBox 
+            title="热门分类"
+            rows={hotCategories}
+            onItemPress={this.onCategoryPress.bind(this)}
+          />
+          <SixBox 
+            title="热门品牌"
+            rows={hotManufacturers}
+            onItemPress={this.onManufacturePress.bind(this)}
+          />
         </ScrollView>
         {this.renderNavBarBack()}
         {this.renderNavBar()}
-
       </View>
     )
   }

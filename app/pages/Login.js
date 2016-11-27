@@ -48,13 +48,14 @@ class Login extends Component {
     let data = {
       telephone: this.state.telephone,
       telVerifyCode: '',
-      loginPassword: this.state.loginPassword
+      loginPassword: this.state.loginPassword,
+      success: this.loginSuccess.bind(this)
     };
-    this.props.userActions.login(data, this.loginSuccess.bind(this))
+    this.props.userActions.login(data)
   }
 
   loginSuccess() {
-
+    this.props.router.resetTo(ViewPages.main())
   }
 
 
@@ -79,16 +80,18 @@ class Login extends Component {
 
     const {showPassword, disabledSubmit}=this.state;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer]}>
-        <View style={UI.CommonStyles.rowContainer}>
-          <View style={UI.CommonStyles.logo}>
-            <Image style={UI.CommonStyles.logo_img} source={require('../images/logo/180x180.png')}/>
-          </View>
+      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
+        justifyContent:'flex-start'
+      }]}>
+
+        <View style={UI.CommonStyles.logo}>
+          <Image style={UI.CommonStyles.logo_img} source={require('../images/logo/180x180.png')}/>
         </View>
+
         <View style={UI.CommonStyles.form}>
           <View style={UI.CommonStyles.formItem}>
             <View style={[UI.CommonStyles.formLabel,UI.CommonStyles.br]}>
-              <Text >+86</Text>
+              <Text>+86</Text>
             </View>
             <TextInput
               style={UI.CommonStyles.formItemInput}
@@ -147,7 +150,7 @@ class Login extends Component {
                 router.push(ViewPages.register())
               }}
               style={UI.CommonStyles.linkButtonTouch}>
-              <Text style={UI.CommonStyles.linkButtonText}>新用户注册</Text>
+              <Text style={UI.CommonStyles.linkButtonText}>注册</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -155,7 +158,7 @@ class Login extends Component {
                 router.push(ViewPages.codeLogin())
               }}
               style={UI.CommonStyles.linkButtonTouch}>
-              <Text style={UI.CommonStyles.linkButtonText}>使用验证码登录</Text>
+              <Text style={UI.CommonStyles.linkButtonText}>验证码登录</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -176,8 +179,6 @@ class Login extends Component {
 }
 
 
-
-
 const styles = StyleSheet.create({
 
   close: {
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    padding: 8
+    padding: 15
   }
 
 });
