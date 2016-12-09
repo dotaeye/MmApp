@@ -47,8 +47,16 @@ export default function user(state = initialState, action = {}) {
 
     case actionTypes.LOGOUT:
       return {
+        ...state
+      };
+    case actionTypes.LOGOUT_SUCCESS:
+      return {
         ...state,
         user: null
+      };
+    case actionTypes.LOGOUT_FAIL:
+      return {
+        ...state
       };
 
     default:

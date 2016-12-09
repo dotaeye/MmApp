@@ -13,7 +13,6 @@ import {
   TextInput,
   PanResponder
 } from 'react-native';
-import {List, Radio} from 'antd-mobile';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,8 +28,8 @@ import EndTag from '../components/EndTag';
 import ViewPages from '../components/ViewPages';
 import * as productActions from '../actions/product';
 import {getImageUrl} from '../utils'
+import {orderStatus} from '../common/orderStatus';
 
-const RadioItem = Radio.RadioItem;
 const pageSize = 20;
 
 class ProductList extends Component {
@@ -39,7 +38,9 @@ class ProductList extends Component {
     super(props);
     this.state = {
       categoryId: props.categoryId,
+      orderBy: orderStatus.Position,
       keywords: props.keywords,
+      specs: {},
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
       })
@@ -57,14 +58,28 @@ class ProductList extends Component {
 
   fetchData(options) {
     const {productActions}=this.props;
-    const {categoryId, keywords}=this.state;
+    const {categoryId, keywords, orderBy, specs}=this.state;
     const params = Object.assign({}, {
       pageIndex: 0,
       pageSize,
       categoryId,
-      keywords
+      keywords,
+      orderBy,
+      specs: this.getSpecs()
     }, options);
     productActions.searchProduct(params)
+  }
+
+  getSpecs() {
+    const {specs}=this.state;
+    const {filteredItems}=this.props.product.list;
+    const specsAttr = [];
+    filteredItems.forEach(item=> {
+      if (specs[item.specificationAttributeId]) {
+        specsAttr.push(specs[item.specificationAttributeId]);
+      }
+    });
+    return specsAttr.join(',');
   }
 
   onScroll() {
@@ -93,13 +108,61 @@ class ProductList extends Component {
     });
   }
 
+  onResetFilter() {
+    const {filteredItems}=this.props.product.list;
+    filteredItems.forEach(item=> {
+      this.refs[`attribute_${item.specificationAttributeId}`].reset();
+    });
+    this.setState({
+      specs:{}
+    })
+  }
+
+  onFilter() {
+    this.slide.close();
+    InteractionManager.runAfterInteractions(() => {
+      this.fetchData({
+        specs: this.getSpecs()
+      });
+    });
+  }
+
+  onOrderBy(orderBy) {
+    if (this.state.orderBy !== orderBy) {
+      if ([orderStatus.CreatedOn, orderStatus.Position].includes(orderBy)) {
+        this.panel.close();
+      }
+      InteractionManager.runAfterInteractions(() => {
+        this.setState({
+          orderBy
+        }, ()=> {
+          this.fetchData({
+            pageIndex: 0,
+            orderBy
+          });
+        })
+      });
+    }
+  }
+
+  onSpecsChange() {
+    const {filteredItems}=this.props.product.list;
+    const specs = {};
+    filteredItems.forEach(item=> {
+      specs[item.specificationAttributeId] = this.refs[`attribute_${item.specificationAttributeId}`].getValue();
+    });
+    this.setState({
+      specs
+    })
+  }
+
   renderSearchView() {
     const {router}=this.props;
     return (
       <TouchableOpacity
         style={UI.CommonStyles.search_box}
         onPress={()=>{
-          router.push(ViewPages.search());
+          router.replace(ViewPages.search());
         }}
       >
         <Icon
@@ -110,21 +173,29 @@ class ProductList extends Component {
         />
         <Text
           style={[UI.CommonStyles.search_box_input,UI.CommonStyles.search_box_input_empty]}
-        >搜索</Text>
+        >{this.state.keywords?this.state.keywords:'搜索'}</Text>
       </TouchableOpacity>
     )
   }
 
   renderListRow(product) {
+    const {router}=this.props;
     return (
-      <View style={UI.CommonStyles.product_list_cell}>
+      <TouchableOpacity
+        style={UI.CommonStyles.product_list_cell}
+        onPress={()=>{
+          router.push(ViewPages.product(),{
+            id:product.id
+          })
+        }}
+      >
         <Image source={{uri:getImageUrl(product.imageUrl)}} style={UI.CommonStyles.product_list_img}/>
         <Text
           style={UI.CommonStyles.product_list_name}
           numberOfLines={2}
         >{product.name}</Text>
         <Text style={UI.CommonStyles.product_list_price}>￥{product.price}</Text>
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -140,14 +211,14 @@ class ProductList extends Component {
 
 
   renderToolBar() {
-
+    const {orderBy}=this.state;
     return (
       <View style={UI.CommonStyles.list_bar}>
         <TouchableOpacity
           style={UI.CommonStyles.list_bar_item}
-          onPress={()=>{
-              this.panel.open();
-            }}
+          onPress={()=> {
+          this.panel.open();
+        }}
         >
           <Text>综合</Text>
           <Icon
@@ -156,17 +227,32 @@ class ProductList extends Component {
             size={12}
           />
         </TouchableOpacity>
-        <View style={UI.CommonStyles.list_bar_item}>
-          <Text>销量</Text>
-        </View>
-        <View style={UI.CommonStyles.list_bar_item}>
-          <Text>价格</Text>
-        </View>
         <TouchableOpacity
           style={UI.CommonStyles.list_bar_item}
-          onPress={()=>{
-              this.slide.open();
-            }}
+          onPress={this.onOrderBy.bind(this, orderStatus.SoldCount)}
+        >
+          <Text style={[orderBy==orderStatus.SoldCount&&{color:UI.Colors.danger}]}>销量</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={UI.CommonStyles.list_bar_item}
+          onPress={this.onOrderBy.bind(this, orderStatus.PriceDesc==orderBy?orderStatus.PriceAsc:orderStatus.PriceDesc)}
+        >
+          <Text
+            style={[[orderStatus.PriceDesc,orderStatus.PriceAsc].includes(orderBy)&&{color:UI.Colors.danger}]}>价格</Text>
+          {[orderStatus.PriceDesc, orderStatus.PriceAsc].includes(orderBy) && (
+            <Icon
+              style={UI.CommonStyles.list_bar_item_icon}
+              color={UI.Colors.danger}
+              name={`md-arrow-${orderStatus.PriceDesc==orderBy?'dropdown':'dropup'}`}
+              size={12}
+            />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={UI.CommonStyles.list_bar_item}
+          onPress={()=> {
+            this.slide.open();
+          }}
         >
           <Text>筛选</Text>
           <Icon
@@ -181,67 +267,126 @@ class ProductList extends Component {
   }
 
   renderOrder() {
+
+    const isPosition = orderStatus.Position == this.state.orderBy;
+    const isCreateOn = orderStatus.CreatedOn == this.state.orderBy;
     return (
       <FadePanel
-        ref={ref=>this.panel=ref}
-        top={UI.Size.navBar.height+UI.Size.statusBar.height+40}
+        ref={ref=>this.panel = ref}
+        top={UI.Size.navBar.height + UI.Size.statusBar.height + 40}
       >
-        <List >
-          <RadioItem
-            style={{minHeight:40}}
-            checked={true}
-          >
-            综合排序
-          </RadioItem>
-          <RadioItem
-            style={{minHeight:40}}
-          >
-            新品优先
-          </RadioItem>
-        </List>
+        <View style={[UI.CommonStyles.columnContainer]}>
+          <TouchableOpacity
+            onPress={this.onOrderBy.bind(this, orderStatus.Position)}
+            style={[UI.CommonStyles.rowContainer,{paddingHorizontal:10,height:35,justifyContent:'space-between',alignItems:'center'}]}>
+            <Text style={[isPosition&&{color:UI.Colors.danger}]}>综合排序</Text>
+            {isPosition && (
+              <Icon
+                style={UI.CommonStyles.list_bar_item_icon}
+                name="ios-checkmark"
+                color={UI.Colors.danger}
+                size={20}
+              />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.onOrderBy.bind(this, orderStatus.CreatedOn)}
+            style={[UI.CommonStyles.rowContainer,{paddingHorizontal:10,height:35,justifyContent:'space-between',alignItems:'center'}]}>
+            <Text style={[isCreateOn&&{color:UI.Colors.danger}]}>新品优先</Text>
+            {isCreateOn && (
+              <Icon
+                style={UI.CommonStyles.list_bar_item_icon}
+                name="ios-checkmark"
+                color={UI.Colors.danger}
+                size={20}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
       </FadePanel>
     )
   }
 
   renderFilter() {
+    const {filteredItems}=this.props.product.list;
+    const {specs}=this.state;
     return (
       <SlidePanel
-        ref={ref=>this.slide=ref}
+        ref={ref=>this.slide = ref}
         style={{
-            top:0,
-            width:UI.Size.window.width-60,
-            height:UI.Size.window.height,
-            backgroundColor:UI.Colors.white
-          }}
+          top: 0,
+          width: UI.Size.window.width - 60,
+          height: UI.Size.window.height,
+          backgroundColor: UI.Colors.white
+        }}
         position={'right'}
-        offset={UI.Size.window.width-60}
+        offset={UI.Size.window.width - 60}
       >
-        <CheckBoxList
-          ref="attribute"
-          value={1}
-          options={[{
-                  label:'红色',
-                  value:1
-                },{
-                  label:'黄色',
-                  value:2
-                },{
-                  label:'蓝色',
-                  value:3
-                },{
-                  label:'黑色',
-                  value:4
-                },{
-                  label:'特别长的啊舍得离开家啊收到',
-                  value:11
-                },{
-                  label:'特别长的啊舍得离开家啊收到',
-                  value:22
-                },{
-                  label:'看不见',
-                  value:33
-                }]}
-        />
+        <View
+          style={{
+          paddingTop: UI.Size.statusBar.height,
+          paddingHorizontal: 15
+        }}>
+          {filteredItems.map((item, index)=> {
+            let defaultValues;
+            const checkOptions = item.specificationOptions.map(option=> {
+              if (specs[item.specificationAttributeId]) {
+                defaultValues = specs[item.specificationAttributeId];
+              }
+              return {
+                label: option.specificationAttributeOptionName,
+                value: option.specificationAttributeOptionId
+              }
+            });
+            return (
+              <View key={index} style={{marginBottom:20}}>
+                <Text>{item.specificationAttributeName}</Text>
+                <CheckBoxList
+                  ref={`attribute_${item.specificationAttributeId}`}
+                  value={defaultValues}
+                  onChange={this.onSpecsChange.bind(this)}
+                  options={checkOptions}
+                />
+              </View>
+            )
+          })}
+        </View>
+        <View style={[UI.CommonStyles.columnContainer,
+          {
+            position: 'absolute',
+            left: 0,
+            bottom: 0,
+            right: 0,
+            height: 40,
+            alignItems: 'stretch',
+            justifyContent: 'center',
+            flexDirection: 'row'
+          }]}>
+          <TouchableOpacity
+            style={{
+            backgroundColor: UI.Colors.gray,
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 1
+          }}
+            onPress={this.onResetFilter.bind(this)}
+          >
+            <Text>重置</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: UI.Colors.danger,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1
+            }}
+            onPress={this.onFilter.bind(this)}
+          >
+            <Text style={{
+              color: UI.Colors.white
+            }}>筛选</Text>
+          </TouchableOpacity>
+        </View>
       </SlidePanel>
     )
   }
@@ -266,21 +411,20 @@ class ProductList extends Component {
           height: 20
         },
         onPress: ()=> {
-          this.panel.open();
-          // router.push(ViewPage.product());
+          // this.panel.open();
+          router.push(ViewPages.shopCart());
         }
       }]
     };
 
     return (
-      <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.gray}]}>
+      <View style={[UI.CommonStyles.container, {backgroundColor: UI.Colors.gray}]}>
         <NavBar options={nav}>
           {this.renderSearchView()}
         </NavBar>
 
         {this.renderToolBar()}
-        {this.renderOrder()}
-        {this.renderFilter()}
+
 
         {!product.loaded ? (
           <Loading/>
@@ -308,6 +452,8 @@ class ProductList extends Component {
            }
           />
         )}
+        {this.renderOrder()}
+        {this.renderFilter()}
       </View>
     )
   }

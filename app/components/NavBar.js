@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import _ from 'lodash';
 import Button from '../components/Button';
@@ -24,6 +25,7 @@ class NavBar extends Component {
           <View
             key={position}
             style={[UI.CommonStyles.navBarWrapper, UI.CommonStyles['navBarWrapper'+position]]}>
+            <StatusBar barStyle="default"/>
             {navPart.map((nav, navIndex)=> {
               if (nav.isView) {
                 return nav.View

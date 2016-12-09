@@ -8,7 +8,8 @@ import {
   View,
   Text,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  InteractionManager
 } from "react-native";
 
 import Loading from './Loading';
@@ -42,7 +43,9 @@ class OrderTab extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    InteractionManager.runAfterInteractions(() => {
+      this.fetchData();
+    });
   }
 
   fetchData() {
@@ -197,36 +200,36 @@ class OrderTab extends Component {
 
   render() {
     const {order, status} = this.props;
-    const isEmpty = order.list[status] === undefined || order.list[status].length === 0;
-    if (isEmpty) {
+    const isEmpty = order.list[status] && order.list[status].length === 0;
+    if (!order.loaded||!order.list[status]) {
       return <Loading />;
     }
 
-    // if (isEmpty) {
-    //   return (
-    //     <ScrollView
-    //       automaticallyAdjustContentInsets={false}
-    //       horizontal={false}
-    //       contentContainerStyle={styles.no_data}
-    //       style={{ flex: 1 }}
-    //       refreshControl={
-    //         <RefreshControl
-    //           style={{ backgroundColor: 'transparent' }}
-    //           refreshing={order.refreshing}
-    //           onRefresh={() => this.onRefresh()}
-    //           title="Loading..."
-    //           colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
-    //         />
-    //       }
-    //     >
-    //       <View style={{ alignItems: 'center' }}>
-    //         <Text style={{ fontSize: 16 }}>
-    //           目前没有数据，请刷新重试……
-    //         </Text>
-    //       </View>
-    //     </ScrollView>
-    //   );
-    // }
+    if (isEmpty) {
+      return (
+        <ScrollView
+          automaticallyAdjustContentInsets={false}
+          horizontal={false}
+          contentContainerStyle={styles.no_data}
+          style={{ flex: 1 }}
+          refreshControl={
+            <RefreshControl
+              style={{ backgroundColor: 'transparent' }}
+              refreshing={order.refreshing}
+              onRefresh={() => this.onRefresh()}
+              title="Loading..."
+              colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
+            />
+          }
+        >
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 16 }}>
+              目前没有数据，请刷新重试……
+            </Text>
+          </View>
+        </ScrollView>
+      );
+    }
     return (
       <ListView
         initialListSize={5}

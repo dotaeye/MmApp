@@ -1,32 +1,30 @@
 import * as actionTypes  from '../common/actionTypes';
 
 const initialState = {
-  loading: false,
+  loaded: false,
   list: []
 };
 
-export default function city(state = initialState, action = {}) {
-
+export default function product(state = initialState, action = {}) {
   switch (action.type) {
-    case actionTypes.CITY_LIST:
+    case actionTypes.STORAGE_LIST:
       return {
         ...state,
         loading: true
       };
-    case actionTypes.CITY_LIST_SUCCESS:
+    case actionTypes.STORAGE_LIST_SUCCESS:
       return {
         ...state,
         loading: false,
         list: action.list,
         loaded: true
       };
-    case actionTypes.CITY_LIST_FAIL:
+    case actionTypes.STORAGE_LIST_FAIL:
       return {
         ...state,
         loading: false,
         error: action.error
       };
-
     default:
       return state;
   }

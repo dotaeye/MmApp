@@ -5,29 +5,169 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  InteractionManager,
   PixelRatio,
   ScrollView,
   Dimensions
 } from 'react-native';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomTabBar from '../components/CustomTabBar';
 import Button from '../components/Button';
+import Loading from '../components/Loading';
 import SwiperBox from '../components/SwiperBox';
 import Modal from 'react-native-modalbox';
 import ImageBox from '../components/ImageBox';
 import CheckBoxList from '../components/CheckBoxList';
 import Stepper from '../components/Stepper';
+import ViewPages from '../components/ViewPages';
 import UI from '../common/UI';
+import {getImageUrl} from '../utils';
+import * as productActions from '../actions/product';
+import * as shopCartActions from '../actions/shopCart';
 
 class Product extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedId: null,
+      number: 1,
+      attributeValues: {}
+    };
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.fetchData();
+    });
+  }
+
+  fetchData() {
+    this.props.productActions.productDetail({
+      id: this.props.id,
+      success: ()=> {
+        this.setDefaultAttribute();
+      }
+    })
+  }
+
+  setDefaultAttribute() {
+    const {entity}=this.props;
+    const attributeValues = {};
+    entity.productAttributes.forEach(item=> {
+      attributeValues[item.id] = item.values[0].id;
+    });
+    this.setState({
+      attributeValues
+    });
+  }
+
+  /**
+   * 获取选中属性的数组
+   * @returns {Array}
+   */
+  getSelectedAttribute() {
+    const {entity}=this.props;
+    const {attributeValues}=this.state;
+    const selectAttributes = [];
+    entity.productAttributes.forEach(item=> {
+      let attributeValue;
+      //当有选择属性并且,有选中的属性
+      if (attributeValues[item.id]) {
+        attributeValue = item.values.find(x=>x.id == attributeValues[item.id]);
+      } else {
+        attributeValue = item.values[0];
+      }
+      selectAttributes.push(attributeValue);
+    });
+    return selectAttributes;
+  }
+
+  /***
+   * 获取产品总价,需要算出选中的属性
+   * @returns {number}
+   */
+  getPrice() {
+    const {number}=this.state;
+    return this.getUnitPrice() * number;
+  }
+
+  /***
+   * 获取产品单价,需要算出选中的属性
+   * @returns {number}
+   */
+  getUnitPrice() {
+    const {user, entity}=this.props;
+    let price = (user.user && user.user.userRoleId > 2 ) ? entity.vipPrice : entity.price;
+    const selectedAttribute = this.getSelectedAttribute();
+    selectedAttribute.forEach(attibute=> {
+      price += attibute.priceAdjustment;
+    });
+    return price;
+  }
+
+  /**
+   * 获取选中产品属性的名字的数组
+   * @returns {Array}
+   */
+  getAttributeValues() {
+    const selectedAttribute = this.getSelectedAttribute();
+    return selectedAttribute.map(x=>x.name);
+  }
+
+  onChangeNum(number) {
+    this.setState({
+      number
+    })
+  }
+
+  onAttributeChange() {
+    const {entity}=this.props;
+    const attributeValues = {};
+    entity.productAttributes.forEach(attribute=> {
+      attributeValues[attribute.id] = this.refs[`attribute_${attribute.id}`].getValue();
+    });
+    this.setState({
+      attributeValues
+    })
+  }
+
+  addToShopCart() {
+    const {entity, shopCartActions, router, user}=this.props;
+    if (!user.user) {
+      router.push(ViewPages.login());
+    } else {
+      const selectedAttributes = this.getSelectedAttribute();
+      const formData = {
+        productId: entity.id,
+        name: entity.name,
+        imageUrl: entity.imageUrl.split(',')[0],
+        ownerId: entity.ownerId,
+        unitPrice: this.getUnitPrice(),
+        quantity: this.state.number,
+        price: this.getPrice(),
+        attributesXml: selectedAttributes.map(x=>x.name).join(' '),
+        attributesIds: selectedAttributes.map(x=>x.id).join(',')
+      };
+      shopCartActions.addShopCart({
+        data: formData,
+        success: ()=> {
+          router.push(ViewPages.shopCart());
+        }
+      })
+    }
+  }
 
   renderBannerRow(item, index) {
     return (
       <Image
         key={index}
-        source={item.uri}
+        source={{uri:item.uri}}
         style={{
           width:UI.Size.window.width,
           height:UI.Size.window.width*UI.Size.homeSwiper.scale
@@ -36,6 +176,13 @@ class Product extends Component {
   }
 
   renderProduct() {
+    const {entity}=this.props;
+    const imageUrls = entity.imageUrl.split(',').map((uri, index)=> {
+      return {
+        uri: getImageUrl(uri, {mid: true}),
+        id: index
+      }
+    });
     return (
       <ScrollView
         key={1}
@@ -44,33 +191,27 @@ class Product extends Component {
         <SwiperBox
           height={UI.Size.window.width*UI.Size.homeSwiper.scale}
           renderRow={this.renderBannerRow.bind(this)}
-          source={[
-              {uri:require('../images/banner/1.jpg'),id:1},
-              {uri:require('../images/banner/2.jpg'),id:2},
-              {uri:require('../images/banner/3.jpg'),id:3}
-              ]}
+          source={imageUrls}
         />
         <View style={UI.CommonStyles.product_title}>
-          <Text>新款秋冬棉衣 欧美潮流 pu 皮衣男士棉衣外套皮外套连帽M141236 黑色</Text>
+          <Text>{entity.name}</Text>
           <Text style={UI.CommonStyles.product_price}>￥
-            <Text style={UI.CommonStyles.product_price_number}>298.00</Text>
+            <Text style={UI.CommonStyles.product_price_number}>{this.getUnitPrice()}</Text>
           </Text>
         </View>
-
         <TouchableOpacity
           style={UI.CommonStyles.product_select}
           onPress={()=>{
-                this.modal.open()
-              }}
+            this.modal.open()
+          }}
         >
           <Text style={UI.CommonStyles.product_select_label}>已选</Text>
-          <Text style={UI.CommonStyles.product_select_text}>黑色、L 1件</Text>
-          <TouchableOpacity style={UI.CommonStyles.product_select_button}>
+          <Text
+            style={UI.CommonStyles.product_select_text}>{this.getAttributeValues().join('、')} {this.state.number}件</Text>
+          <View style={UI.CommonStyles.product_select_button}>
             <Icon name='ios-more' size={24}/>
-          </TouchableOpacity>
+          </View>
         </TouchableOpacity>
-
-
         <View style={UI.CommonStyles.product_desc}>
           <View style={UI.CommonStyles.product_desc_row}>
             <View style={UI.CommonStyles.product_desc_row_item}>
@@ -102,12 +243,11 @@ class Product extends Component {
             </View>
           </View>
         </View>
-        {this.renderProductSuggest()}
       </ScrollView>
     )
   }
 
-  renderProductSuggest(){
+  renderProductSuggest() {
     return (
       <View style={UI.CommonStyles.product_suggest}>
         <View style={UI.CommonStyles.line_wrap}>
@@ -192,31 +332,29 @@ class Product extends Component {
   }
 
   renderDetail() {
+    const {entity}=this.props;
     return (
       <ScrollView
         key={2}
         tabLabel='详情'
         style={UI.CommonStyles.product_tab}>
-        <ImageBox
-          style={UI.CommonStyles.product_details_img}
-          width={UI.Size.window.width}
-          source={{uri:'http://img10.360buyimg.com/imgzone/jfs/t2341/28/1801594863/78423/643e2593/56dbceb8Nfdaaea82.jpg'}}
-        />
-        <ImageBox
-          style={UI.CommonStyles.product_details_img}
-          width={UI.Size.window.width}
-          source={{uri:'http://img10.360buyimg.com/imgzone/jfs/t2575/79/1447561600/75420/d4060786/56dbceb8N63592aad.jpg'}}
-        />
-        <ImageBox
-          style={UI.CommonStyles.product_details_img}
-          width={UI.Size.window.width}
-          source={{uri:'http://img10.360buyimg.com/imgzone/jfs/t2326/105/2468346852/265503/4551709c/56dbceb9Nc81f3a33.jpg'}}
-        />
+        {entity.detailUrl.split(',').map((url, index)=> {
+          return (
+            <ImageBox
+              key={index}
+              style={UI.CommonStyles.product_details_img}
+              width={UI.Size.window.width}
+              source={{uri:getImageUrl(url,{max:true})}}
+            />
+          )
+        })}
       </ScrollView>
     )
   }
 
   renderModal() {
+    const {entity}=this.props;
+    const {attributeValues}  =this.state;
     return (
       <Modal
         ref={ref=>this.modal=ref}
@@ -224,11 +362,9 @@ class Product extends Component {
         swipeToClose={false}
         position="bottom"
       >
-
         <View style={UI.CommonStyles.product_modal_header}>
-
-          <Text style={UI.CommonStyles.product_modal_header_price}>￥298.00</Text>
-          <Text style={UI.CommonStyles.product_modal_header_num}>商品编号:2519522</Text>
+          <Text style={UI.CommonStyles.product_modal_header_price}>￥ {this.getUnitPrice()}</Text>
+          <Text style={UI.CommonStyles.product_modal_header_num}>商品编号:{entity.id}</Text>
           <TouchableOpacity
             style={UI.CommonStyles.product_modal_close}
             onPress={()=>{
@@ -241,7 +377,7 @@ class Product extends Component {
 
         <View style={UI.CommonStyles.product_focus_box}>
           <Image
-            source={require('../images/products/product.jpg')}
+            source={{uri:getImageUrl(entity.imageUrl.split(',')[0])}}
             resizeMode="cover"
             style={UI.CommonStyles.product_focus_img}
           />
@@ -249,43 +385,47 @@ class Product extends Component {
 
         <ScrollView>
           <View style={UI.CommonStyles.product_attr_box}>
-            <Text style={UI.CommonStyles.product_attr_label}>颜色</Text>
-            <CheckBoxList
-              ref="attribute"
-              value={1}
-              options={[{
-                  label:'红色',
-                  value:1
-                },{
-                  label:'黄色',
-                  value:2
-                },{
-                  label:'蓝色',
-                  value:3
-                },{
-                  label:'黑色',
-                  value:4
-                },{
-                  label:'特别长的啊舍得离开家啊收到',
-                  value:11
-                },{
-                  label:'特别长的啊舍得离开家啊收到',
-                  value:22
-                },{
-                  label:'看不见',
-                  value:33
-                }]}
-            />
+            {entity.productAttributes.map((item, index)=> {
+              let defaultValues;
+              const productValues = item.values.map((value, vIndex)=> {
+                if (attributeValues[item.id]) {
+                  defaultValues = attributeValues[item.id];
+                } else if (vIndex == 0) {
+                  defaultValues = value.id
+                }
+                return {
+                  label: value.name,
+                  value: value.id
+                }
+              });
+              return (
+                <View key={index}
+                      style={{
+                      marginBottom:20
+                    }}>
+                  <Text>{item.name}</Text>
+                  <CheckBoxList
+                    ref={`attribute_${item.id}`}
+                    value={defaultValues}
+                    options={productValues}
+                    onChange={this.onAttributeChange.bind(this)}
+                  />
+                </View>
+              )
+            })}
           </View>
           <View style={UI.CommonStyles.product_number_box}>
             <Text style={UI.CommonStyles.product_number_label}>数量</Text>
             <Stepper
-              value={1}
-              max={3}/>
+              onChange={this.onChangeNum.bind(this)}
+              value={this.state.number}
+              max={30}/>
           </View>
         </ScrollView>
-
-        <TouchableOpacity style={UI.CommonStyles.product_modal_button}>
+        <TouchableOpacity
+          style={UI.CommonStyles.product_modal_button}
+          onPress={this.addToShopCart.bind(this)}
+        >
           <Text style={UI.CommonStyles.product_modal_button_text}>加入购物车</Text>
         </TouchableOpacity>
       </Modal>
@@ -297,30 +437,32 @@ class Product extends Component {
       <View style={UI.CommonStyles.product_tool}>
         <View style={UI.CommonStyles.product_tool_price}>
           <Text style={UI.CommonStyles.product_tool_price_text}>￥
-            <Text style={UI.CommonStyles.product_tool_price_text_number}>298.00</Text></Text>
+            <Text style={UI.CommonStyles.product_tool_price_text_number}>{this.getPrice()}</Text></Text>
         </View>
         <View style={UI.CommonStyles.product_tool_car}>
           <Icon name="ios-cart-outline" size={24}/>
         </View>
-        <View style={UI.CommonStyles.product_tool_add}>
+        <TouchableOpacity
+          style={UI.CommonStyles.product_tool_add}
+          onPress={this.addToShopCart.bind(this)}
+        >
           <Text style={UI.CommonStyles.product_tool_add_text}>加入购物车</Text>
-        </View>
-        <View style={UI.CommonStyles.product_tool_checkout}>
-          <Text style={UI.CommonStyles.product_tool_checkout_text}>立即支付</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     )
   }
 
   render() {
-    const {router}=this.props;
+    const {router, entity}=this.props;
+    if (!entity) return <Loading/>;
     return (
       <View style={styles.container}>
         <ScrollableTabView
+          style={{paddingTop:UI.Size.statusBar.height}}
           renderTabBar={() =>
               <CustomTabBar
                 style={{height:44}}
-                tabStyle={{ paddingBottom: 0 }}
+                tabStyle={{ paddingBottom: 0}}
                 textStyle={{ fontSize: 16 }}
                 tabBarContainerWidth={200}
               />
@@ -330,10 +472,11 @@ class Product extends Component {
           tabBarActiveTextColor="black"
           tabBarInactiveTextColor="black"
         >
+
           {this.renderProduct()}
           {this.renderDetail()}
         </ScrollableTabView>
-        <View style={{position:'absolute',top:0,left:0}}>
+        <View style={{position:'absolute',top:UI.Size.statusBar.height,left:0}}>
           <Button
             iconName='ios-arrow-back'
             iconSize={24}
@@ -342,7 +485,7 @@ class Product extends Component {
             position="Left"
             backgroundColor="transparent"
             onPress={()=>{
-              console.log('....LeftClick')
+              router.pop()
             }}/>
         </View>
         {this.renderFooter()}
@@ -352,10 +495,15 @@ class Product extends Component {
   }
 }
 
-export default connect((state, props) => ({}), dispatch => ({}), null, {
+export default connect((state, props) => ({
+  entity: state.product.entity,
+  user: state.user
+}), dispatch => ({
+  productActions: bindActionCreators(productActions, dispatch),
+  shopCartActions: bindActionCreators(shopCartActions, dispatch)
+}), null, {
   withRef: true
 })(Product);
-
 
 const styles = StyleSheet.create({
   container: {

@@ -1,10 +1,10 @@
 import * as actionTypes  from '../common/actionTypes';
-import {updateArrayItem} from '../utils';
+import {updateArrayItem, addArrayItem, removeArrayItem} from '../utils';
 
 const initialState = {
   loading: false,
   list: [],
-  hasLoaded: false,
+  loaded: false,
   refreshing: false
 };
 
@@ -13,76 +13,60 @@ export default function address(state = initialState, action = {}) {
   switch (action.type) {
     case actionTypes.ADDRESS_LIST:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case actionTypes.ADDRESS_LIST_SUCCESS:
       return {
         ...state,
-        loading: false,
         list: action.list,
-        hasLoaded: true
+        loaded: true
       };
     case actionTypes.ADDRESS_LIST_FAIL:
       return {
-        ...state,
-        loading: false,
-        error: action.error
+        ...state
       };
 
     case actionTypes.ADD_ADDRESS:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case actionTypes.ADD_ADDRESS_SUCCESS:
       return {
         ...state,
-        loading: false,
-        list: state.list.push(action.address)
+        list: addArrayItem(state.list, action.address)
       };
     case actionTypes.ADD_ADDRESS_FAIL:
       return {
-        ...state,
-        loading: false,
-        error: action.error
+        ...state
       };
     case actionTypes.UPDATE_ADDRESS:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case actionTypes.UPDATE_ADDRESS_SUCCESS:
       return {
         ...state,
-        loading: false,
         list: updateArrayItem(state.list, action.address)
       };
     case actionTypes.UPDATE_ADDRESS_FAIL:
       return {
-        ...state,
-        loading: false,
-        error: action.error
+        ...state
       };
 
 
     case actionTypes.DELETE_ADDRESS:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case actionTypes.DELETE_ADDRESS_SUCCESS:
       return {
         ...state,
-        loading: false,
-        list: action.list
+        list: removeArrayItem(state.list, action.id)
       };
 
     case actionTypes.DELETE_ADDRESS_FAIL:
       return {
-        ...state,
-        loading: false,
-        error: action.error
+        ...state
       };
 
     case actionTypes.SET_DEFAULT_ADDRESS:
@@ -93,16 +77,20 @@ export default function address(state = initialState, action = {}) {
     case actionTypes.SET_DEFAULT_ADDRESS_SUCCESS:
       return {
         ...state,
-        loading: false,
-        list: action.list
+        list: updateDefaultAddress(state.list, action.id)
       };
     case actionTypes.SET_DEFAULT_ADDRESS_FAIL:
       return {
-        ...state,
-        loading: false,
-        error: action.error
+        ...state
       };
     default:
       return state;
   }
+}
+
+function updateDefaultAddress(list, id) {
+  list.forEach(item=> {
+    item.default = item.id == id;
+  });
+  return list;
 }

@@ -1,33 +1,27 @@
-import {put, take, call, fork} from 'redux-saga/effects';
+import {put, take, call, fork, select} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
-import FakeRequest from '../utils/FakeRequest';
-import Storage from '../utils/Storage';
-import jsonData from '../data/order.json';
+import {selectUser} from '../utils/saga';
 
 function* getOrderList(payload) {
   try {
-    console.log('getOrderList')
-    let results = [];
-    for (var i = 0; i < 5; i++) {
-      results = results.concat(jsonData);
-    }
-    const tempData = yield call(FakeRequest, results, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(selectUser);
+    let list = yield call(new Request().get, 'order/list', {
+      token,
+      params: payload
+    });
     yield put({
       type: actionTypes.ORDER_LIST_SUCCESS,
       status: payload.status,
-      list: tempData,
-      hasMore: payload.pageIndex < 2,
+      list: list,
+      hasMore: list.totalCount > (payload.pageIndex + 1) * payload.pageSize,
       loadMore: payload.loadMore
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return list;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -35,13 +29,14 @@ function* getOrderList(payload) {
   }
 }
 
-function* addOrder(payload, getState) {
+function* addOrder(payload) {
   try {
-
-    const order = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(state=>state.user.user.access_token);
+    const order = yield call(new Request().post, 'order', {
+      token,
+      formJson: true,
+      data: payload.data
+    });
     yield put({
       type: actionTypes.ADD_ORDER_SUCCESS,
       order
@@ -59,19 +54,18 @@ function* addOrder(payload, getState) {
 
 function* deleteOrder(payload) {
   try {
-
-    const list = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(state=>state.user.user.access_token);
+    const result = yield call(new Request().delete, 'order/' + payload.id, {
+      token
+    });
     yield put({
-      type: actionTypes.DELETE_ORDER_SUCCESS,
-      list
+      type: actionTypes.DELETE_SHOP_CART_SUCCESS,
+      id: payload.id
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return list;
+    return result;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -82,13 +76,12 @@ function* deleteOrder(payload) {
 function* cancelOrder(payload) {
   try {
 
-    yield call(FakeRequest, {}, 2000);
+    //yield call(FakeRequest, {}, 2000);
     // yield call(new Request().get, 'user/verification', {
     //  data
     // });
     yield put({
-      type: actionTypes.CANCEL_ORDER_SUCCESS,
-
+      type: actionTypes.CANCEL_ORDER_SUCCESS
     });
     if (payload.success) {
       yield call(payload.success);

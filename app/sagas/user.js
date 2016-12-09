@@ -5,7 +5,6 @@ import Request from '../utils/Request';
 import Storage from '../utils/Storage';
 import {Toast} from 'antd-mobile';
 
-
 function* login(payload) {
   try {
     const token = yield call(new Request().post, 'account/login', {
@@ -16,7 +15,7 @@ function* login(payload) {
       },
       login: true
     });
-    Storage.save(config.token, token);
+    yield call(Storage.save, config.token, token);
     yield put({
       type: actionTypes.LOGIN_SUCCESS,
       user: token
@@ -78,6 +77,25 @@ function* verificationCode(data) {
   }
 }
 
+function* logout(payload) {
+  try {
+    yield call(Storage.delete, config.token);
+    yield put({
+      type: actionTypes.LOGOUT_SUCCESS
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
+  } catch (error) {
+    yield put({
+      type: actionTypes.LOGOUT_FAIL
+    });
+    if (error && typeof error.message == 'string') {
+      Toast.info(error.message)
+    }
+  }
+}
+
 export function* watchLoginFlow() {
   while (true) {
     const {payload} = yield take(actionTypes.LOGIN);
@@ -99,3 +117,9 @@ export function* watchVerificationCodeFlow() {
   }
 }
 
+export function* watchLogoutFlow() {
+  while (true) {
+    const {payload} = yield take(actionTypes.LOGOUT);
+    yield fork(logout, payload);
+  }
+}

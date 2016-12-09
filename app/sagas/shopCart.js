@@ -1,31 +1,22 @@
-import {put, take, call, fork} from 'redux-saga/effects';
+import {put, take, select, call, fork} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
-import FakeRequest from '../utils/FakeRequest';
-import Storage from '../utils/Storage';
-import jsonData from '../data/shopCart.json';
-
 
 function* getShopCartList(payload) {
   try {
-
-    let results = [].concat(jsonData);
-    const tempData = yield call(FakeRequest, results, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(state=>state.user.user.access_token);
+    let list = yield call(new Request().get, 'shoppingCartItem', {
+      token
+    });
     yield put({
       type: actionTypes.SHOP_CART_LIST_SUCCESS,
-      list: tempData,
-      loadMore: payload.loadMore,
-      hasMore: payload.pageIndex < 2,
-      refreshing: false
+      list: list
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return list;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -33,13 +24,14 @@ function* getShopCartList(payload) {
   }
 }
 
-function* addShopCart(payload, getState) {
+function* addShopCart(payload) {
   try {
-
-    const shopCartItem = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(state=>state.user.user.access_token);
+    const shopCartItem = yield call(new Request().post, 'shoppingCartItem', {
+      token,
+      formJson: true,
+      data: payload.data
+    });
     yield put({
       type: actionTypes.ADD_SHOP_CART_SUCCESS,
       shopCartItem
@@ -58,18 +50,22 @@ function* addShopCart(payload, getState) {
 function* deleteShopCart(payload) {
   try {
 
-    const list = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(state=>state.user.user.access_token);
+    const result = yield call(new Request().delete, 'shoppingCartItem', {
+      token,
+      formJson: true,
+      data: {
+        ids: payload.ids
+      }
+    });
     yield put({
       type: actionTypes.DELETE_SHOP_CART_SUCCESS,
-      list
+      ids: payload.ids
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return list;
+    return result;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -79,19 +75,20 @@ function* deleteShopCart(payload) {
 
 function* updateShopCart(payload) {
   try {
-
-    const list = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(state=>state.user.user.access_token);
+    const shopCartItem = yield call(new Request().post, 'shoppingCartItem/update', {
+      token,
+      formJson: true,
+      data: payload
+    });
     yield put({
-      type: actionTypes.DELETE_SHOP_CART_SUCCESS,
-      list
+      type: actionTypes.UPDATE_SHOP_CART_SUCCESS,
+      shopCartItem
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return list;
+    return shopCartItem;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);

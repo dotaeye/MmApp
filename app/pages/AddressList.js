@@ -12,7 +12,6 @@ import {
   Text,
 } from 'react-native';
 
-import _ from 'lodash';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -21,6 +20,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
 import Loading from '../components/Loading'
+import EmptyList from '../components/EmptyList';
 import ViewPages from '../components/ViewPages'
 import * as addressActions from '../actions/address';
 
@@ -37,22 +37,36 @@ class AddressList extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    InteractionManager.runAfterInteractions(() => {
+      this.fetchData();
+    });
   }
 
-  fetchData() {
-    this.props.addressActions.getAddressList({})
+  fetchData(options) {
+    const {addressActions}=this.props;
+    addressActions.getAddressList(options || {})
   }
 
 
   onRefresh() {
     this.canLoadMore = false;
-    this.props.addressActions.getAddressList({
+    this.fetchData({
       refreshing: true
+    });
+  }
+
+  onDeleteAddress(id) {
+    const {addressActions}=this.props;
+    addressActions.deleteAddress({
+      id
     })
   }
 
-  onToolButtonClick() {
+  onSetDefaultAddress(id) {
+    const {addressActions}=this.props;
+    addressActions.setDefaultAddress({
+      id
+    })
   }
 
 
@@ -81,7 +95,7 @@ class AddressList extends Component {
 
   renderListRow(item) {
     const {router}=this.props;
-    const iconName = item.isDefault ? 'ios-checkbox' : 'ios-checkbox-outline';
+    const iconName = item.default ? 'ios-checkmark-circle' : 'ios-checkmark-circle-outline';
     return (
       <View style={[UI.CommonStyles.container,
       UI.CommonStyles.columnContainer,
@@ -103,7 +117,7 @@ class AddressList extends Component {
           color:UI.Colors.grayFont,
           marginBottom:15,
           marginLeft:10,
-        }}>{item.street}</Text>
+        }}>{`${item.province} ${item.area} ${item.county} ${item.detail}`}</Text>
         <View style={[UI.CommonStyles.container,
         UI.CommonStyles.rowContainer,
         UI.CommonStyles.bt,
@@ -111,7 +125,8 @@ class AddressList extends Component {
            padding:10
         }
         ]}>
-          <View
+          <TouchableOpacity
+            onPress={this.onSetDefaultAddress.bind(this,item.id)}
             style={[
             UI.CommonStyles.container,
             UI.CommonStyles.rowContainer,
@@ -130,7 +145,7 @@ class AddressList extends Component {
               }}
             />
             <Text>默认地址</Text>
-          </View>
+          </TouchableOpacity>
 
           <View
             style={[
@@ -167,7 +182,8 @@ class AddressList extends Component {
               />
               <Text>编辑</Text>
             </TouchableOpacity>
-            <View
+            <TouchableOpacity
+              onPress={this.onDeleteAddress.bind(this,item.id)}
               style={[
             UI.CommonStyles.container,
             UI.CommonStyles.rowContainer,
@@ -185,7 +201,7 @@ class AddressList extends Component {
               }}
               />
               <Text>删除</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -194,7 +210,9 @@ class AddressList extends Component {
 
   renderList() {
     const {address}=this.props;
-    if (!address.hasLoaded) return <Loading/>;
+    if (!address.loaded) return <Loading/>;
+    if (address.list.length == 0) return <EmptyList/>;
+
     return (
       <ListView
         ref={(view)=> this.listView = view }
@@ -204,7 +222,6 @@ class AddressList extends Component {
         initialListSize={ 10 }
         pageSize={ 10 }
         pagingEnabled={ false }
-
         dataSource={ this.state.dataSource.cloneWithRows(address.list) }
         renderRow={this.renderListRow.bind(this)}
         refreshControl={
@@ -228,7 +245,7 @@ class AddressList extends Component {
           {
             backgroundColor:UI.Colors.white,
             padding:10,
-            height:60,
+            height:60
           }]}
       >
         <TouchableOpacity
@@ -276,7 +293,8 @@ class AddressList extends Component {
 }
 
 export default connect((state, props) => ({
-  address: state.address
+  address: state.address,
+  user: state.user
 }), dispatch => ({
   addressActions: bindActionCreators(addressActions, dispatch)
 }), null, {

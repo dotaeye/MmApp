@@ -9,22 +9,45 @@ import {
   TouchableOpacity,
   View,
   Text,
+  StatusBar
 } from 'react-native';
 
-
+import FaIcon from 'react-native-vector-icons/FontAwesome'
 import Icon from 'react-native-vector-icons/Ionicons';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import ViewPages from '../components/ViewPages'
+import Storage from '../utils/Storage';
+import config from '../common/config';
 
 class My extends Component {
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+  onLogout() {
+    const {userActions}=this.props;
+    userActions.logout({
+      success: this.logoutSuccess.bind(this)
+    });
+  }
+
+  onClear() {
+    Storage.delete(config.city);
+  }
+
+  logoutSuccess() {
+    const {router}=this.props;
+    this.props.onLogout();
+    router.push(ViewPages.login());
+  }
 
   renderAvatar() {
     const {user}=this.props;
     return (
-      <View style={{
-        paddingTop:UI.Size.statusBar.height
-      }}>
+      <View>
         <Image
           resizeMode="cover"
           style={[UI.CommonStyles.rowContainer,{
@@ -49,7 +72,7 @@ class My extends Component {
             <Text style={{
                 color:UI.Colors.white,
                 marginBottom:10
-              }}>{user.user.userName}</Text>
+              }}>{user.user && user.user.userName}</Text>
           </View>
         </Image>
       </View>
@@ -60,14 +83,16 @@ class My extends Component {
 
     return (
       <View style={[UI.CommonStyles.columnContainer]}>
-        <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,UI.CommonStyles.bt,{
+        <TouchableOpacity
+          onPress={()=>{this.props.router.push(ViewPages.order())}}
+          style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,UI.CommonStyles.bt,{
             justifyContent:'space-between',
             alignItems:'center',
             padding:10
           }]}>
           <Text>我的订单</Text>
           <Icon name="ios-arrow-forward" size={20} color={UI.Colors.grayFont}/>
-        </View>
+        </TouchableOpacity>
         <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
           paddingVertical:10
         }]}>
@@ -129,7 +154,11 @@ class My extends Component {
           }}>我的收藏</Text>
           <Icon name="ios-arrow-forward" size={20} color={UI.Colors.grayFont}/>
         </View>
-        <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
+        <TouchableOpacity
+          onPress={()=>{
+            this.props.router.push(ViewPages.addressList())
+          }}
+          style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
              paddingVertical:10,
             paddingRight:10,
             justifyContent:'space-between',
@@ -147,7 +176,7 @@ class My extends Component {
             flex:1
           }}>地址管理</Text>
           <Icon name="ios-arrow-forward" size={20} color={UI.Colors.grayFont}/>
-        </View>
+        </TouchableOpacity>
         <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
               paddingVertical:10,
             paddingRight:10,
@@ -204,16 +233,78 @@ class My extends Component {
     )
   }
 
+
+  renderClear() {
+    return (
+      <View style={[UI.CommonStyles.columnContainer,{
+        marginTop:10
+      }]}>
+        <TouchableOpacity
+          onPress={this.onClear.bind(this)}
+          style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
+            paddingVertical:10,
+            paddingRight:10,
+            justifyContent:'space-between',
+            alignItems:'center'
+        }]}>
+          <FaIcon
+            name='trash-o'
+            size={20}
+            color={UI.Colors.grayFont}
+            style={{
+              width:40,
+              textAlign:'center'
+            }}/>
+          <Text style={{
+            flex:1
+          }}>清理缓存</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  renderLogout() {
+    return (
+      <View style={[UI.CommonStyles.columnContainer,{
+        marginTop:10
+      }]}>
+        <TouchableOpacity
+          onPress={this.onLogout.bind(this)}
+          style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
+            paddingVertical:10,
+            paddingRight:10,
+            justifyContent:'space-between',
+            alignItems:'center'
+        }]}>
+          <Icon
+            name="ios-log-out-outline"
+            size={20}
+            color={UI.Colors.grayFont}
+            style={{
+              width:40,
+              textAlign:'center'
+            }}/>
+          <Text style={{
+            flex:1
+          }}>退出登陆</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
         justifyContent:'flex-start',
         backgroundColor:UI.Colors.gray
       }]}>
+        <StatusBar barStyle="light-content"/>
         {this.renderAvatar()}
         {this.renderOrders()}
         {this.renderList()}
         {this.renderAbout()}
+        {this.renderClear()}
+        {this.renderLogout()}
       </View>
     )
   }

@@ -18,7 +18,7 @@ export default function* rootSaga() {
     fork(user.watchLoginFlow),
 
     fork(user.watchRegisterFlow),
-
+    fork(user.watchLogoutFlow),
     fork(user.watchVerificationCodeFlow),
 
 
@@ -42,13 +42,23 @@ export default function* rootSaga() {
     fork(category.watchCategories),
 
 
+    //address
 
     fork(address.watchGetAddressList),
+    fork(address.watchAddAddress),
+    fork(address.watchUpdateAddress),
+    fork(address.watchDeleteAddress),
+    fork(address.watchSetDefaultAddress),
+
 
     fork(city.watchCityList),
-
     fork(order.watchGetOrderList),
+    fork(order.watchAddOrder),
 
-    fork(shopCart.watchGetShopCartList)
+    //shopCart
+    fork(shopCart.watchGetShopCartList),
+    fork(shopCart.watchAddShopCart),
+    fork(shopCart.watchUpdateShopCart),
+    fork(shopCart.watchDeleteShopCart)
   ];
 }

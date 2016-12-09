@@ -55,7 +55,7 @@ class Login extends Component {
   }
 
   loginSuccess() {
-    this.props.router.resetTo(ViewPages.main())
+    this.props.router.pop()
   }
 
 

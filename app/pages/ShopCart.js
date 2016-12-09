@@ -20,11 +20,10 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
 import Loading from '../components/Loading';
-import EndTag from '../components/EndTag';
-import Spinner from '../components/Spinner';
 import Stepper from '../components/Stepper';
 import ViewPages from '../components/ViewPages'
 import * as shopCartActions from '../actions/shopCart';
+import {getImageUrl} from '../utils';
 
 class ShopCart extends Component {
 
@@ -46,49 +45,14 @@ class ShopCart extends Component {
   }
 
   fetchData() {
-    this.props.shopCartActions.getShopCartList({
-      pageIndex: 1
-    });
+    this.props.shopCartActions.getShopCartList({});
   }
 
   onRefresh() {
     this.canLoadMore = false;
     this.props.shopCartActions.getShopCartList({
-      pageIndex: 1,
       refreshing: true
     });
-  }
-
-
-  onScroll() {
-    if (!this.canLoadMore) {
-      this.canLoadMore = true;
-    }
-  }
-
-  onEndReached() {
-    const {shopCart, shopCartActions}=this.props;
-    const now = Date.parse(new Date()) / 1000;
-    if (shopCart.hasMore && this.canLoadMore && now - this.prevLoadMoreTime > 2) {
-      shopCartActions.getShopCartList({
-        pageIndex: shopCart.pageIndex + 1,
-        loadMore: true
-      });
-      this.prevLoadMoreTime = Date.parse(new Date()) / 1000;
-      this.canLoadMore = false;
-    }
-  }
-
-  renderFooter() {
-    const {shopCart}=this.props;
-    if (shopCart.loadMore) {
-      return <Spinner/>;
-    }
-    if (shopCart.refreshing !== true
-      && shopCart.hasMore !== true
-      && shopCart.list.length) {
-      return <EndTag/>;
-    }
   }
 
   onEditComplete() {
@@ -104,7 +68,24 @@ class ShopCart extends Component {
   }
 
   onToolButtonClick() {
-
+    const {editEnabled, selectedIds}=this.state;
+    if (selectedIds.length == 0) {
+      return;
+    }
+    if (editEnabled) {
+      this.props.shopCartActions.deleteShopCart({
+        ids: selectedIds,
+        success: ()=> {
+          this.setState({
+            selectedIds: []
+          })
+        }
+      })
+    } else {
+      this.props.router.push(ViewPages.checkOut(), {
+        ids: selectedIds
+      })
+    }
   }
 
   onSelectAll() {
@@ -135,13 +116,20 @@ class ShopCart extends Component {
     }
   }
 
+  onUpdateItem(item, quantity) {
+    this.props.shopCartActions.updateShopCart({
+      id: item.id,
+      quantity
+    });
+  }
+
   getTotal() {
     let total = 0;
     const {selectedIds}=this.state;
     const {shopCart}=this.props;
     shopCart.list.forEach(item=> {
       if (selectedIds.includes(item.id)) {
-        total += item.price * item.count;
+        total += item.unitPrice * item.quantity;
       }
     });
     return total;
@@ -187,7 +175,7 @@ class ShopCart extends Component {
 
   renderListRow(item) {
     const {editEnabled, selectedIds}=this.state;
-    const iconName = selectedIds.includes(item.id) ? 'ios-checkbox' : 'ios-checkbox-outline';
+    const iconName = selectedIds.includes(item.id) ? 'ios-checkmark-circle' : 'ios-checkmark-circle-outline';
     return (
       <View style={[
         UI.CommonStyles.rowContainer,
@@ -211,7 +199,7 @@ class ShopCart extends Component {
         <View
           style={[UI.CommonStyles.rowContainer,{flex:1}]}>
           <Image
-            source={require('../images/products/product.jpg')}
+            source={{uri:getImageUrl(item.imageUrl)}}
             style={{
               width:60,
               height:60
@@ -224,15 +212,15 @@ class ShopCart extends Component {
                 {
                   justifyContent:'space-between'
                 }]}>
-              <Text>{item.name}</Text>
-              <Text>x{item.count}</Text>
+              <Text>{item.name} </Text>
+              <Text>x{item.quantity}</Text>
             </View>
 
             <Text style={{
                 fontSize:UI.Size.font.ms,
                 color:UI.Colors.grayFont,
                 marginTop:5
-              }}>共{item.count}个商品</Text>
+              }}>{item.attributesXml} 共{item.quantity}个商品</Text>
 
             <View style={[
                 UI.CommonStyles.rowContainer,
@@ -242,7 +230,10 @@ class ShopCart extends Component {
                   height:28
                 }]}>
               <Text>￥{item.price}</Text>
-              {editEnabled && <Stepper value={1} max={20}/>}
+              {editEnabled && <Stepper
+                value={item.quantity}
+                max={30}
+                onChange={this.onUpdateItem.bind(this,item)}/>}
             </View>
           </View>
         </View>
@@ -252,7 +243,7 @@ class ShopCart extends Component {
 
   renderList() {
     const {shopCart}=this.props;
-    if (!shopCart.hasLoaded) return <Loading/>;
+    if (!shopCart.loaded) return <Loading/>;
     return (
       <ListView
         style={{
@@ -275,13 +266,12 @@ class ShopCart extends Component {
            }
       />
     )
-
   }
 
 
   renderBottom() {
     const {editEnabled, selectedIds}=this.state;
-    const iconName = selectedIds.length > 0 ? 'ios-checkbox' : 'ios-checkbox-outline';
+    const iconName = selectedIds.length > 0 ? 'ios-checkmark-circle' : 'ios-checkmark-circle-outline';
 
     return (
       <View style={[UI.CommonStyles.rowContainer,
@@ -311,16 +301,15 @@ class ShopCart extends Component {
           <View style={{flex:1}}>
             <Text style={{marginRight:10,textAlign:'right'}}>￥{this.getTotal()}</Text>
           </View>
-
         </View>
         <TouchableOpacity
-          style={{
-            backgroundColor:UI.Colors.danger,
+          style={[{
+            backgroundColor:UI.Colors.grayFont,
             height:50,
             width:80,
             alignItems:'center',
             justifyContent:'center'
-          }}
+          },selectedIds.length>0&&{ backgroundColor:UI.Colors.danger}]}
           onPress={this.onToolButtonClick.bind(this)}
         >
           <Text style={{color:UI.Colors.white}}>{editEnabled ? "删除所选" : "下单"}</Text>

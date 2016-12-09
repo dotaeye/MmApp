@@ -2,25 +2,18 @@ import {put, take, call, fork} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes';
 import Request from '../utils/Request';
-import FakeRequest from '../utils/FakeRequest';
-import Storage from '../utils/Storage';
-import jsonData from '../data/product.json';
-
 
 function* productDetail(payload) {
   try {
-    const tempData = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const product = yield call(new Request().get, 'product/detail/' + payload.id, {});
     yield put({
       type: actionTypes.PRODUCT_DETAIL_SUCCESS,
-      product: {}
+      product
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return product;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);

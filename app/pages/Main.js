@@ -6,7 +6,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
 import TabNavigator from 'react-native-tab-navigator';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -17,6 +17,7 @@ import Home from './Home';
 import Category from './Category';
 import My from './My';
 import Storage from '../utils/Storage';
+import { registerApp } from 'react-native-wechat';
 
 import * as homeActions from '../actions/home';
 import * as userActions from '../actions/user';
@@ -28,30 +29,52 @@ class Main extends Component {
     this.state = {
       selectedTab: 'home'
     };
+    registerApp('wx14d553bd6197d470');
   }
 
   componentWillMount() {
     Storage.get(config.token).then((user)=> {
-      if (user) {
+      if (user && moment().isBefore(new Date(user['.expires']))) {
         this.props.userActions.loginSuccess(user);
       }
     })
   }
 
-  onMyTabPress() {
-    const {user, router}=this.props;
-    if (user.user) {
-      this.setState({
-        selectedTab: 'my'
-      })
-    } else {
-      router.push(ViewPages.login());
+  componentDidFocus() {
+    const {selectedTab}=this.state;
+    if (selectedTab == 'home') {
+      this.home.setStatusBarStyle();
     }
   }
 
-  render() {
+  onTabPress(tab, isDefaultBarStyle, route) {
+    const {user, router}=this.props;
+    // if (isDefaultBarStyle) {
+    //   StatusBar.setBarStyle('default')
+    // }
+    // if (tab == 'home') {
+    //   this.home.setStatusBarStyle();
+    // }
+    if (['my', 'selectcar', 'message'].includes(tab) && !user.user) {
+      router.push(ViewPages.login());
+    } else {
+      if (['selectcar', 'message'].includes(tab)) {
+        router.push(route);
+      } else {
+        this.setState({
+          selectedTab: tab
+        })
+      }
+    }
+  }
 
-    const {router} = this.props;
+  onLogout() {
+    this.setState({
+      selectedTab: 'home'
+    })
+  }
+
+  render() {
     return (
       <View style={{flex:1}}>
 
@@ -61,45 +84,46 @@ class Main extends Component {
             selected={this.state.selectedTab === 'home'}
             selectedTitleStyle={UI.CommonStyles.tabBarTextSelected}
             titleStyle={UI.CommonStyles.tabBarTextSelected}
-            renderIcon={() => <Image source={require("../images/icon/home@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            renderSelectedIcon={() => <Image source={require("../images/icon/home_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => this.setState({ selectedTab: 'home' })}>
-            <Home {...this.props}/>
+            renderIcon={() => <Image source={require("../images/icon/home.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            renderSelectedIcon={() => <Image source={require("../images/icon/home_on.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            onPress={this.onTabPress.bind(this,'home')}>
+            <Home ref={(ref)=>{this.home=ref}} {...this.props}/>
           </TabNavigator.Item>
           <TabNavigator.Item
             title="分类"
             selected={this.state.selectedTab === 'category'}
             selectedTitleStyle={UI.CommonStyles.tabBarTextSelected}
             titleStyle={UI.CommonStyles.tabBarTextSelected}
-            renderIcon={() => <Image source={require("../images/icon/category@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            renderSelectedIcon={() => <Image source={require("../images/icon/category_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => this.setState({ selectedTab: 'category' })}>
+            renderIcon={() => <Image source={require("../images/icon/category.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            renderSelectedIcon={() => <Image source={require("../images/icon/category_on.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            onPress={this.onTabPress.bind(this,'category',true)}>
             <Category {...this.props}/>
           </TabNavigator.Item>
           <TabNavigator.Item
             selected={false}
-            renderIcon={() => <Image source={require("../images/icon/plus@2x.png")} style={UI.CommonStyles.tabBarIconPlus}/>}
-            onPress={() => router.push(ViewPages.selectCar()) }>
+            renderIcon={() => <Image source={require("../images/icon/plus.png")} style={UI.CommonStyles.tabBarIconPlus}/>}
+            onPress={this.onTabPress.bind(this,'selectcar',true, ViewPages.selectCar())}>
           </TabNavigator.Item>
           <TabNavigator.Item
             title="消息"
             selected={this.state.selectedTab === 'message'}
             selectedTitleStyle={UI.CommonStyles.tabBarTextSelected}
             titleStyle={UI.CommonStyles.tabBarTextSelected}
-            renderIcon={() => <Image source={require("../images/icon/message@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            renderSelectedIcon={() => <Image source={require("../images/icon/message_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={() => router.push(ViewPages.login()) }
-          >
+            renderIcon={() => <Image source={require("../images/icon/message.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            renderSelectedIcon={() => <Image source={require("../images/icon/message_on.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            onPress={this.onTabPress.bind(this,'message',true, ViewPages.shopCart())}>
           </TabNavigator.Item>
           <TabNavigator.Item
             title="我的"
             selected={this.state.selectedTab === 'my'}
             selectedTitleStyle={UI.CommonStyles.tabBarTextSelected}
             titleStyle={UI.CommonStyles.tabBarTextSelected}
-            renderIcon={() => <Image source={require("../images/icon/my@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            renderSelectedIcon={() => <Image source={require("../images/icon/my_on@2x.png")} style={UI.CommonStyles.tabBarIcon}/>}
-            onPress={this.onMyTabPress.bind(this)}>
-            <My {...this.props}/>
+            renderIcon={() => <Image source={require("../images/icon/my.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            renderSelectedIcon={() => <Image source={require("../images/icon/my_on.png")} style={UI.CommonStyles.tabBarIcon}/>}
+            onPress={this.onTabPress.bind(this,'my',true)}>
+            <My
+              onLogout={this.onLogout.bind(this)}
+              {...this.props}/>
           </TabNavigator.Item>
         </TabNavigator>
       </View>

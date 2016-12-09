@@ -245,6 +245,7 @@ const CommonStyles = StyleSheet.create({
   },
 
   list_bar_item: {
+    height: 40,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -293,6 +294,18 @@ const CommonStyles = StyleSheet.create({
   },
 
   endTag_text: {
+    textAlign: 'center',
+    color: Colors.black
+  },
+
+  emptyList: {
+    flex: 1,
+    width: Size.window.width,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  emptyList_text: {
     textAlign: 'center',
     color: Colors.black
   },
@@ -844,7 +857,7 @@ const CommonStyles = StyleSheet.create({
 
 
   product_modal: {
-    height: 350
+    height: 400
   },
 
   product_modal_close: {
@@ -867,7 +880,7 @@ const CommonStyles = StyleSheet.create({
     borderWidth: Size.border.size,
     position: 'absolute',
     backgroundColor: Colors.white,
-    top: -20,
+    top: 10,
     left: 10
   },
 
@@ -893,8 +906,8 @@ const CommonStyles = StyleSheet.create({
 
   product_modal_header: {
     paddingLeft: 100,
-    paddingTop: 20,
-    height: 70,
+    paddingTop: 40,
+    height: 100,
     borderBottomWidth: Size.border.size,
     borderBottomColor: Colors.gray,
   },
@@ -1036,7 +1049,7 @@ const CommonStyles = StyleSheet.create({
   },
 
   category_nav: {
-    width: 80,
+    width: 90,
     borderRightWidth: Size.border.size,
     borderRightColor: Colors.gray,
     paddingVertical: 10,
@@ -1329,34 +1342,39 @@ const CommonStyles = StyleSheet.create({
    */
 
   stepper: {
-    width: 90,
+    width: 120,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: 'rgb(189,189,189)',
     borderWidth: Size.border.size,
-    borderRadius: 2
+    borderRadius: 2,
+    height: 40
   },
 
   stepper_left: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
     borderRightColor: 'rgb(189,189,189)',
     borderRightWidth: Size.border.size
   },
 
   stepper_right: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
     borderLeftColor: 'rgb(189,189,189)',
     borderLeftWidth: Size.border.size
   },
 
   stepper_input: {
-    height: 25,
-    lineHeight: 25,
-    fontSize: Size.font.xs,
-    width: 30,
+    height: 40,
+    lineHeight: 40,
+    width: 40,
+    color: Colors.black,
     textAlign: 'center'
   },
 

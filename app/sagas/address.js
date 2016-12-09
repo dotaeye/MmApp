@@ -1,33 +1,23 @@
-import {put, take, call, fork} from 'redux-saga/effects';
+import {put, take, call, fork, select} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
-import FakeRequest from '../utils/FakeRequest';
-import Storage from '../utils/Storage';
-import jsonData from '../data/addresslist.json';
+import {selectUser} from '../utils/saga';
 
 function* getAddressList(payload) {
   try {
-
-    let results = [];
-
-    for (var i = 0; i < 5; i++) {
-      results = results.concat(jsonData);
-    }
-
-
-    const tempData = yield call(FakeRequest, results, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(selectUser);
+    const address = yield call(new Request().get, 'address', {
+      token
+    });
     yield put({
       type: actionTypes.ADDRESS_LIST_SUCCESS,
-      list: tempData
+      list: address
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return tempData;
+    return address;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -35,13 +25,14 @@ function* getAddressList(payload) {
   }
 }
 
-function* addAddress(payload, getState) {
+function* addAddress(payload) {
   try {
-
-    const address = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(selectUser);
+    const address = yield call(new Request().post, 'address', {
+      token,
+      data: payload.data,
+      formJson: true
+    });
     yield put({
       type: actionTypes.ADD_ADDRESS_SUCCESS,
       address
@@ -57,21 +48,43 @@ function* addAddress(payload, getState) {
   }
 }
 
-function* deleteAddress(payload) {
+function* updateAddress(payload) {
   try {
-
-    const list = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(selectUser);
+    const address = yield call(new Request().put, 'address', {
+      token,
+      data: payload.data,
+      formJson: true
+    });
     yield put({
-      type: actionTypes.DELETE_ADDRESS_SUCCESS,
-      list
+      type: actionTypes.UPDATE_ADDRESS_SUCCESS,
+      address
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return list;
+    return address;
+  } catch (error) {
+    if (error && error.message !== '') {
+      Toast.info(error.message);
+    }
+  }
+}
+
+
+function* deleteAddress(payload) {
+  try {
+    const token = yield select(selectUser);
+    yield call(new Request().delete, 'address/' + payload.id, {
+      token
+    });
+    yield put({
+      type: actionTypes.DELETE_ADDRESS_SUCCESS,
+      id: payload.id
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -81,19 +94,17 @@ function* deleteAddress(payload) {
 
 function* setDefaultAddress(payload) {
   try {
-
-    const list = yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(selectUser);
+    yield call(new Request().put, 'address/set_default/' + payload.id, {
+      token
+    });
     yield put({
-      type: actionTypes.DELETE_ADDRESS_SUCCESS,
-      list
+      type: actionTypes.SET_DEFAULT_ADDRESS_SUCCESS,
+      id: payload.id
     });
     if (payload.success) {
       yield call(payload.success);
     }
-    return list;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -112,6 +123,13 @@ export function* watchAddAddress() {
   while (true) {
     const {payload} = yield take(actionTypes.ADD_ADDRESS);
     yield fork(addAddress, payload);
+  }
+}
+
+export function* watchUpdateAddress() {
+  while (true) {
+    const {payload} = yield take(actionTypes.UPDATE_ADDRESS);
+    yield fork(updateAddress, payload);
   }
 }
 

@@ -30,7 +30,7 @@ function getStringParams(data) {
 function timeoutFetch(ms, promise) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
-      reject(new Error("fetch time out"));
+      reject(new Error("请求超市,请刷新再试"));
     }, ms);
     promise.then(
       (res) => {
@@ -56,7 +56,7 @@ export default class Request {
           params,
           data,
           headers,
-          auth,
+          token,
           login,
           formJson,
           formString,
@@ -83,10 +83,9 @@ export default class Request {
           });
         }
 
-        if (auth) {
-          const bearerToken = Storage.get(config.token).access_token;
+        if (token) {
           options.headers = Object.assign({}, options.headers, {
-            'Authorization': 'Bearer ' + bearerToken
+            'Authorization': 'Bearer ' + token
           });
         }
 

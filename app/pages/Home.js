@@ -35,6 +35,7 @@ export default class Home extends Component {
     this.state = {
       scrollY: new Animated.Value(0)
     };
+    this.barStyleDefault = false;
     if (Platform.OS == 'ios') {
       this.state.scrollY.addListener(this.onScroll.bind(this));
     }
@@ -43,10 +44,17 @@ export default class Home extends Component {
 
   componentDidMount() {
     this.barStyleDefault = false;
+
     this.props.homeActions.getHomeList({
       success: this.onLoad.bind(this)
     });
+    if (Platform.OS == 'ios') {
+      setTimeout(()=> {
+        this.setStatusBarStyle();
+      }, 300)
+    }
   }
+
 
   componentWillUnmount() {
     if (Platform.OS == 'ios') {
@@ -54,8 +62,40 @@ export default class Home extends Component {
     }
   }
 
+  setStatusBarStyle() {
+    if (!this.barStyleDefault) {
+      StatusBar.setBarStyle('light-content', false);
+    }
+  }
+
   onLoad() {
     SplashScreen.hide();
+  }
+
+  onScroll(scrollY) {
+    if (scrollY.value > DISTANCE) {
+      if (!this.barStyleDefault) {
+        StatusBar.setBarStyle('default', false);
+        this.barStyleDefault = true;
+      }
+    } else {
+      if (this.barStyleDefault) {
+        StatusBar.setBarStyle('light-content', false);
+        this.barStyleDefault = false;
+      }
+    }
+  }
+
+  onCategoryPress(categoryId) {
+    this.props.router.push(ViewPages.list(), {
+      categoryId
+    })
+  }
+
+  onManufacturePress(manufactureId) {
+    this.props.router.push(ViewPages.list(), {
+      manufactureId
+    })
   }
 
   renderBannerRow(item, index) {
@@ -120,19 +160,24 @@ export default class Home extends Component {
         </View>
 
         <Animated.View style={[UI.CommonStyles.home_nav_search,{opacity:navTextOpacity}]}>
-          <AnimatedIcon
-            style={[UI.CommonStyles.home_nav_search_icon,{
-              color:navSearchTextColor
-            }]}
-            name="ios-search"
-            size={22}
-            color={UI.Colors.white}
-          />
-          <Animated.Text
-            style={[UI.CommonStyles.home_nav_search_input,{
+          <TouchableOpacity style={{
+            flex:1,
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center'
+          }} onPress={()=>{this.props.router.push(ViewPages.search())}}>
+            <AnimatedIcon
+              style={[UI.CommonStyles.home_nav_search_icon,{ color:navSearchTextColor}]}
+              name="ios-search"
+              size={22}
+              color={UI.Colors.white}
+            />
+            <Animated.Text
+              style={[UI.CommonStyles.home_nav_search_input,{
                 color:navSearchTextColor
             }]}
-          >搜索</Animated.Text>
+            >搜索</Animated.Text>
+          </TouchableOpacity>
         </Animated.View>
 
         <View style={UI.CommonStyles.home_nav_right}>
@@ -148,34 +193,7 @@ export default class Home extends Component {
     )
   }
 
-  onScroll(scrollY) {
-    if (scrollY.value > DISTANCE) {
-      if (!this.barStyleDefault) {
-        StatusBar.setBarStyle('default', false);
-        this.barStyleDefault = true;
-      }
 
-    } else {
-      if (this.barStyleDefault) {
-        StatusBar.setBarStyle('light-content', false);
-        this.barStyleDefault = false;
-      }
-
-    }
-  }
-
-  onCategoryPress(categoryId){
-    this.props.router.push(ViewPages.list(),{
-      categoryId
-    })
-  }
-
-  onManufacturePress(manufactureId){
-    this.props.router.push(ViewPages.list(),{
-      manufactureId
-    })
-  }
-  
   render() {
     if (!this.props.home.loaded) {
       return <Loading/>;
@@ -205,12 +223,12 @@ export default class Home extends Component {
         >
           {this.renderBanners(banners)}
           <ScrollNavs navs={navs}/>
-          <SixBox 
+          <SixBox
             title="热门分类"
             rows={hotCategories}
             onItemPress={this.onCategoryPress.bind(this)}
           />
-          <SixBox 
+          <SixBox
             title="热门品牌"
             rows={hotManufacturers}
             onItemPress={this.onManufacturePress.bind(this)}

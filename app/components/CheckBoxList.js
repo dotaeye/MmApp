@@ -32,8 +32,16 @@ class CheckBoxList extends Component {
     } else {
       this.setState({
         value: option.value
+      }, ()=> {
+        this.props.onChange && this.props.onChange(option.value)
       })
     }
+  }
+
+  reset() {
+    this.setState({
+      value: null
+    })
   }
 
   getValue() {
@@ -54,7 +62,7 @@ class CheckBoxList extends Component {
             >
               <Text
                 style={[UI.CommonStyles.check_box_item_text,option.value==value&&UI.CommonStyles.check_box_item_text_selected]}
-                >{option.label}</Text>
+              >{option.label}</Text>
             </TouchableOpacity>
           )
         })}

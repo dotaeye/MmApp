@@ -2,7 +2,6 @@ import * as actionTypes  from '../common/actionTypes';
 
 const initialState = {
   loaded: false,
-  entity: {},
   list: {
     products: [],
     filteredItems: [],
@@ -48,7 +47,7 @@ export default function product(state = initialState, action = {}) {
     case actionTypes.PRODUCT_DETAIL_SUCCESS:
       return {
         ...state,
-        entity: action.entity
+        entity: action.product,
 
       };
     case actionTypes.PRODUCT_DETAIL_FAIL:

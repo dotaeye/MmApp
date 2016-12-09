@@ -43,10 +43,6 @@ class Order extends Component {
     )
   }
 
-  renderList() {
-
-  }
-
   renderTabs() {
     const tabs = [{
       name: '全部',

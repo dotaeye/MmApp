@@ -106,6 +106,8 @@ export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGOUT = 'LOGOUT';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export const LOGOUT_FAIL = 'LOGOUT_FAIL';
 
 export const ADD_ORDER = 'ADD_ORDER';
 export const ADD_ORDER_SUCCESS = 'ADD_ORDER_SUCCESS';
@@ -126,6 +128,11 @@ export const CANCEL_ORDER_FAIL = 'CANCEL_ORDER_FAIL';
 export const DELETE_ORDER = 'DELETE_ORDER';
 export const DELETE_ORDER_SUCCESS = 'DELETE_ORDER_SUCCESS';
 export const DELETE_ORDER_FAIL = 'DELETE_ORDER_FAIL';
+
+
+export const STORAGE_LIST = 'STORAGE_LIST';
+export const STORAGE_LIST_SUCCESS = 'STORAGE_LIST_SUCCESS';
+export const STORAGE_LIST_FAIL = 'STORAGE_LIST_FAIL';
 
 
 

@@ -42,6 +42,20 @@ class Search extends Component {
     this.props.searchActions.searchList({})
   }
 
+  onSearch() {
+    if (this.state.keywords) {
+      this.props.router.replace(ViewPages.list(), {
+        keywords: this.state.keywords
+      });
+    }
+  }
+
+  onSearchChange(keywords) {
+    this.setState({
+      keywords
+    })
+  }
+
   renderSearchView() {
     return (
       <View style={UI.CommonStyles.search_box}>
@@ -52,6 +66,7 @@ class Search extends Component {
           color={UI.Colors.grayFont}
         />
         <TextInput
+          onChangeText={this.onSearchChange.bind(this)}
           underlineColorAndroid={'transparent'}
           autoCapitalize={'none'}
           autoCorrect={false}
@@ -99,12 +114,10 @@ class Search extends Component {
 
   }
 
-  renderList(){
+  renderList() {
     const {search}=this.props;
-
     return (
       <View style={UI.CommonStyles.columnContainer}>
-
         <View style={UI.CommonStyles.search_history_title}>
           <Text style={UI.CommonStyles.search_history_title_text}>搜索历史</Text>
         </View>
@@ -120,9 +133,7 @@ class Search extends Component {
           )
         })}
       </View>
-
     )
-
   }
 
 
@@ -131,7 +142,7 @@ class Search extends Component {
 
     const nav = {
       Left: [{
-        source: require('../images/icon/back@2x.png'),
+        source: require('../images/icon/back.png'),
         style: {
           width: 13,
           height: 15
@@ -146,9 +157,7 @@ class Search extends Component {
           width: 20,
           height: 20
         },
-        onPress: ()=> {
-          // router.push(ViewPage.product());
-        }
+        onPress: this.onSearch.bind(this)
       }]
     };
 
@@ -157,13 +166,11 @@ class Search extends Component {
         <NavBar options={nav}>
           {this.renderSearchView()}
         </NavBar>
-
         {search.listLoaded ? (
           <ScrollView>
             {this.renderHot()}
             {this.renderList()}
-         </ScrollView>
-
+          </ScrollView>
         ) : (
           <Loading/>
         )}

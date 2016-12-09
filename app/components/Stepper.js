@@ -31,6 +31,8 @@ class Stepper extends Component {
     if (value + 1 <= max) {
       this.setState({
         value: value + 1
+      }, ()=> {
+        this.props.onChange && this.props.onChange(value + 1)
       })
     }
 
@@ -42,6 +44,8 @@ class Stepper extends Component {
     if (value - 1 >= min) {
       this.setState({
         value: value - 1
+      }, ()=> {
+        this.props.onChange && this.props.onChange(value - 1)
       })
     }
   }
@@ -70,7 +74,7 @@ class Stepper extends Component {
           style={UI.CommonStyles.stepper_left}
           onPress={this.onStepDecreasePress.bind(this)}
         >
-          <Icon name="ios-remove" size={14}/>
+          <Icon name="ios-remove" size={20}/>
         </TouchableOpacity>
         <TextInput
           style={UI.CommonStyles.stepper_input}
@@ -85,7 +89,7 @@ class Stepper extends Component {
           style={UI.CommonStyles.stepper_right}
           onPress={this.onStepIncreasePress.bind(this)}
         >
-          <Icon name="ios-add-outline" size={14}/>
+          <Icon name="ios-add-outline" size={20}/>
         </TouchableOpacity>
       </View>
     )

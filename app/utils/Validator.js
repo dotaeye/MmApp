@@ -5,3 +5,10 @@ export function validPhone(number) {
 export function validPassword(password) {
   return password.length >= 6 && password.length <= 16
 }
+
+export function getValidErrorMessage(err) {
+  if (!err) {
+    return null;
+  }
+  return err[Object.keys(err)[0]].errors[0].message;
+}

@@ -102,5 +102,17 @@ export default ViewPage = {
       component: Pages.About,
       name: 'about'
     }
+  },
+  pickerAddress: ()=> {
+    return {
+      component: Pages.PickerAddress,
+      name: 'pickerAddress'
+    }
+  },
+  pay: ()=> {
+    return {
+      component: Pages.Pay,
+      name: 'pay'
+    }
   }
 }

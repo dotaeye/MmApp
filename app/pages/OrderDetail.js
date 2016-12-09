@@ -11,7 +11,6 @@ import {
   Text,
 } from 'react-native';
 
-import _ from 'lodash';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
@@ -28,7 +27,7 @@ class OrderDetail extends Component {
   }
 
   componentDidMount() {
-
+    
   }
 
   fetchData() {

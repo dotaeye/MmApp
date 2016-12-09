@@ -1,14 +1,15 @@
 import * as actionTypes  from '../common/actionTypes';
-import {updateArrayItem} from '../utils';
+import {updateArrayItem, addArrayItem} from '../utils';
 
 const initialState = {
   loading: false,
   list: {},
   hasMore: {},
   pageIndex: {},
-  hasLoaded: false,
+  loaded: false,
   refreshing: {},
-  loadMore: {}
+  loadMore: {},
+  checkOrder:{}
 };
 
 export default function order(state = initialState, action = {}) {
@@ -27,7 +28,7 @@ export default function order(state = initialState, action = {}) {
         ...state,
         loading: false,
         list: action.loadMore ? loadMore(state, action) : combine(state, action),
-        hasLoaded: true,
+        loaded: true,
         hasMore: combineProperty(state, action, 'hasMore'),
         loadMore: combineProperty(state, {loadMore: false, status: action.status}, 'loadMore'),
         refreshing: combineProperty(state, {refreshing: false, status: action.status}, 'refreshing')
@@ -48,7 +49,8 @@ export default function order(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        list: state.list.push(action.order)
+        // list: addArrayItem(state.list, action.order),
+        checkOrder:action.order
       };
     case actionTypes.ADD_ORDER_FAIL:
       return {
