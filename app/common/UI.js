@@ -18,6 +18,8 @@ const Colors = {
   muted: 'rgba(0, 0, 0, 0.4)',
   gray: 'rgb(233,234,235)',
 
+  navBar: '#8BC34A',
+
   dark: 'rgba(0, 0, 0, 0.7)',
   black: 'rgba(0, 0, 0, 0.8)',
   background: 'rgb(238,242,243)',
@@ -27,7 +29,7 @@ const Colors = {
 };
 
 const Size = {
-  getPercent: (width, percent)=> {
+  getPercent: (width, percent) => {
     return width * percent / 100;
   },
   border: {
@@ -182,7 +184,7 @@ const CommonStyles = StyleSheet.create({
   },
 
   tabBarText: {
-    color: Colors.gray
+    color: Colors.grayFont
   },
 
   tabBarTextSelected: {
@@ -629,12 +631,12 @@ const CommonStyles = StyleSheet.create({
   },
 
   select_car_modal_title_left: {
-    color: Colors.muted,
+    color: Colors.grayFont,
     paddingHorizontal: 10
   },
 
   select_car_modal_title_right: {
-    color: Colors.gray
+    color: Colors.black
   },
 
   select_car_modal_item: {
@@ -1137,9 +1139,7 @@ const CommonStyles = StyleSheet.create({
     right: 0,
     height: Size.navBar.height + Size.statusBar.height,
     backgroundColor: Colors.white,
-    opacity: 0,
-    borderBottomWidth: Size.border.size,
-    borderBottomColor: Colors.gray
+    opacity: 0
   },
 
   home_nav_left: {

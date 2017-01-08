@@ -159,9 +159,6 @@ class Category extends Component {
     const {category}=this.props;
     return (
       <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.white}]}>
-        <StatusBar
-          barStyle="default"
-        />
         {this.renderNav()}
         {category.loaded ? (
           <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.category]}>

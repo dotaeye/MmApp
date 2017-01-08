@@ -1,9 +1,9 @@
 import {put, take, call, fork} from 'redux-saga/effects';
+import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes'
 import config from '../common/config';
 import Request from '../utils/Request';
 import Storage from '../utils/Storage';
-import {Toast} from 'antd-mobile';
 
 function* login(payload) {
   try {
@@ -11,7 +11,8 @@ function* login(payload) {
       data: {
         username: payload.telephone,
         password: payload.loginPassword,
-        grant_type: 'password'
+        grant_type: 'password',
+        type: 'password'
       },
       login: true
     });
@@ -37,16 +38,48 @@ function* login(payload) {
 
 function* register(payload) {
   try {
-    yield call(new Request().post, 'account/register', {
+    const token = yield call(new Request().post, 'account/register', {
       data: {
         email: payload.telephone,
         password: payload.loginPassword,
+        smsCode: payload.telVerifyCode,
+        refPhone: payload.refPhone
+      },
+      formJson: true
+    });
+    yield call(Storage.save, config.token, token);
+    yield put({
+      type: actionTypes.REGISTER_SUCCESS,
+      user: token
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
+
+  } catch (error) {
+    yield put({
+      type: actionTypes.REGISTER_FAIL
+    });
+    if (error && error.message !== '') {
+      Toast.info(error.message)
+    }
+  }
+}
+
+function* resetPassword(payload) {
+  try {
+    const token = yield call(new Request().post, 'account/setpassword', {
+      data: {
+        userName: payload.telephone,
+        newPassword: payload.loginPassword,
         smsCode: payload.telVerifyCode
       },
       formJson: true
     });
+    yield call(Storage.save, config.token, token);
     yield put({
-      type: actionTypes.REGISTER_SUCCESS
+      type: actionTypes.RESET_PASSWORD_SUCCESS,
+      user: token
     });
     if (payload.success) {
       yield call(payload.success);
@@ -123,3 +156,11 @@ export function* watchLogoutFlow() {
     yield fork(logout, payload);
   }
 }
+
+export function* watchResetPasswordFlow() {
+  while (true) {
+    const {payload} = yield take(actionTypes.RESET_PASSWORD);
+    yield fork(resetPassword, payload);
+  }
+}
+

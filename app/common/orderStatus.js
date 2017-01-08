@@ -1,10 +1,22 @@
-export const orderStatus = {
-  Position: 0,
-  NameAsc: 5,
-  NameDesc: 6,
-  PriceAsc: 10,
-  PriceDesc: 11,
-  CreatedOn: 15,
-  Distance: 20,
-  SoldCount: 25
-};
+export const orderStatus = [
+  {
+    name: '全部',
+    status: 0
+  },
+  {
+    name: '已取消',
+    status: -1
+  },
+  {
+    name: '待付款',
+    status: 10
+  }, {
+    name: '待发货',
+    status: 20
+  }, {
+    name: '已发货',
+    status: 30
+  }, {
+    name: '已完成',
+    status: 40
+  }];

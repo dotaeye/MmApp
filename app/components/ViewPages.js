@@ -114,5 +114,11 @@ export default ViewPage = {
       component: Pages.Pay,
       name: 'pay'
     }
+  },
+  Topic:()=>{
+    return {
+      component: Pages.Topic,
+      name: 'topic'
+    }
   }
 }

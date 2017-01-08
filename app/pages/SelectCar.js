@@ -23,6 +23,7 @@ import SlidePanel from '../components/SlidePanel';
 import * as carCateActions from '../actions/carCate';
 import Loading from '../components/Loading'
 import {getImageUrl} from '../utils';
+import ViewPages from '../components/ViewPages'
 
 class SelectCar extends Component {
 
@@ -134,9 +135,9 @@ class SelectCar extends Component {
     this.slider.open();
     InteractionManager.runAfterInteractions(() => {
       this.props.carCateActions.getChildCars({
-        id: row.id,
-        selectName: row.name
+        id: row.id
       });
+      this.selectName = row.name;
     });
   }
 
@@ -144,9 +145,9 @@ class SelectCar extends Component {
     this.modal.open();
     InteractionManager.runAfterInteractions(() => {
       this.props.carCateActions.getLastCars({
-        id: item.value,
-        selectName: group.label + '-' + item.label
+        id: item.value
       });
+      this.selectName = group.label + '-' + item.label;
     });
   }
 
@@ -155,7 +156,12 @@ class SelectCar extends Component {
   }
 
   onSelectCarPress(car) {
-    this.props.router.pop();
+    const {selectName}=this.props.carCate;
+    console.log(car);
+    this.props.router.push(ViewPages.list(), {
+      carId: car.id,
+      carName: this.selectName + '-' + car.name
+    });
   }
 
   setVisibleListHeight(offset) {
@@ -305,14 +311,14 @@ class SelectCar extends Component {
       >
         <View style={UI.CommonStyles.select_car_modal_title}>
           <Text style={UI.CommonStyles.select_car_modal_title_left}>已选车型</Text>
-          <Text style={UI.CommonStyles.select_car_modal_title_right}>{carCate.selectName}</Text>
+          <Text style={UI.CommonStyles.select_car_modal_title_right}>{this.selectName}</Text>
         </View>
         {carCate.lastLoaded ? (
           <ScrollView>
             {carCate.lastCars.map((car, index)=> {
               return (
                 <TouchableOpacity
-                  onPress={this.onSelectCarPress.bind(this)}
+                  onPress={this.onSelectCarPress.bind(this,car)}
                   key={index}
                   style={UI.CommonStyles.select_car_modal_item}>
                   <Text>{car.name}</Text>

@@ -29,11 +29,10 @@ export default class ScrollNavs extends Component {
       <TouchableOpacity
         style={UI.CommonStyles.scroll_nav_item}
         activeOpacity={0.75}
+        onPress={()=>{
+          this.props.onNavPress();
+        }}
       >
-        <View style={UI.CommonStyles.columnContainer}>
-          <Text>麦呗商城</Text>
-          <Text>有保障 放心买</Text>
-        </View>
         <Image
           source={nav.uri}
           resizeMode="cover"

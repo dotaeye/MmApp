@@ -2,10 +2,11 @@ import {put, take, select, call, fork} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
+import {selectUser} from '../utils/saga';
 
-function* getShopCartList(payload) {
+export function* getShopCartList(payload = {}) {
   try {
-    const token = yield select(state=>state.user.user.access_token);
+    const token = yield select(selectUser);
     let list = yield call(new Request().get, 'shoppingCartItem', {
       token
     });
@@ -26,7 +27,7 @@ function* getShopCartList(payload) {
 
 function* addShopCart(payload) {
   try {
-    const token = yield select(state=>state.user.user.access_token);
+    const token = yield select(selectUser);
     const shopCartItem = yield call(new Request().post, 'shoppingCartItem', {
       token,
       formJson: true,
@@ -50,7 +51,7 @@ function* addShopCart(payload) {
 function* deleteShopCart(payload) {
   try {
 
-    const token = yield select(state=>state.user.user.access_token);
+    const token = yield select(selectUser);
     const result = yield call(new Request().delete, 'shoppingCartItem', {
       token,
       formJson: true,
@@ -75,7 +76,7 @@ function* deleteShopCart(payload) {
 
 function* updateShopCart(payload) {
   try {
-    const token = yield select(state=>state.user.user.access_token);
+    const token = yield select(selectUser);
     const shopCartItem = yield call(new Request().post, 'shoppingCartItem/update', {
       token,
       formJson: true,

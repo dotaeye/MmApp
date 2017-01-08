@@ -18,9 +18,9 @@ class Router {
     }
   }
 
-  onHomeBackPress(){
+  onHomeBackPress() {
     let currentRoute = this.getCurrentRoute();
-    if (currentRoute.name !== 'home' && currentRoute.name!=='login' && currentRoute.name!='startup') {
+    if (currentRoute.name !== 'home' && currentRoute.name !== 'login' && currentRoute.name != 'startup') {
       this.navigator.pop();
       return true;
     }
@@ -29,7 +29,7 @@ class Router {
     return true;
   }
 
-  handleHomeBackPress(){
+  handleHomeBackPress() {
     if (Platform.OS === "android") {
       ToastAndroid.show("再按一次退出应用", ToastAndroid.SHORT);
       BackAndroid.removeEventListener("hardwareBackPress", this._onHomeBackPress);
@@ -42,35 +42,35 @@ class Router {
     }
   }
 
-  exitApp(){
+  exitApp() {
     BackAndroid.exitApp();
   }
 
-  getRouteList(){
+  getRouteList() {
     return this.navigator.getCurrentRoutes();
   }
 
-  getCurrentRoute(){
+  getCurrentRoute() {
     const routesList = this.getRouteList();
     return routesList[routesList.length - 1];
   }
 
-  getPreviousRoute(){
+  getPreviousRoute() {
     const routesList = this.getRouteList();
     return routesList[routesList.length - 2];
   }
 
-  getNavigator(){
+  getNavigator() {
     return this.navigator;
   }
 
-  setRoute(route, props = {}){
+  setRoute(route, props = {}) {
     route.props = props;
     route.sceneConfig = route.sceneConfig ? route.sceneConfig : routerScene.customPushFromRight;
     route.component = route.component;
   }
 
-  resetTo(route, props = {}){
+  resetTo(route, props = {}) {
     this.setRoute(route, props);
     this.navigator.resetTo(route);
   }
@@ -79,11 +79,11 @@ class Router {
     this.navigator.pop();
   }
 
-  popN(n){
+  popN(n) {
     this.navigator.popN(n);
   }
 
-  popTo(route, props = {}){
+  popTo(route, props = {}) {
     this.setRoute(route, props);
     this.navigator.popToRoute(route);
   }
@@ -94,25 +94,30 @@ class Router {
   }
 
 
-  replace(route, props = {}){
+  replace(route, props = {}) {
     this.setRoute(route, props);
     this.navigator.replace(route);
   }
 
-  replacePrevious(route, props = {}){
+  replacePrevious(route, props = {}) {
     this.setRoute(route, props);
     this.navigator.replacePrevious(route);
   }
 
-  replacePreviousAndPop(route, props = {}){
+  replacePreviousAndPop(route, props = {}) {
     this.setRoute(route, props);
     this.navigator.replacePreviousAndPop(route);
   }
 
-  replaceAtIndex(route, index, props = {}){
+  replaceAtIndex(route, index, props = {}) {
     this.setRoute(route, props);
     this.navigator.replaceAtIndex(route, index)
   }
+
+  pushOrPop(route, props) {
+    const routes = this.getRouteList();
+  }
+
 }
 
 export default Router;

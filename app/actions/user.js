@@ -29,6 +29,13 @@ export function register(payload) {
   };
 }
 
+export function resetPassword(payload) {
+  return {
+    type: actionTypes.RESET_PASSWORD,
+    payload
+  };
+}
+
 export function logout(payload) {
   return {
     type: actionTypes.LOGOUT,

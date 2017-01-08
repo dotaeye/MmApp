@@ -15,6 +15,7 @@ export default function user(state = initialState, action = {}) {
     case actionTypes.REGISTER_SUCCESS:
       return {
         ...state,
+        user: action.user,
         registering: false
       };
 
@@ -59,6 +60,25 @@ export default function user(state = initialState, action = {}) {
         ...state
       };
 
+    case actionTypes.RESET_PASSWORD:
+      return {
+        ...state,
+        loggingIn: true
+      };
+
+    case actionTypes.RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        user: action.user,
+        loggingIn: false
+      };
+
+    case actionTypes.RESET_PASSWORD_FAIL:
+      return {
+        ...state,
+        loggingIn: false,
+        loginError: action.error
+      };
     default:
       return state;
   }

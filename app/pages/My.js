@@ -96,7 +96,11 @@ class My extends Component {
         <View style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
           paddingVertical:10
         }]}>
-          <View style={[UI.CommonStyles.columnContainer,
+          <TouchableOpacity
+            onPress={()=>{this.props.router.push(ViewPages.order(),{
+              status:10
+            })}}
+            style={[UI.CommonStyles.columnContainer,
           UI.CommonStyles.br,
           {
             flex:1,
@@ -105,8 +109,12 @@ class My extends Component {
           }]}>
             <Icon name="ios-card" size={24} color={UI.Colors.grayFont}/>
             <Text>待付款</Text>
-          </View>
-          <View style={[UI.CommonStyles.columnContainer,
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>{this.props.router.push(ViewPages.order(),{
+              status:20
+            })}}
+            style={[UI.CommonStyles.columnContainer,
           UI.CommonStyles.br,
           {
             flex:1,
@@ -115,8 +123,12 @@ class My extends Component {
           }]}>
             <Icon name="ios-archive-outline" size={24} color={UI.Colors.grayFont}/>
             <Text>待发货</Text>
-          </View>
-          <View style={[UI.CommonStyles.columnContainer,
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>{this.props.router.push(ViewPages.order(),{
+              status:30
+            })}}
+            style={[UI.CommonStyles.columnContainer,
           {
             flex:1,
             alignItems:'center',
@@ -124,7 +136,7 @@ class My extends Component {
           }]}>
             <Icon name="ios-send-outline" size={24} color={UI.Colors.grayFont}/>
             <Text>已发货</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -298,7 +310,6 @@ class My extends Component {
         justifyContent:'flex-start',
         backgroundColor:UI.Colors.gray
       }]}>
-        <StatusBar barStyle="light-content"/>
         {this.renderAvatar()}
         {this.renderOrders()}
         {this.renderList()}

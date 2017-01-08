@@ -31,7 +31,7 @@ class Stepper extends Component {
     if (value + 1 <= max) {
       this.setState({
         value: value + 1
-      }, ()=> {
+      }, () => {
         this.props.onChange && this.props.onChange(value + 1)
       })
     }
@@ -44,18 +44,21 @@ class Stepper extends Component {
     if (value - 1 >= min) {
       this.setState({
         value: value - 1
-      }, ()=> {
+      }, () => {
         this.props.onChange && this.props.onChange(value - 1)
       })
     }
   }
 
   onChangeText(number) {
+    if (!number) {
+      number = 0;
+    }
     const {min, max}=this.props;
     if (number >= min && number <= max) {
       this.setState({
         value: number
-      }, ()=> {
+      }, () => {
         this.props.onChange && this.props.onChange(number)
       })
     }

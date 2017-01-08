@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,8 @@ import {
   ScrollView,
   Dimensions,
   InteractionManager,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  Alert
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -21,6 +22,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ViewPages from '../components/ViewPages'
 import * as WeChat from 'react-native-wechat';
 import {Toast} from 'antd-mobile';
+
+
+const propTypes = {
+  popNumber: PropTypes.number
+};
 
 class Pay extends Component {
 
@@ -37,19 +43,45 @@ class Pay extends Component {
   }
 
   onPayCallback(errCode, errStr) {
-    console.log(errCode);
-    console.log(errStr);
+    if (errCode && errStr) {
+      Alert.alert(
+        '支付失败!',
+        errStr,
+        [
+          {
+            text: '确定', onPress: () => {
+          }
+          }
+        ]
+      )
+    } else {
+      this.props.router.replace(ViewPages.order());
+    }
   }
 
   renderNav() {
-    const {router}=this.props;
+    const {router, popNumber}=this.props;
     const nav = {
       Left: [{
         iconName: 'ios-arrow-back',
         iconSize: 20,
         iconColor: UI.Colors.black,
         onPress: ()=> {
-          router.pop();
+          Alert.alert(
+            '确认要放弃付款?',
+            '订单会保留一段时间,请尽快支付',
+            [
+              {
+                text: '继续支付', onPress: () => {
+              }
+              },
+              {
+                text: '确认离开', onPress: () => {
+                router.popN(popNumber);
+              }
+              }
+            ]
+          )
         }
       }],
       Center: [{
@@ -64,17 +96,17 @@ class Pay extends Component {
   }
 
   onWeChatPay() {
-    const {checkOrder}=this.props.order;
+    const {order}=this.props;
     WeChat.isWXAppInstalled()
       .then((isInstalled) => {
         if (isInstalled) {
           const options = {
             partnerId: '1411789502',  // 商家向财付通申请的商家id
-            prepayId: checkOrder.prePayId,   // 预支付订单
-            nonceStr: checkOrder.nonceStr,   // 随机串，防重发
-            timeStamp: checkOrder.timeSpan,  // 时间戳，防重发
+            prepayId: order.prePayId,   // 预支付订单
+            nonceStr: order.nonceStr,   // 随机串，防重发
+            timeStamp: order.timeSpan,  // 时间戳，防重发
             'package': 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
-            sign: checkOrder.weChatSign
+            sign: order.weChatSign
           };
           WeChat.pay(options).then((result)=> {
             console.log(result);
@@ -111,10 +143,13 @@ class Pay extends Component {
   }
 }
 
+Pay.propTypes = propTypes;
 
-export default connect((state, props) => ({
-  order: state.order
-}), dispatch => ({
+Pay.defaultProps = {
+  popNumber: 1
+};
+
+export default connect((state, props) => ({}), dispatch => ({
   orderActions: bindActionCreators(orderActions, dispatch)
 }), null, {
   withRef: true

@@ -8,6 +8,7 @@ import com.beefe.picker.PickerViewPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.cboy.rn.splashscreen.SplashScreenReactPackage;
+import com.theweflex.react.WeChatPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -31,7 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerViewPackage(),
             new RNDeviceInfo(),
             new VectorIconsPackage(),
-            new SplashScreenReactPackage()
+            new SplashScreenReactPackage(),
+            new WeChatPackage()
       );
     }
   };

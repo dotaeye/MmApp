@@ -1,5 +1,5 @@
 import * as actionTypes  from '../common/actionTypes';
-import {updateArrayItem, addArrayItem} from '../utils';
+import {updateArrayItem, addArrayItem, removeArrayItem} from '../utils';
 
 const initialState = {
   loading: false,
@@ -9,7 +9,9 @@ const initialState = {
   loaded: false,
   refreshing: {},
   loadMore: {},
-  checkOrder:{}
+  checkOrder: {},
+  status: {},
+  detailLoading: {}
 };
 
 export default function order(state = initialState, action = {}) {
@@ -40,6 +42,22 @@ export default function order(state = initialState, action = {}) {
         error: action.error
       };
 
+    case actionTypes.ORDER_STATUS:
+      return {
+        ...state,
+        loading: true
+      };
+    case actionTypes.ORDER_STATUS_SUCCESS:
+      return {
+        ...state,
+        status: action.status,
+        loading: false
+      };
+    case actionTypes.ORDER_STATUS_FAIL:
+      return {
+        ...state,
+        loading: false
+      };
     case actionTypes.ADD_ORDER:
       return {
         ...state,
@@ -49,8 +67,7 @@ export default function order(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        // list: addArrayItem(state.list, action.order),
-        checkOrder:action.order
+        checkOrder: action.order
       };
     case actionTypes.ADD_ORDER_FAIL:
       return {
@@ -58,6 +75,36 @@ export default function order(state = initialState, action = {}) {
         loading: false,
         error: action.error
       };
+
+    case actionTypes.ORDER_DETAIL:
+      return {
+        ...state,
+        detailLoading: {
+          ...state.detailLoading,
+          [payload.id]: true
+        }
+      };
+    case actionTypes.ORDER_DETAIL_SUCCESS:
+      return {
+        ...state,
+        orderDetail: {
+          ...state.orderDetail,
+          [payload.id]: action.order
+        },
+        detailLoading: {
+          ...state.detailLoading,
+          [payload.id]: false
+        }
+      };
+    case actionTypes.ORDER_DETAIL_FAIL:
+      return {
+        ...state,
+        detailLoading: {
+          ...state.detailLoading,
+          [payload.id]: false
+        }
+      };
+
     case actionTypes.DELETE_ORDER:
       return {
         ...state,
@@ -67,7 +114,7 @@ export default function order(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        list: updateArrayItem(state.list, action.order)
+        list: deleteOrder(state.list, action.id)
       };
     case actionTypes.DELETE_ORDER_FAIL:
       return {
@@ -85,7 +132,7 @@ export default function order(state = initialState, action = {}) {
       return {
         ...state,
         loading: false,
-        list: action.list
+        list: cancelOrder(state.list, action.id)
       };
 
     case actionTypes.CANCEL_ORDER_FAIL:
@@ -98,6 +145,27 @@ export default function order(state = initialState, action = {}) {
     default:
       return state;
   }
+}
+
+function deleteOrder(list, id) {
+  const keys = Object.keys(list);
+  keys.forEach(key => {
+    if (list[key].orders.find(x => x.id == id)) {
+      list[key].orders = removeArrayItem(list[key].orders, id);
+    }
+  });
+  return list;
+}
+
+
+function cancelOrder(list, id) {
+  const keys = Object.keys(list);
+  keys.forEach(key => {
+    if (list[key].orders.find(x => x.id == id)) {
+      list[key].orders.find(x => x.id == id).orderStatusId = -1;
+    }
+  });
+  return list;
 }
 
 function combineProperty(state, action, property) {

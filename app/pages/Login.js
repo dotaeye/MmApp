@@ -55,7 +55,7 @@ class Login extends Component {
   }
 
   loginSuccess() {
-    this.props.router.pop()
+    this.props.router.resetTo(ViewPages.main());
   }
 
 
@@ -80,8 +80,8 @@ class Login extends Component {
 
     const {showPassword, disabledSubmit}=this.state;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
-        justifyContent:'flex-start'
+      <View style={[UI.CommonStyles.container, UI.CommonStyles.columnContainer, {
+        justifyContent: 'flex-start'
       }]}>
 
         <View style={UI.CommonStyles.logo}>
@@ -90,7 +90,7 @@ class Login extends Component {
 
         <View style={UI.CommonStyles.form}>
           <View style={UI.CommonStyles.formItem}>
-            <View style={[UI.CommonStyles.formLabel,UI.CommonStyles.br]}>
+            <View style={[UI.CommonStyles.formLabel, UI.CommonStyles.br]}>
               <Text>+86</Text>
             </View>
             <TextInput
@@ -106,7 +106,7 @@ class Login extends Component {
           </View>
 
           <View style={UI.CommonStyles.formItem}>
-            <View style={[UI.CommonStyles.formLabel,UI.CommonStyles.br]}>
+            <View style={[UI.CommonStyles.formLabel, UI.CommonStyles.br]}>
               <Text>密码</Text>
             </View>
             <TextInput
@@ -119,24 +119,24 @@ class Login extends Component {
               onChangeText={this.onPasswordChange.bind(this)}
             />
             <TouchableOpacity
-              style={{paddingHorizontal:5,paddingVertical:8}}
-              onPress={()=>{
+              style={{paddingHorizontal: 5, paddingVertical: 8}}
+              onPress={() => {
                 this.setState({
-                  showPassword:!this.state.showPassword
+                  showPassword: !this.state.showPassword
                 })
               }}
             >
               {this.state.showPassword ? (
-                <Image style={{width:18,height:12}} source={require('../images/icon/eye_on.png')}/>
+                <Image style={{width: 18, height: 12}} source={require('../images/icon/eye_on.png')}/>
               ) : (
-                <Image style={{width:18,height:12}} source={require('../images/icon/eye.png')}/>
+                <Image style={{width: 18, height: 12}} source={require('../images/icon/eye.png')}/>
               )}
 
             </TouchableOpacity>
           </View>
-          <View style={[UI.CommonStyles.formButton,(disabledSubmit||loggingIn)&&{opacity:0.6}]}>
+          <View style={[UI.CommonStyles.formButton, (disabledSubmit || loggingIn) && {opacity: 0.6}]}>
             <TouchableHighlight
-              disabled={disabledSubmit||loggingIn}
+              disabled={disabledSubmit || loggingIn}
               onPress={this.onLogin.bind(this)}
               underlayColor={UI.Colors.transparent}
               style={UI.CommonStyles.formButtonTouch}>
@@ -144,9 +144,9 @@ class Login extends Component {
             </TouchableHighlight>
           </View>
 
-          <View style={[UI.CommonStyles.linkButton,{justifyContent:'space-between'}]}>
+          <View style={[UI.CommonStyles.linkButton, {justifyContent: 'space-between'}]}>
             <TouchableOpacity
-              onPress={()=>{
+              onPress={() => {
                 router.push(ViewPages.register())
               }}
               style={UI.CommonStyles.linkButtonTouch}>
@@ -154,11 +154,11 @@ class Login extends Component {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={()=>{
+              onPress={() => {
                 router.push(ViewPages.codeLogin())
               }}
               style={UI.CommonStyles.linkButtonTouch}>
-              <Text style={UI.CommonStyles.linkButtonText}>验证码登录</Text>
+              <Text style={UI.CommonStyles.linkButtonText}>忘记密码?</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -166,7 +166,7 @@ class Login extends Component {
         <View style={styles.close}>
           <TouchableOpacity
             style={styles.button}
-            onPress={()=>{
+            onPress={() => {
               router.pop();
             }}
           >

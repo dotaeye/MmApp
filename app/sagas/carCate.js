@@ -31,7 +31,6 @@ function* getChildCars(payload) {
     const childCars = yield call(new Request().get, 'carcate/all/' + payload.id, {});
     yield put({
       type: actionTypes.CARCATE_LIST_CHILD_SUCCESS,
-      selectName: payload.selectName,
       childCars: childCars
     });
     if (payload.success) {
@@ -56,7 +55,6 @@ function* getLastCars(payload) {
     });
     yield put({
       type: actionTypes.CARCATE_LIST_LAST_SUCCESS,
-      selectName: payload.selectName,
       lastCars: lastCars
     });
     if (payload.success) {

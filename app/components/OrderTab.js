@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Alert,
   View,
   Text,
   Image,
@@ -20,6 +21,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import FaIcon from 'react-native-vector-icons/FontAwesome'
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ViewPages from '../components/ViewPages';
+import {orderStatus} from '../common/orderStatus';
+import {getImageUrl} from '../utils';
 
 
 class OrderTab extends Component {
@@ -52,7 +55,7 @@ class OrderTab extends Component {
     const {orderActions, status}=this.props;
     orderActions.getOrderList({
       status,
-      pageIndex: 1
+      pageIndex: 0
     });
   }
 
@@ -61,7 +64,7 @@ class OrderTab extends Component {
     const {orderActions, status}=this.props;
     orderActions.getOrderList({
       status,
-      pageIndex: 1,
+      pageIndex: 0,
       refreshing: true
     })
   }
@@ -71,6 +74,48 @@ class OrderTab extends Component {
     if (!this.canLoadMore) {
       this.canLoadMore = true;
     }
+  }
+
+  onCancel(id) {
+    const {orderActions}=this.props;
+    Alert.alert(
+      '确认要取消此订单?',
+      null,
+      [
+        {
+          text: '否', onPress: () => {
+        }
+        },
+        {
+          text: '是', onPress: () => {
+          orderActions.cancelOrder({
+            id
+          })
+          }
+        }
+      ]
+    )
+  }
+
+  onDelete(id) {
+    const {orderActions}=this.props;
+    Alert.alert(
+      '确认要删除此订单?',
+      null,
+      [
+        {
+          text: '否', onPress: () => {
+        }
+        },
+        {
+          text: '是', onPress: () => {
+          orderActions.deleteOrder({
+            id
+          })
+        }
+        }
+      ]
+    );
   }
 
   onEndReached() {
@@ -101,6 +146,8 @@ class OrderTab extends Component {
 
   renderRow(item) {
     const {router}=this.props;
+    const shopCart = item.shopCartItems[0];
+    const os = orderStatus.find(x=>x.status == item.orderStatusId);
     return (
       <View style={[
       UI.CommonStyles.columnContainer,
@@ -117,14 +164,20 @@ class OrderTab extends Component {
 
         }]}>
           <Text>订单编号: {item.id}</Text>
-          <FaIcon
-            name='trash-o'
-            size={22}
-            color={UI.Colors.grayFont}
-            style={{
+          {os.status < 20 && (
+            <TouchableOpacity
+              onPress={this.onDelete.bind(this,item.id)}
+            >
+              <FaIcon
+                name='trash-o'
+                size={22}
+                color={UI.Colors.grayFont}
+                style={{
                 marginRight:5
               }}
-          />
+              />
+            </TouchableOpacity>
+          )}
         </View>
         <TouchableOpacity
           onPress={()=>{
@@ -132,7 +185,7 @@ class OrderTab extends Component {
           }}
           style={[UI.CommonStyles.rowContainer,{padding:10}]}>
           <Image
-            source={require('../images/products/product.jpg')}
+            source={{uri:getImageUrl(shopCart.imageUrl)}}
             style={{
               width:80,
               height:80
@@ -146,8 +199,7 @@ class OrderTab extends Component {
                   justifyContent:'space-between'
 
                 }]}>
-              <Text>{item.name}</Text>
-              <Text>包裹{item.count}</Text>
+              <Text>{shopCart.name}</Text>
             </View>
             <View style={[
                 UI.CommonStyles.rowContainer,
@@ -159,49 +211,61 @@ class OrderTab extends Component {
                 fontSize:UI.Size.font.ms,
                 color:UI.Colors.grayFont,
                 marginTop:5
-              }}>共{item.count}个商品</Text>
+              }}>共{item.shopCartItems.length}个商品</Text>
               <Text style={{
                 fontSize:UI.Size.font.ms,
                 marginTop:5
-              }}>已取消</Text>
+              }}>{os.name}</Text>
             </View>
           </View>
         </TouchableOpacity>
-        <View style={[
-        UI.CommonStyles.rowContainer,
-        UI.CommonStyles.bt,
-        {
-          padding:10,
-          justifyContent:'space-between',
-          alignItems:'center'
-        }]}>
-
-          <Text>实付:<Text
-            style={{
-              color:UI.Colors.danger
-            }}>￥ 188.0</Text>
-          </Text>
-
+        {os.status > 0 && (
           <View style={[
+            UI.CommonStyles.rowContainer,
+            UI.CommonStyles.bt,
+            {
+              padding:10,
+              justifyContent:'space-between',
+              alignItems:'center'
+            }]}>
+            <Text>实付:<Text
+              style={{
+              color:UI.Colors.danger
+            }}>￥ {item.orderTotal}</Text>
+            </Text>
+            <View style={[
             UI.CommonStyles.rowContainer]}>
-            <TouchableOpacity style={[UI.CommonStyles.button,{marginRight:10}]}>
-              <Text>取消订单</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={UI.CommonStyles.button}>
-              <Text>付款</Text>
-            </TouchableOpacity>
+              {os.status < 20 && (
+                <TouchableOpacity
+                  style={[UI.CommonStyles.button,{marginRight:10}]}
+                  onPress={this.onCancel.bind(this,item.id)}>
+                  <Text>取消订单</Text>
+                </TouchableOpacity>
+              )}
+              {os.status < 20 && (
+                <TouchableOpacity
+                  style={UI.CommonStyles.button}
+                  onPress={()=>{
+                  this.props.router.push(ViewPages.pay(),{
+                    order:item
+                  })
+                }}
+                >
+                  <Text>付款</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
-        </View>
+        )}
       </View>
-
     )
   }
 
 
   render() {
     const {order, status} = this.props;
-    const isEmpty = order.list[status] && order.list[status].length === 0;
-    if (!order.loaded||!order.list[status]) {
+    const isEmpty = order.list[status] && order.list[status].orders && order.list[status].orders.length === 0;
+    if (!order.loaded || !order.list[status]) {
       return <Loading />;
     }
 
@@ -215,7 +279,7 @@ class OrderTab extends Component {
           refreshControl={
             <RefreshControl
               style={{ backgroundColor: 'transparent' }}
-              refreshing={order.refreshing}
+              refreshing={order.refreshing[status]}
               onRefresh={() => this.onRefresh()}
               title="Loading..."
               colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
@@ -233,7 +297,7 @@ class OrderTab extends Component {
     return (
       <ListView
         initialListSize={5}
-        dataSource={this.state.dataSource.cloneWithRows(order.list[status])}
+        dataSource={this.state.dataSource.cloneWithRows(order.list[status].orders)}
         renderRow={this.renderRow.bind(this)}
         style={styles.listView}
         onEndReached={() => this.onEndReached()}

@@ -2,6 +2,7 @@ import {put, take, call, fork, select} from 'redux-saga/effects';
 import {Toast} from 'antd-mobile';
 import * as actionTypes from '../common/actionTypes'
 import Request from '../utils/Request';
+import FakeRequest from '../utils/FakeRequest';
 import {selectUser} from '../utils/saga';
 
 function* getOrderList(payload) {
@@ -29,9 +30,35 @@ function* getOrderList(payload) {
   }
 }
 
+export function* getOrderStatus(payload = {}) {
+  try {
+    const token = yield select(selectUser);
+    // let status = yield call(new Request().get, 'order/status', {
+    //   token
+    // });
+    let status = yield  call(FakeRequest, {
+      10: 3,
+      20: 1,
+      30: 2
+    }, 1000);
+    yield put({
+      type: actionTypes.ORDER_STATUS_SUCCESS,
+      status
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
+    return status;
+  } catch (error) {
+    if (error && error.message !== '') {
+      Toast.info(error.message);
+    }
+  }
+}
+
 function* addOrder(payload) {
   try {
-    const token = yield select(state=>state.user.user.access_token);
+    const token = yield select(selectUser);
     const order = yield call(new Request().post, 'order', {
       token,
       formJson: true,
@@ -41,6 +68,12 @@ function* addOrder(payload) {
       type: actionTypes.ADD_ORDER_SUCCESS,
       order
     });
+
+    yield put({
+      type: actionTypes.DELETE_SHOP_CART_SUCCESS,
+      ids: payload.data.shopCartIds
+    });
+
     if (payload.success) {
       yield call(payload.success);
     }
@@ -54,12 +87,12 @@ function* addOrder(payload) {
 
 function* deleteOrder(payload) {
   try {
-    const token = yield select(state=>state.user.user.access_token);
+    const token = yield select(selectUser);
     const result = yield call(new Request().delete, 'order/' + payload.id, {
       token
     });
     yield put({
-      type: actionTypes.DELETE_SHOP_CART_SUCCESS,
+      type: actionTypes.DELETE_ORDER_SUCCESS,
       id: payload.id
     });
     if (payload.success) {
@@ -75,17 +108,43 @@ function* deleteOrder(payload) {
 
 function* cancelOrder(payload) {
   try {
-
-    //yield call(FakeRequest, {}, 2000);
-    // yield call(new Request().get, 'user/verification', {
-    //  data
-    // });
+    const token = yield select(selectUser);
+    const result = yield call(new Request().delete, 'order/cancel/' + payload.id, {
+      token
+    });
     yield put({
-      type: actionTypes.CANCEL_ORDER_SUCCESS
+      type: actionTypes.CANCEL_ORDER_SUCCESS,
+      id: payload.id
     });
     if (payload.success) {
       yield call(payload.success);
     }
+    return result;
+  } catch (error) {
+    if (error && error.message !== '') {
+      Toast.info(error.message);
+    }
+  }
+}
+
+
+function* getOrder(payload) {
+  try {
+    const token = yield select(selectUser);
+    const order = yield call(new Request().get, 'order/' + payload.id, {
+      token
+    });
+    yield put({
+      type: actionTypes.CANCEL_ORDER_SUCCESS,
+      order,
+      payload: {
+        id: payload.id
+      }
+    });
+    if (payload.success) {
+      yield call(payload.success);
+    }
+    return result;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);
@@ -95,9 +154,16 @@ function* cancelOrder(payload) {
 
 export function* watchGetOrderList() {
   while (true) {
-    console.log('watchGetOrderList')
     const {payload} = yield take(actionTypes.ORDER_LIST);
     yield fork(getOrderList, payload);
+  }
+}
+
+
+export function* watchGetOrderStatus() {
+  while (true) {
+    const {payload} = yield take(actionTypes.ORDER_STATUS);
+    yield fork(getOrderStatus, payload);
   }
 }
 
@@ -122,6 +188,12 @@ export function* watchCancelOrder() {
   }
 }
 
+export function* watchGetOrder() {
+  while (true) {
+    const {payload} = yield take(actionTypes.ORDER_DETAIL);
+    yield fork(getOrder, payload);
+  }
+}
 
 
 

@@ -45,7 +45,16 @@ class ShopCart extends Component {
   }
 
   fetchData() {
-    this.props.shopCartActions.getShopCartList({});
+    this.props.shopCartActions.getShopCartList({
+      success: () => {
+        const {shopCart}=this.props;
+        if (shopCart.list.length) {
+          this.setState({
+            selectedIds: shopCart.list.map(x => x.id)
+          })
+        }
+      }
+    });
   }
 
   onRefresh() {
@@ -75,7 +84,7 @@ class ShopCart extends Component {
     if (editEnabled) {
       this.props.shopCartActions.deleteShopCart({
         ids: selectedIds,
-        success: ()=> {
+        success: () => {
           this.setState({
             selectedIds: []
           })
@@ -97,7 +106,7 @@ class ShopCart extends Component {
       })
     } else {
       this.setState({
-        selectedIds: shopCart.list.map(x=>x.id)
+        selectedIds: shopCart.list.map(x => x.id)
       })
     }
   }
@@ -127,7 +136,7 @@ class ShopCart extends Component {
     let total = 0;
     const {selectedIds}=this.state;
     const {shopCart}=this.props;
-    shopCart.list.forEach(item=> {
+    shopCart.list.forEach(item => {
       if (selectedIds.includes(item.id)) {
         total += item.unitPrice * item.quantity;
       }
@@ -143,7 +152,7 @@ class ShopCart extends Component {
         iconName: 'ios-arrow-back',
         iconSize: 20,
         iconColor: UI.Colors.black,
-        onPress: ()=> {
+        onPress: () => {
           router.pop();
         }
       }],
@@ -181,59 +190,59 @@ class ShopCart extends Component {
         UI.CommonStyles.rowContainer,
         UI.CommonStyles.bb,
         {
-          padding:10,
-          alignItems:'center'
+          padding: 10,
+          alignItems: 'center'
         }
       ]}>
         <TouchableOpacity
           style={{
-            paddingHorizontal:8,
-            height:60,
-            alignItems:'center',
-            justifyContent:'center'
+            paddingHorizontal: 8,
+            height: 60,
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
-          onPress={this.onSelectItem.bind(this,item.id)}
+          onPress={this.onSelectItem.bind(this, item.id)}
         >
           <Icon name={iconName} size={20} color={UI.Colors.danger}/>
         </TouchableOpacity>
         <View
-          style={[UI.CommonStyles.rowContainer,{flex:1}]}>
+          style={[UI.CommonStyles.rowContainer, {flex: 1}]}>
           <Image
-            source={{uri:getImageUrl(item.imageUrl)}}
+            source={{uri: getImageUrl(item.imageUrl)}}
             style={{
-              width:60,
-              height:60
+              width: 60,
+              height: 60
             }}/>
           <View style={[
             UI.CommonStyles.container,
             UI.CommonStyles.columnContainer]}>
             <View style={[
-                UI.CommonStyles.rowContainer,
-                {
-                  justifyContent:'space-between'
-                }]}>
+              UI.CommonStyles.rowContainer,
+              {
+                justifyContent: 'space-between'
+              }]}>
               <Text>{item.name} </Text>
               <Text>x{item.quantity}</Text>
             </View>
 
             <Text style={{
-                fontSize:UI.Size.font.ms,
-                color:UI.Colors.grayFont,
-                marginTop:5
-              }}>{item.attributesXml} 共{item.quantity}个商品</Text>
+              fontSize: UI.Size.font.ms,
+              color: UI.Colors.grayFont,
+              marginTop: 5
+            }}>{item.attributesXml} 共{item.quantity}个商品</Text>
 
             <View style={[
-                UI.CommonStyles.rowContainer,
-                {
-                  justifyContent:'space-between',
-                  alignItems:'center',
-                  height:28
-                }]}>
+              UI.CommonStyles.rowContainer,
+              {
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                height: 28
+              }]}>
               <Text>￥{item.price}</Text>
               {editEnabled && <Stepper
                 value={item.quantity}
                 max={30}
-                onChange={this.onUpdateItem.bind(this,item)}/>}
+                onChange={this.onUpdateItem.bind(this, item)}/>}
             </View>
           </View>
         </View>
@@ -247,9 +256,9 @@ class ShopCart extends Component {
     return (
       <ListView
         style={{
-          marginTop:10
+          marginTop: 10
         }}
-        ref={(view)=> this.listView = view }
+        ref={(view) => this.listView = view }
         removeClippedSubviews
         enableEmptySections={ true }
         onEndReachedThreshold={ 30 }
@@ -259,11 +268,11 @@ class ShopCart extends Component {
         dataSource={ this.state.dataSource.cloneWithRows(shopCart.list) }
         renderRow={this.renderListRow.bind(this)}
         refreshControl={
-            <RefreshControl
-              refreshing={shopCart.refreshing}
-              onRefresh={this.onRefresh.bind(this)}
-            />
-           }
+          <RefreshControl
+            refreshing={shopCart.refreshing}
+            onRefresh={this.onRefresh.bind(this)}
+          />
+        }
       />
     )
   }
@@ -275,44 +284,44 @@ class ShopCart extends Component {
 
     return (
       <View style={[UI.CommonStyles.rowContainer,
-      UI.CommonStyles.bt,
-      {
-        height:50,
-        position:'absolute',
-        bottom:0,
-        left:0,
-        right:0,
-        alignItems:'center'
-      }]}>
-        <View style={[UI.CommonStyles.rowContainer,{
-          justifyContent:'space-between',
-          flex:1,
-          height:50,
-          alignItems:'center'
+        UI.CommonStyles.bt,
+        {
+          height: 50,
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          alignItems: 'center'
+        }]}>
+        <View style={[UI.CommonStyles.rowContainer, {
+          justifyContent: 'space-between',
+          flex: 1,
+          height: 50,
+          alignItems: 'center'
         }]}>
           <TouchableOpacity
             onPress={this.onSelectAll.bind(this)}
-            style={[UI.CommonStyles.rowContainer,{paddingLeft:10}]}>
+            style={[UI.CommonStyles.rowContainer, {paddingLeft: 10}]}>
             <Icon name={iconName} size={20} color={UI.Colors.danger}/>
             <Text style={{
-              marginLeft:10
+              marginLeft: 10
             }}>已选 ({selectedIds.length})</Text>
           </TouchableOpacity>
-          <View style={{flex:1}}>
-            <Text style={{marginRight:10,textAlign:'right'}}>￥{this.getTotal()}</Text>
+          <View style={{flex: 1}}>
+            <Text style={{marginRight: 10, textAlign: 'right'}}>￥{this.getTotal()}</Text>
           </View>
         </View>
         <TouchableOpacity
           style={[{
-            backgroundColor:UI.Colors.grayFont,
-            height:50,
-            width:80,
-            alignItems:'center',
-            justifyContent:'center'
-          },selectedIds.length>0&&{ backgroundColor:UI.Colors.danger}]}
+            backgroundColor: UI.Colors.grayFont,
+            height: 50,
+            width: 80,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }, selectedIds.length > 0 && {backgroundColor: UI.Colors.danger}]}
           onPress={this.onToolButtonClick.bind(this)}
         >
-          <Text style={{color:UI.Colors.white}}>{editEnabled ? "删除所选" : "下单"}</Text>
+          <Text style={{color: UI.Colors.white}}>{editEnabled ? "删除所选" : "下单"}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -321,11 +330,11 @@ class ShopCart extends Component {
   render() {
     return (
       <View style={[
-      UI.CommonStyles.container,
-      UI.CommonStyles.columnContainer,
-      {
-        backgroundColor:UI.Colors.gray
-      }]}>
+        UI.CommonStyles.container,
+        UI.CommonStyles.columnContainer,
+        {
+          backgroundColor: UI.Colors.gray
+        }]}>
         {this.renderNav()}
         {this.renderList()}
         {this.renderBottom()}

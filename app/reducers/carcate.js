@@ -36,8 +36,7 @@ export default function carCate(state = initialState, action = {}) {
       return {
         ...state,
         childCars: action.childCars,
-        childLoaded: true,
-        selectName: action.selectName
+        childLoaded: true
       };
     case actionTypes.CARCATE_LIST_CHILD_FAIL:
       return {
@@ -52,8 +51,7 @@ export default function carCate(state = initialState, action = {}) {
       return {
         ...state,
         lastCars: action.lastCars,
-        lastLoaded: true,
-        selectName: state.selectName + '-' + action.selectName
+        lastLoaded: true
       };
     case actionTypes.CARCATE_LIST_LAST_FAIL:
       return {

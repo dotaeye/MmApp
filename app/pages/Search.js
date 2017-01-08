@@ -44,9 +44,7 @@ class Search extends Component {
 
   onSearch() {
     if (this.state.keywords) {
-      this.props.router.replace(ViewPages.list(), {
-        keywords: this.state.keywords
-      });
+      this.replaceToList(this.state.keywords)
     }
   }
 
@@ -56,9 +54,15 @@ class Search extends Component {
     })
   }
 
+  replaceToList(keywords) {
+    this.props.router.replace(ViewPages.list(), {
+      keywords
+    });
+  }
+
   renderSearchView() {
     return (
-      <View style={UI.CommonStyles.search_box}>
+      <View style={[UI.CommonStyles.search_box, {marginLeft: 10}]}>
         <Icon
           style={UI.CommonStyles.search_box_icon}
           name="ios-search"
@@ -71,6 +75,9 @@ class Search extends Component {
           autoCapitalize={'none'}
           autoCorrect={false}
           placeholder="搜索"
+          returnKeyType="search"
+          enablesReturnKeyAutomatically={true}
+          onSubmitEditing={this.onSearch.bind(this)}
           style={UI.CommonStyles.search_box_input}
         />
       </View>
@@ -87,31 +94,28 @@ class Search extends Component {
   }
 
   renderHot() {
-
     const {search}=this.props;
-
     return (
       <View style={UI.CommonStyles.columnContainer}>
         <View style={UI.CommonStyles.search_hot_title}>
           <Text style={UI.CommonStyles.search_hot_title_text}>热门搜索</Text>
         </View>
         <View style={[UI.CommonStyles.search_hot, UI.CommonStyles.wrap_list]}>
-          {search.hot.map((hotItem, index)=> {
+          {search.hot.map((hotItem, index) => {
             return (
-              <View
+              <TouchableOpacity
+                onPress={this.replaceToList.bind(this, hotItem.name)}
                 key={index}
                 style={UI.CommonStyles.search_hot_item}>
                 <Text style={UI.CommonStyles.search_hot_item_text}>
                   {hotItem.name}
                 </Text>
-              </View>
+              </TouchableOpacity>
             )
           })}
         </View>
       </View>
-
     )
-
   }
 
   renderList() {
@@ -121,15 +125,15 @@ class Search extends Component {
         <View style={UI.CommonStyles.search_history_title}>
           <Text style={UI.CommonStyles.search_history_title_text}>搜索历史</Text>
         </View>
-        {search.list.map((item, index)=> {
+        {search.list.map((item, index) => {
           return (
-            <View
+            <TouchableOpacity
               key={index}
               style={UI.CommonStyles.search_item}>
               <Text style={UI.CommonStyles.search_item_text}>
                 {item.name}
               </Text>
-            </View>
+            </TouchableOpacity>
           )
         })}
       </View>
@@ -141,35 +145,27 @@ class Search extends Component {
     const {router, search}=this.props;
 
     const nav = {
-      Left: [{
-        source: require('../images/icon/back.png'),
-        style: {
-          width: 13,
-          height: 15
-        },
-        onPress: ()=> {
-          router.pop();
-        }
-      }],
       Right: [{
-        text: '搜索',
+        text: '取消',
         style: {
           width: 20,
           height: 20
         },
-        onPress: this.onSearch.bind(this)
+        onPress: () => {
+          router.pop();
+        }
       }]
     };
 
     return (
-      <View style={[UI.CommonStyles.container,{backgroundColor:UI.Colors.gray}]}>
+      <View style={[UI.CommonStyles.container, {backgroundColor: UI.Colors.gray}]}>
         <NavBar options={nav}>
           {this.renderSearchView()}
         </NavBar>
         {search.listLoaded ? (
           <ScrollView>
             {this.renderHot()}
-            {this.renderList()}
+            {/*{this.renderList()}*/}
           </ScrollView>
         ) : (
           <Loading/>

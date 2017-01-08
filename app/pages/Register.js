@@ -38,25 +38,30 @@ class Register extends Component {
     const {disabledSubmit}=this.state;
     if (loggingIn || disabledSubmit) return;
     if (!validPhone(this.state.telephone)) {
-      Toast.info('输入的手机号码不正确');
+      Toast.info('输入的正确的手机号码');
       return;
     }
     if (!validPassword(this.state.loginPassword)) {
       Toast.info('请输入6-16位密码');
       return;
     }
+
+    if (this.state.refPhone != null && !validPhone(this.state.refPhone)) {
+      Toast.info('输入的正确的推荐人手机号码');
+      return;
+    }
     let data = {
       telephone: this.state.telephone,
       telVerifyCode: this.state.telVerifyCode,
       loginPassword: this.state.loginPassword,
+      refPhone: this.state.refPhone,
       success: this.registerSuccess.bind(this)
     };
     userActions.register(data)
   }
 
   registerSuccess() {
-    const {router}=this.props;
-    router.replace(ViewPages.login())
+    this.props.router.resetTo(ViewPages.main());
   }
 
   componentWillUnmount() {
@@ -64,7 +69,6 @@ class Register extends Component {
   }
 
   onGetSmsCode() {
-    const {userActions}=this.props;
     const {telVerifyCodeSecond, telephone}=this.state;
 
     if (!validPhone(telephone)) {
@@ -73,11 +77,11 @@ class Register extends Component {
     }
 
     if (telVerifyCodeSecond > 0) return;
-    userActions.verificationCode(telephone);
+    this.props.userActions.verificationCode(telephone);
     this.setState({
       telVerifyCodeSecond: 60
-    }, ()=> {
-      this.timer = setInterval(()=> {
+    }, () => {
+      this.timer = setInterval(() => {
         if (this.state.telVerifyCodeSecond === 0) {
           clearInterval(this.timer);
         } else {
@@ -113,20 +117,26 @@ class Register extends Component {
     })
   }
 
+  onRefPhoneChange(refPhone) {
+    this.setState({
+      refPhone
+    })
+  }
+
   render() {
     const {router}=this.props;
     const {registering}=this.props.user;
     const {showPassword, telVerifyCodeSecond, disabledSubmit}=this.state;
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
-        justifyContent:'flex-start'
+      <View style={[UI.CommonStyles.container, UI.CommonStyles.columnContainer, {
+        justifyContent: 'flex-start'
       }]}>
         <View style={[UI.CommonStyles.logoText]}>
-          <Text style={{fontSize:UI.Size.font.lg}}>手机号注册</Text>
+          <Text style={{fontSize: UI.Size.font.lg}}>手机号注册</Text>
         </View>
         <View style={UI.CommonStyles.form}>
           <View style={UI.CommonStyles.formItem}>
-            <View style={[UI.CommonStyles.formLabel,UI.CommonStyles.br]}>
+            <View style={[UI.CommonStyles.formLabel, UI.CommonStyles.br]}>
               <Text >+86</Text>
             </View>
             <TextInput
@@ -141,7 +151,7 @@ class Register extends Component {
             />
           </View>
           <View style={UI.CommonStyles.formItem}>
-            <View style={[UI.CommonStyles.formLabel,{paddingRight:0}]}>
+            <View style={[UI.CommonStyles.formLabel, {paddingRight: 0}]}>
               <Text>验证码</Text>
             </View>
             <TextInput
@@ -157,7 +167,7 @@ class Register extends Component {
             <TouchableOpacity
               onPress={this.onGetSmsCode.bind(this)}
             >
-              <Text style={telVerifyCodeSecond?{color:UI.Colors.grayFont}:{color:UI.Colors.link}}>
+              <Text style={telVerifyCodeSecond ? {color: UI.Colors.grayFont} : {color: UI.Colors.link}}>
                 {telVerifyCodeSecond ? `${telVerifyCodeSecond}秒后再次获取` : '获取'}
               </Text>
             </TouchableOpacity>
@@ -176,25 +186,40 @@ class Register extends Component {
               onChangeText={this.onPasswordChange.bind(this)}
             />
             <TouchableOpacity
-              style={{paddingHorizontal:5,paddingVertical:8}}
-              onPress={()=>{
+              style={{paddingHorizontal: 5, paddingVertical: 8}}
+              onPress={() => {
                 this.setState({
-                  showPassword:!this.state.showPassword
+                  showPassword: !this.state.showPassword
                 })
               }}
             >
               {this.state.showPassword ? (
-                <Image style={{width:18,height:12}} source={require('../images/icon/eye_on.png')}/>
+                <Image style={{width: 18, height: 12}} source={require('../images/icon/eye_on.png')}/>
               ) : (
-                <Image style={{width:18,height:12}} source={require('../images/icon/eye.png')}/>
+                <Image style={{width: 18, height: 12}} source={require('../images/icon/eye.png')}/>
               )}
 
             </TouchableOpacity>
           </View>
-          <View style={[UI.CommonStyles.formButton,(registering||disabledSubmit)&&{opacity:0.6}]}>
+          <View style={UI.CommonStyles.formItem}>
+            <View style={[UI.CommonStyles.formLabel, UI.CommonStyles.br]}>
+              <Text>推荐</Text>
+            </View>
+            <TextInput
+              style={UI.CommonStyles.formItemInput}
+              placeholder={'推荐人手机号（可不填）'}
+              underlineColorAndroid={'transparent'}
+              autoCapitalize={'none'}
+              autoCorrect={false}
+              keyboardType={'numeric'}
+              maxLength={11}
+              onChangeText={this.onRefPhoneChange.bind(this)}
+            />
+          </View>
+          <View style={[UI.CommonStyles.formButton, (registering || disabledSubmit) && {opacity: 0.6}]}>
             <TouchableHighlight
               onPress={this.onRegister.bind(this)}
-              disabled={registering||disabledSubmit}
+              disabled={registering || disabledSubmit}
               underlayColor={UI.Colors.transparent}
               style={UI.CommonStyles.formButtonTouch}>
               <Text
@@ -223,7 +248,7 @@ class Register extends Component {
         <View style={styles.close}>
           <TouchableOpacity
             style={styles.button}
-            onPress={()=>{
+            onPress={() => {
               router.pop();
             }}
           >

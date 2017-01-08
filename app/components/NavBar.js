@@ -25,7 +25,6 @@ class NavBar extends Component {
           <View
             key={position}
             style={[UI.CommonStyles.navBarWrapper, UI.CommonStyles['navBarWrapper'+position]]}>
-            <StatusBar barStyle="default"/>
             {navPart.map((nav, navIndex)=> {
               if (nav.isView) {
                 return nav.View
@@ -40,7 +39,7 @@ class NavBar extends Component {
                   <Button
                     iconName={nav.iconName}
                     iconSize={nav.iconSize||24}
-                    iconColor={nav.iconColor||UI.Colors.black}
+                    iconColor={nav.iconColor||UI.Colors.white}
                     source={nav.source}
                     style={nav.style}
                     containerStyle={nav.containerStyle}
@@ -68,5 +67,4 @@ class NavBar extends Component {
     )
   }
 }
-
 export default NavBar;

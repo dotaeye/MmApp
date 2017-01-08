@@ -4,7 +4,8 @@ const initialState = {
   list: {
     banners: [],
     hotCategories: [],
-    hotManufacturers: []
+    hotManufacturers: [],
+    orders: {}
   },
   loaded: false
 };

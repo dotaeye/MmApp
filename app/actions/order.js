@@ -1,8 +1,6 @@
 import * as actionTypes  from '../common/actionTypes';
 
-
 export function getOrderList(payload) {
-  console.log('ORDER_LIST');
   return {
     type: actionTypes.ORDER_LIST, 
     payload

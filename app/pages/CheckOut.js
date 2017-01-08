@@ -58,8 +58,8 @@ class CheckOut extends Component {
     if (addressId) {
       defaultAddress = address.list.find(x=>x.id == addressId);
     } else {
-      // const defaultAddress = address.list.find(x=>x.default);
-      defaultAddress = address.list[0];
+      defaultAddress = address.list.find(x=>x.default);
+      // defaultAddress = address.list[0];
     }
     orderActions.addOrder({
       data: {
@@ -75,7 +75,8 @@ class CheckOut extends Component {
     const {order, router}=this.props;
     const currentOrder = order.checkOrder;
     router.push(ViewPages.pay(), {
-      order: currentOrder
+      order: currentOrder,
+      popNumber: 2
     });
   }
 
@@ -119,8 +120,8 @@ class CheckOut extends Component {
     if (addressId) {
       defaultAddress = address.list.find(x=>x.id == addressId);
     } else {
-      // const defaultAddress = address.list.find(x=>x.default);
-      defaultAddress = address.list[0];
+      defaultAddress = address.list.find(x=>x.default);
+      // defaultAddress = address.list[0];
     }
     return (
       <TouchableOpacity

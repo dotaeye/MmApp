@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions
 } from 'react-native';
+import _ from 'lodash';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
@@ -17,8 +18,16 @@ import NavBar from '../components/NavBar';
 import UI from '../common/UI';
 import OrderTab from '../components/OrderTab'
 import * as orderActions from '../actions/order'
+import {orderStatus} from '../common/orderStatus';
 
 class Order extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      status: props.status || 0
+    }
+  }
 
   renderNav() {
     const {router}=this.props;
@@ -44,21 +53,9 @@ class Order extends Component {
   }
 
   renderTabs() {
-    const tabs = [{
-      name: '全部',
-      status: 0
-    }, {
-      name: '待付款',
-      status: 1
-    }, {
-      name: '待发货',
-      status: 2
-    }, {
-      name: '已发货',
-      status: 3
-    }];
+
     const {order, orderActions}=this.props;
-    return tabs.map((tab, index)=> {
+    return orderStatus.filter(x=>x.status >= 0).map((tab, index)=> {
       return (
         <OrderTab
           router={this.props.router}
@@ -73,6 +70,8 @@ class Order extends Component {
   }
 
   render() {
+    const {status}=this.state;
+    const initialPage = _.indexOf(orderStatus, orderStatus.find(x=>x.status == status));
     return (
       <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
         backgroundColor:UI.Colors.gray
@@ -86,13 +85,13 @@ class Order extends Component {
                 textStyle={{ fontSize: 14 }}
               />
             }
-
+          initialPage={initialPage}
           tabBarBackgroundColor={UI.Colors.white}
           tabBarUnderlineStyle={{ backgroundColor: UI.Colors.danger,
-          height: 2,
-          paddingHorizontal:25,
-          width:UI.Size.window.width/4-50,
-          marginLeft:25
+            height: 2,
+            paddingHorizontal:15,
+            width:UI.Size.window.width/5-30,
+            marginLeft:15
           }}
           tabBarActiveTextColor={UI.Colors.danger}
           tabBarInactiveTextColor={UI.Colors.black}

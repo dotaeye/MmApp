@@ -56,6 +56,11 @@
 -keepattributes *Annotation*
 -keep class okhttp3.** { *; }
 -keep interface okhttp3.** { *; }
+
+-keep class com.tencent.mm.sdk.** {
+   *;
+}
+
 -dontwarn okhttp3.**
 
 # okio
@@ -64,3 +69,4 @@
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
+
