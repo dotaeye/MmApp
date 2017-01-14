@@ -211,20 +211,13 @@ class ShopCart extends Component {
             source={{uri: getImageUrl(item.imageUrl)}}
             style={{
               width: 60,
-              height: 60
+              height: 60,
+              marginRight:10
             }}/>
           <View style={[
             UI.CommonStyles.container,
             UI.CommonStyles.columnContainer]}>
-            <View style={[
-              UI.CommonStyles.rowContainer,
-              {
-                justifyContent: 'space-between'
-              }]}>
-              <Text>{item.name} </Text>
-              <Text>x{item.quantity}</Text>
-            </View>
-
+            <Text numberOfLines={2}>{item.name} </Text>
             <Text style={{
               fontSize: UI.Size.font.ms,
               color: UI.Colors.grayFont,

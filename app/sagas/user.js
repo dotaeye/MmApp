@@ -38,7 +38,7 @@ function* login(payload) {
 
 function* register(payload) {
   try {
-    const token = yield call(new Request().post, 'account/register', {
+    yield call(new Request().post, 'account/register', {
       data: {
         email: payload.telephone,
         password: payload.loginPassword,
@@ -47,10 +47,9 @@ function* register(payload) {
       },
       formJson: true
     });
-    yield call(Storage.save, config.token, token);
+    yield call(login, payload);
     yield put({
-      type: actionTypes.REGISTER_SUCCESS,
-      user: token
+      type: actionTypes.REGISTER_SUCCESS
     });
     if (payload.success) {
       yield call(payload.success);
@@ -68,7 +67,7 @@ function* register(payload) {
 
 function* resetPassword(payload) {
   try {
-    const token = yield call(new Request().post, 'account/setpassword', {
+    yield call(new Request().post, 'account/setpassword', {
       data: {
         userName: payload.telephone,
         newPassword: payload.loginPassword,
@@ -76,10 +75,9 @@ function* resetPassword(payload) {
       },
       formJson: true
     });
-    yield call(Storage.save, config.token, token);
+    yield call(login, payload);
     yield put({
-      type: actionTypes.RESET_PASSWORD_SUCCESS,
-      user: token
+      type: actionTypes.RESET_PASSWORD_SUCCESS
     });
     if (payload.success) {
       yield call(payload.success);
@@ -87,7 +85,7 @@ function* resetPassword(payload) {
 
   } catch (error) {
     yield put({
-      type: actionTypes.REGISTER_FAIL
+      type: actionTypes.RESET_PASSWORD_FAIL
     });
     if (error && error.message !== '') {
       Toast.info(error.message)

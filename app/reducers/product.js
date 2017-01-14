@@ -9,7 +9,12 @@ const initialState = {
   },
   hasMore: true,
   pageIndex: 1,
-  refreshing: false
+  refreshing: false,
+  vipList: {
+    list: []
+  },
+  vipAlbumProduct: {},
+  vipAlbumProductDetail: {}
 };
 
 export default function product(state = initialState, action = {}) {
@@ -29,7 +34,7 @@ export default function product(state = initialState, action = {}) {
         loading: false,
         hasMore: action.hasMore,
         refreshing: false,
-        list: action.loadMore ? loadMore(state, action) : action.list,
+        list: action.loadMore ? loadMore(state.list, action) : action.list,
         loadMore: false,
         loaded: true
       };
@@ -55,12 +60,172 @@ export default function product(state = initialState, action = {}) {
         ...state,
         error: action.error
       };
+
+    case actionTypes.GET_VIP_PRODUCT:
+      return {
+        ...state,
+        vipList: {
+          loading: true,
+          loadMore: payload.loadMore || false,
+          refreshing: payload.refreshing || false,
+          pageIndex: payload.pageIndex,
+        }
+      };
+    case actionTypes.GET_VIP_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        vipList: {
+          loading: false,
+          hasMore: payload.hasMore,
+          refreshing: false,
+          list: payload.loadMore ? loadMore(state, payload) : payload.list,
+          loadMore: false,
+          loaded: true
+        }
+      };
+    case actionTypes.GET_VIP_PRODUCT_FAIL:
+      return {
+        ...state,
+        vipList: {
+          loading: false,
+          refreshing: false,
+        },
+        error: action.error
+      };
+
+    case actionTypes.GET_VIP_PRODUCT_DETAIL:
+      return {
+        ...state,
+        vipProductDetail: {
+          [payload.id]: {
+            loading: true
+          },
+          ...state.vipProductDetail
+        }
+      };
+    case actionTypes.GET_VIP_PRODUCT_DETAIL_SUCCESS:
+      return {
+        ...state,
+        vipProductDetail: {
+          [payload.id]: {
+            loading: false,
+            loaded: true,
+            entity: payload.entity
+          },
+          ...state.vipProductDetail
+        }
+      };
+    case actionTypes.GET_VIP_PRODUCT_DETAIL_FAIL:
+      return {
+        ...state,
+        vipProductDetail: {
+          [payload.id]: {
+            loading: false
+          },
+          ...state.vipProductDetail
+        }
+      };
+
+
+    case actionTypes.GET_VIP_ALBUM_CATEGORY:
+      return {
+        ...state,
+        vipAlbumCategories: {
+          loading: true
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_CATEGORY_SUCCESS:
+      return {
+        ...state,
+        vipAlbumCategories: {
+          loading: false,
+          list: payload.list,
+          loaded: true
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_CATEGORY_FAIL:
+      return {
+        ...state,
+        vipAlbumCategories: {
+          loading: false
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_PRODUCT:
+      return {
+        ...state,
+        vipAlbumProduct: {
+          [payload.id]: {
+            loading: true,
+            loadMore: payload.loadMore || false,
+            refreshing: payload.refreshing || false,
+            pageIndex: payload.pageIndex
+          },
+          ...state.vipAlbumProduct
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        vipAlbumProduct: {
+          [payload.id]: {
+            loading: false,
+            hasMore: payload.hasMore,
+            refreshing: false,
+            list: payload.loadMore ? loadMore(state, payload) : payload.list,
+            loadMore: false,
+            loaded: true
+          },
+          ...state.vipAlbumProduct
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_PRODUCT_FAIL:
+      return {
+        ...state,
+        vipAlbumProduct: {
+          [payload.id]: {
+            loading: false,
+          }
+        }
+      };
+
+    case actionTypes.GET_VIP_ALBUM_PRODUCT_DETAIL:
+      return {
+        ...state,
+        vipAlbumProductDetail: {
+          [payload.id]: {
+            loading: true
+          },
+          ...state.vipAlbumProductDetail
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_PRODUCT_DETAIL_SUCCESS:
+      return {
+        ...state,
+        vipAlbumProductDetail: {
+          [payload.id]: {
+            loading: false,
+            loaded: true,
+            entity: payload.entity
+          },
+          ...state.vipAlbumProductDetail
+        }
+      };
+    case actionTypes.GET_VIP_ALBUM_PRODUCT_DETAIL_FAIL:
+      return {
+        ...state,
+        vipAlbumProductDetail: {
+          [payload.id]: {
+            loading: false
+          },
+          ...state.vipAlbumProductDetail
+        }
+      };
     default:
       return state;
   }
 }
 
-function loadMore(state, action) {
-  state.list.products = state.list.products.concat(action.list.products);
-  return state.list;
+function loadMore(list, payload) {
+  list.products = list.products.concat(payload.list.products);
+  return list;
 }

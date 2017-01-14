@@ -47,9 +47,10 @@ class CodeLogin extends Component {
     let data = {
       telephone: this.state.telephone,
       telVerifyCode: this.state.telVerifyCode,
-      loginPassword: this.state.loginPassword
+      loginPassword: this.state.loginPassword,
+      success: this.loginSuccess.bind(this)
     };
-    this.props.userActions.login(data, this.loginSuccess.bind(this))
+    this.props.userActions.resetPassword(data);
   }
 
   loginSuccess() {
@@ -64,17 +65,13 @@ class CodeLogin extends Component {
   }
 
   onGetSmsCode() {
-    const {dispatch}=this.props;
     const {telVerifyCodeSecond, telephone}=this.state;
     if (!validPhone(telephone)) {
       Toast.info('输入的手机号码不正确');
       return;
     }
     if (telVerifyCodeSecond > 0) return;
-    dispatch(userActions.verificationCode({
-      telephone,
-      type: 1
-    }));
+    this.props.userActions.verificationCode(telephone);
     this.setState({
       telVerifyCodeSecond: 60
     }, () => {

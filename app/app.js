@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Router from './components/Router';
-import StatusHeader from './components/StatusHeader';
 import ViewPages from './components/ViewPages';
 import UI from './common/UI';
 

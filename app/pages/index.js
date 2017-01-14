@@ -19,3 +19,5 @@ export {default as CodeLogin} from './CodeLogin'
 export {default as Register} from './Register'
 
 export {default as Topic} from './Topic'
+export {default as VipProduct} from './VipProduct'
+export {default as VipAlbumProductList} from './VipAlbumProductList'

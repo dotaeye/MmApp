@@ -25,7 +25,7 @@ import CheckBoxList from '../components/CheckBoxList';
 import Stepper from '../components/Stepper';
 import ViewPages from '../components/ViewPages';
 import UI from '../common/UI';
-import {getImageUrl} from '../utils';
+import {getImageUrl,getShopCartCount} from '../utils';
 import * as productActions from '../actions/product';
 import * as shopCartActions from '../actions/shopCart';
 
@@ -50,7 +50,7 @@ class Product extends Component {
   fetchData() {
     this.props.productActions.productDetail({
       id: this.props.id,
-      success: ()=> {
+      success: () => {
         this.setDefaultAttribute();
       }
     })
@@ -59,7 +59,7 @@ class Product extends Component {
   setDefaultAttribute() {
     const {entity}=this.props;
     const attributeValues = {};
-    entity.productAttributes.forEach(item=> {
+    entity.productAttributes.forEach(item => {
       attributeValues[item.id] = item.values[0].id;
     });
     this.setState({
@@ -75,11 +75,11 @@ class Product extends Component {
     const {entity}=this.props;
     const {attributeValues}=this.state;
     const selectAttributes = [];
-    entity.productAttributes.forEach(item=> {
+    entity.productAttributes.forEach(item => {
       let attributeValue;
       //当有选择属性并且,有选中的属性
       if (attributeValues[item.id]) {
-        attributeValue = item.values.find(x=>x.id == attributeValues[item.id]);
+        attributeValue = item.values.find(x => x.id == attributeValues[item.id]);
       } else {
         attributeValue = item.values[0];
       }
@@ -105,7 +105,7 @@ class Product extends Component {
     const {user, entity}=this.props;
     let price = (user.user && user.user.userRoleId > 2 ) ? entity.vipPrice : entity.price;
     const selectedAttribute = this.getSelectedAttribute();
-    selectedAttribute.forEach(attibute=> {
+    selectedAttribute.forEach(attibute => {
       price += attibute.priceAdjustment;
     });
     return price;
@@ -117,7 +117,7 @@ class Product extends Component {
    */
   getAttributeValues() {
     const selectedAttribute = this.getSelectedAttribute();
-    return selectedAttribute.map(x=>x.name);
+    return selectedAttribute.map(x => x.name);
   }
 
   onChangeNum(number) {
@@ -129,7 +129,7 @@ class Product extends Component {
   onAttributeChange() {
     const {entity}=this.props;
     const attributeValues = {};
-    entity.productAttributes.forEach(attribute=> {
+    entity.productAttributes.forEach(attribute => {
       attributeValues[attribute.id] = this.refs[`attribute_${attribute.id}`].getValue();
     });
     this.setState({
@@ -151,14 +151,11 @@ class Product extends Component {
         unitPrice: this.getUnitPrice(),
         quantity: this.state.number,
         price: this.getPrice(),
-        attributesXml: selectedAttributes.map(x=>x.name).join(' '),
-        attributesIds: selectedAttributes.map(x=>x.id).join(',')
+        attributesXml: selectedAttributes.map(x => x.name).join(' '),
+        attributesIds: selectedAttributes.map(x => x.id).join(',')
       };
       shopCartActions.addShopCart({
-        data: formData,
-        success: ()=> {
-          router.push(ViewPages.shopCart());
-        }
+        data: formData
       })
     }
   }
@@ -167,17 +164,17 @@ class Product extends Component {
     return (
       <Image
         key={index}
-        source={{uri:item.uri}}
+        source={{uri: item.uri}}
         style={{
-          width:UI.Size.window.width,
-          height:UI.Size.window.width*UI.Size.homeSwiper.scale
+          width: UI.Size.window.width,
+          height: UI.Size.window.width * UI.Size.homeSwiper.scale
         }}/>
     )
   }
 
   renderProduct() {
     const {entity}=this.props;
-    const imageUrls = entity.imageUrl.split(',').map((uri, index)=> {
+    const imageUrls = entity.imageUrl.split(',').map((uri, index) => {
       return {
         uri: getImageUrl(uri, {mid: true}),
         id: index
@@ -189,7 +186,7 @@ class Product extends Component {
         tabLabel='商品'
         style={UI.CommonStyles.product_tab}>
         <SwiperBox
-          height={UI.Size.window.width*UI.Size.homeSwiper.scale}
+          height={UI.Size.window.width * UI.Size.homeSwiper.scale}
           renderRow={this.renderBannerRow.bind(this)}
           source={imageUrls}
         />
@@ -201,7 +198,7 @@ class Product extends Component {
         </View>
         <TouchableOpacity
           style={UI.CommonStyles.product_select}
-          onPress={()=>{
+          onPress={() => {
             this.modal.open()
           }}
         >
@@ -338,13 +335,13 @@ class Product extends Component {
         key={2}
         tabLabel='详情'
         style={UI.CommonStyles.product_tab}>
-        {entity.detailUrl.split(',').map((url, index)=> {
+        {entity.detailUrl.split(',').map((url, index) => {
           return (
             <ImageBox
               key={index}
               style={UI.CommonStyles.product_details_img}
               width={UI.Size.window.width}
-              source={{uri:getImageUrl(url,{max:true})}}
+              source={{uri: getImageUrl(url, {max: true})}}
             />
           )
         })}
@@ -357,7 +354,7 @@ class Product extends Component {
     const {attributeValues}  =this.state;
     return (
       <Modal
-        ref={ref=>this.modal=ref}
+        ref={ref => this.modal = ref}
         style={UI.CommonStyles.product_modal}
         swipeToClose={false}
         position="bottom"
@@ -367,9 +364,9 @@ class Product extends Component {
           <Text style={UI.CommonStyles.product_modal_header_num}>商品编号:{entity.id}</Text>
           <TouchableOpacity
             style={UI.CommonStyles.product_modal_close}
-            onPress={()=>{
-                this.modal.close();
-              }}
+            onPress={() => {
+              this.modal.close();
+            }}
           >
             <Icon name="ios-close" size={22} color={UI.Colors.black}/>
           </TouchableOpacity>
@@ -377,7 +374,7 @@ class Product extends Component {
 
         <View style={UI.CommonStyles.product_focus_box}>
           <Image
-            source={{uri:getImageUrl(entity.imageUrl.split(',')[0])}}
+            source={{uri: getImageUrl(entity.imageUrl.split(',')[0])}}
             resizeMode="cover"
             style={UI.CommonStyles.product_focus_img}
           />
@@ -385,9 +382,9 @@ class Product extends Component {
 
         <ScrollView>
           <View style={UI.CommonStyles.product_attr_box}>
-            {entity.productAttributes.map((item, index)=> {
+            {entity.productAttributes.map((item, index) => {
               let defaultValues;
-              const productValues = item.values.map((value, vIndex)=> {
+              const productValues = item.values.map((value, vIndex) => {
                 if (attributeValues[item.id]) {
                   defaultValues = attributeValues[item.id];
                 } else if (vIndex == 0) {
@@ -401,8 +398,8 @@ class Product extends Component {
               return (
                 <View key={index}
                       style={{
-                      marginBottom:20
-                    }}>
+                        marginBottom: 20
+                      }}>
                   <Text>{item.name}</Text>
                   <CheckBoxList
                     ref={`attribute_${item.id}`}
@@ -433,15 +430,23 @@ class Product extends Component {
   }
 
   renderFooter() {
+    const {shopCart,router}=this.props;
     return (
       <View style={UI.CommonStyles.product_tool}>
         <View style={UI.CommonStyles.product_tool_price}>
           <Text style={UI.CommonStyles.product_tool_price_text}>￥
             <Text style={UI.CommonStyles.product_tool_price_text_number}>{this.getPrice()}</Text></Text>
         </View>
-        <View style={UI.CommonStyles.product_tool_car}>
+        <TouchableOpacity
+          onPress={()=>{
+            router.push(ViewPages.shopCart());
+          }}
+          style={UI.CommonStyles.product_tool_car}>
           <Icon name="ios-cart-outline" size={24}/>
-        </View>
+          {shopCart.list.length > 0&&(
+            <Text style={UI.CommonStyles.product_tool_car_badge}>{getShopCartCount(shopCart.list)}</Text>
+          )}
+        </TouchableOpacity>
         <TouchableOpacity
           style={UI.CommonStyles.product_tool_add}
           onPress={this.addToShopCart.bind(this)}
@@ -458,33 +463,32 @@ class Product extends Component {
     return (
       <View style={styles.container}>
         <ScrollableTabView
-          style={{paddingTop:UI.Size.statusBar.height}}
+          style={{paddingTop: UI.Size.statusBar.height}}
           renderTabBar={() =>
-              <CustomTabBar
-                style={{height:44}}
-                tabStyle={{ paddingBottom: 0}}
-                textStyle={{ fontSize: 16 }}
-                tabBarContainerWidth={200}
-              />
-            }
+            <CustomTabBar
+              style={{height: 44}}
+              tabStyle={{paddingBottom: 0}}
+              textStyle={{fontSize: 16}}
+              tabBarContainerWidth={200}
+            />
+          }
           tabBarBackgroundColor="#fcfcfc"
-          tabBarUnderlineStyle={{ backgroundColor: 'black', height: 2 }}
+          tabBarUnderlineStyle={{backgroundColor: 'black', height: 2}}
           tabBarActiveTextColor="black"
           tabBarInactiveTextColor="black"
         >
-
           {this.renderProduct()}
           {this.renderDetail()}
         </ScrollableTabView>
-        <View style={{position:'absolute',top:UI.Size.statusBar.height,left:0}}>
+        <View style={{position: 'absolute', top: UI.Size.statusBar.height, left: 0}}>
           <Button
             iconName='ios-arrow-back'
             iconSize={24}
             iconColor='black'
-            style={{marginRight:10}}
+            style={{marginRight: 10}}
             position="Left"
             backgroundColor="transparent"
-            onPress={()=>{
+            onPress={() => {
               router.pop()
             }}/>
         </View>
@@ -497,7 +501,8 @@ class Product extends Component {
 
 export default connect((state, props) => ({
   entity: state.product.entity,
-  user: state.user
+  user: state.user,
+  shopCart: state.shopCart
 }), dispatch => ({
   productActions: bindActionCreators(productActions, dispatch),
   shopCartActions: bindActionCreators(shopCartActions, dispatch)

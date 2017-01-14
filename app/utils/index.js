@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 export function updateArrayItem(arr, item) {
-  let index = _.indexOf(arr, arr.find(x=>x.id == item.id));
+  let index = _.indexOf(arr, arr.find(x => x.id == item.id));
   arr.splice(index, 1, item);
   return arr
 }
@@ -13,8 +13,8 @@ export function removeArrayItem(arr, id) {
   } else {
     ids = id;
   }
-  ids.forEach(Id=> {
-    let index = _.indexOf(arr, arr.find(x=>x.id == Id));
+  ids.forEach(Id => {
+    let index = _.indexOf(arr, arr.find(x => x.id == Id));
     arr.splice(index, 1);
   });
   return arr;
@@ -50,12 +50,20 @@ export function guid() {
 }
 
 export function getCities(list, citys) {
-  const province = list.find(x=>x.label == citys[0]);
-  const area = province.children.find(x=>x.label == citys[1]);
-  const county = area.children.find(x=>x.label == citys[2]);
+  const province = list.find(x => x.label == citys[0]);
+  const area = province.children.find(x => x.label == citys[1]);
+  const county = area.children.find(x => x.label == citys[2]);
   return {
     province,
     area,
     county
   }
+}
+
+export function getShopCartCount(list) {
+  let count = 0;
+  list.forEach(item => {
+    count += item.quantity;
+  });
+  return count;
 }

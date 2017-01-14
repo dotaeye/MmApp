@@ -20,6 +20,7 @@ import {registerApp} from 'react-native-wechat';
 import * as homeActions from '../actions/home';
 import * as userActions from '../actions/user';
 import * as shopCartActions from '../actions/shopCart';
+import {getShopCartCount} from '../utils';
 
 class Main extends Component {
 
@@ -94,7 +95,7 @@ class Main extends Component {
             selected={this.state.selectedTab === 'shopCart'}
             selectedTitleStyle={UI.CommonStyles.tabBarTextSelected}
             titleStyle={UI.CommonStyles.tabBarText}
-            renderBadge={() => (shopCart.list.length > 0) ? <CustomBadge>{shopCart.list.length}</CustomBadge> : null}
+            renderBadge={() => (shopCart.list.length > 0) ? <CustomBadge>{getShopCartCount(shopCart.list)}</CustomBadge> : null}
             renderIcon={() => <Image source={require("../images/icon/shopCar@2x.png")}
                                      style={UI.CommonStyles.tabBarIcon}/>}
             renderSelectedIcon={() => <Image source={require("../images/icon/shopCar@2x.png")}

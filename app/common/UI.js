@@ -825,8 +825,24 @@ const CommonStyles = StyleSheet.create({
   product_tool_car: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 50,
-    height: 50
+    width: 80,
+    height: 50,
+    borderLeftWidth: Size.border.size,
+    borderLeftColor: Colors.border
+  },
+
+  product_tool_car_badge: {
+    fontSize: 12,
+    position: 'absolute',
+    right: 10,
+    top: 3,
+    color: '#fff',
+    width: 15,
+    backgroundColor: Colors.danger,
+    lineHeight: 15,
+    textAlign: 'center',
+    borderRadius: 17 / 2,
+    overflow: 'hidden',
   },
 
   product_tool_add: {

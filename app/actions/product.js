@@ -14,3 +14,39 @@ export function searchProduct(payload) {
     payload
   };
 }
+
+export function getVipProduct(payload) {
+  return {
+    type: actionTypes.GET_VIP_PRODUCT,
+    payload
+  };
+}
+
+export function getVipProductDetail(payload) {
+  return {
+    type: actionTypes.GET_VIP_PRODUCT_DETAIL,
+    payload
+  };
+}
+
+export function getVipAlbumCategory(payload) {
+  return {
+    type: actionTypes.GET_VIP_ALBUM_CATEGORY,
+    payload
+  };
+}
+
+export function getVipAlbumProduct(payload) {
+  return {
+    type: actionTypes.GET_VIP_ALBUM_PRODUCT,
+    payload
+  };
+}
+
+
+export function getVipAlbumProductDetail(payload) {
+  return {
+    type: actionTypes.GET_VIP_ALBUM_PRODUCT_DETAIL,
+    payload
+  };
+}

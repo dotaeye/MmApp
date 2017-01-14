@@ -35,7 +35,6 @@ class Stepper extends Component {
         this.props.onChange && this.props.onChange(value + 1)
       })
     }
-
   }
 
   onStepDecreasePress() {
@@ -51,10 +50,10 @@ class Stepper extends Component {
   }
 
   onChangeText(number) {
-    if (!number) {
-      number = 0;
-    }
     const {min, max}=this.props;
+    if (isNaN(number)) {
+      number = min;
+    }
     if (number >= min && number <= max) {
       this.setState({
         value: number
@@ -69,7 +68,6 @@ class Stepper extends Component {
   }
 
   render() {
-    const {options}=this.props;
     const {value}=this.state;
     return (
       <View style={UI.CommonStyles.stepper}>

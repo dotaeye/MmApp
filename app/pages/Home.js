@@ -60,7 +60,7 @@ export default class Home extends Component {
   }
 
   onNavPress() {
-    this.props.router.push(ViewPages.Topic())
+    this.props.router.push(ViewPages.vipProduct())
   }
 
   renderBannerRow(item, index) {
@@ -152,7 +152,6 @@ export default class Home extends Component {
       {uri: require('../images/scrollNavs/shouye_11.png'), id: 4}];
     return (
       <View style={[UI.CommonStyles.container, {backgroundColor: UI.Colors.gray}]}>
-
         <ScrollView
           scrollEventThrottle={16}
           showsHorizontalScrollIndicator={false}

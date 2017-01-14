@@ -1,124 +1,136 @@
 import * as Pages from '../pages';
 
 export default ViewPage = {
-  main: ()=> {
+  main: () => {
     return {
       component: Pages.Main,
       name: 'main'
     }
   },
-  home: ()=> {
+  home: () => {
     return {
       component: Pages.Home,
       name: 'home'
     }
   },
-  selectCar: ()=> {
+  selectCar: () => {
     return {
       component: Pages.SelectCar,
       name: 'selectCar'
     }
   },
-  list: ()=> {
+  list: () => {
     return {
       component: Pages.List,
       name: 'list'
     }
   },
-  search: ()=> {
+  search: () => {
     return {
       component: Pages.Search,
       name: 'search'
     }
   },
-  product: ()=> {
+  product: () => {
     return {
       component: Pages.Product,
       name: 'product'
     }
   },
-  splash: ()=> {
+  splash: () => {
     return {
       component: Pages.Splash,
       name: 'splash'
     }
   },
-  address: ()=> {
+  address: () => {
     return {
       component: Pages.Address,
       name: 'address'
     }
   },
-  addressList: ()=> {
+  addressList: () => {
     return {
       component: Pages.AddressList,
       name: 'addressList'
     }
   },
-  order: ()=> {
+  order: () => {
     return {
       component: Pages.Order,
       name: 'order'
     }
   },
-  orderDetail: ()=> {
+  orderDetail: () => {
     return {
       component: Pages.OrderDetail,
       name: 'orderDetail'
     }
   },
-  checkOut: ()=> {
+  checkOut: () => {
     return {
       component: Pages.CheckOut,
       name: 'checkOut'
     }
   },
-  shopCart: ()=> {
+  shopCart: () => {
     return {
       component: Pages.ShopCart,
       name: 'shopCart'
     }
   },
-  login: ()=> {
+  login: () => {
     return {
       component: Pages.Login,
       name: 'login'
     }
   },
-  codeLogin: ()=> {
+  codeLogin: () => {
     return {
       component: Pages.CodeLogin,
       name: 'codeLogin'
     }
   },
-  register: ()=> {
+  register: () => {
     return {
       component: Pages.Register,
       name: 'register'
     }
   },
-  about: ()=> {
+  about: () => {
     return {
       component: Pages.About,
       name: 'about'
     }
   },
-  pickerAddress: ()=> {
+  pickerAddress: () => {
     return {
       component: Pages.PickerAddress,
       name: 'pickerAddress'
     }
   },
-  pay: ()=> {
+  pay: () => {
     return {
       component: Pages.Pay,
       name: 'pay'
     }
   },
-  Topic:()=>{
+  Topic: () => {
     return {
       component: Pages.Topic,
       name: 'topic'
+    }
+  },
+  vipAlbumProductList: () => {
+    return {
+      component: Pages.VipAlbumProductList,
+      name: 'vipAlbumProductList'
+    }
+  },
+  vipProduct: () => {
+    return {
+      component: Pages.VipProduct,
+      name: 'vipProduct'
     }
   }
 }

@@ -34,7 +34,7 @@ export default function shopCart(state = initialState, action = {}) {
     case actionTypes.ADD_SHOP_CART_SUCCESS:
       return {
         ...state,
-        list: addArrayItem(state.list,action.shopCartItem)
+        list: addItemToShopCart(state, action.shopCartItem)
       };
     case actionTypes.ADD_SHOP_CART_FAIL:
       return {
@@ -72,4 +72,14 @@ export default function shopCart(state = initialState, action = {}) {
     default:
       return state;
   }
+}
+
+
+function addItemToShopCart(state, item) {
+  if (state.list.find(x => x.id === item.id)) {
+    state.list.find(x => x.id === item.id).quantity = item.quantity;
+  } else {
+    state.list.push(item);
+  }
+  return state.list;
 }
