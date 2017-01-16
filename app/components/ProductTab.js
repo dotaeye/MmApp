@@ -19,7 +19,7 @@ import Spinner from './Spinner';
 import UI from '../common/UI';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import ViewPages from '../components/ViewPages';
-import {getImageUrl} from '../utils';
+import {getImageSource} from '../utils';
 
 const pageSize = 20;
 
@@ -101,16 +101,29 @@ class ProductTab extends Component {
   renderRow(item) {
     const {router}=this.props;
     return (
-      <View style={[
+      <TouchableOpacity
+        style={[
         UI.CommonStyles.rowContainer,
-        UI.CommonStyles.bb, {padding: 10}]}>
-        <Image source={require('../images/products/product.jpg')} style={{width: 120, height: 120, marginRight: 10}}/>
+        UI.CommonStyles.bb, {padding: 10}]}
+        onPress={()=>{
+          router.push(ViewPages.product(),{
+            id:item.id
+          })
+        }}
+        >
+        <Image source={{uri:getImageSource(item.imageUrl)}} style={{width: 120, height: 120, marginRight: 10}}/>
         <View style={[
           UI.CommonStyles.columnContainer, {justifyContent: 'flex-start'}]}>
-          <Text>{item.name}</Text>
-          <Text style={{marginTop: 10, fontSize: UI.Size.font.ms, color: UI.Colors.grayFont}}>{item.description}</Text>
+          <Text numberOfLines={2} style={{width:UI.Size.window.width-150}}>{item.name}</Text>
+          <View style={[
+          UI.CommonStyles.columnContainer, {justifyContent: 'space-between',flex:1}]}>
+            <Text
+              style={{marginTop: 10, fontSize: UI.Size.font.ms, color: UI.Colors.grayFont,width:UI.Size.window.width-150}}>{item.description}</Text>
+            <Text><Text style={{color:UI.Colors.danger}}>￥{item.vipPrice}</Text> <Text
+              style={{textDecorationLine:'line-through',fontSize:UI.Size.font.ms}}>￥{item.price}</Text></Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -137,7 +150,7 @@ class ProductTab extends Component {
               colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
             />
           }
-        >
+          >
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: 16}}>
               目前没有数据，请刷新重试……

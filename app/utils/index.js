@@ -27,6 +27,7 @@ export function addArrayItem(arr, item) {
 }
 
 export function getImageUrl(url, options) {
+  if (!url) return 'http://www.lm123.cc/Upload/Normal/2017/1/14/27f44d55-1744-457e-b956-52260e0431c6.jpg';
   let result = 'http://www.lm123.cc' + url.split(',')[0];
   if (options && options.mid) {
     result = result.replace('_120', '_430');
@@ -35,6 +36,13 @@ export function getImageUrl(url, options) {
     result = result.replace('_120', '_800');
   }
   return result;
+}
+
+
+export function getImageSource(source, options) {
+  let url = source;
+  if (!url) url = 'http://www.lm123.cc/Upload/Normal/2017/1/14/27f44d55-1744-457e-b956-52260e0431c6.jpg';
+  return getImageUrl(url, options);
 }
 
 

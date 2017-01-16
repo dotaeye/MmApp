@@ -40,7 +40,8 @@ const Size = {
     height: 44
   },
   statusBar: {
-    height: Platform.OS === 'ios' ? 20 : 0
+    height: Platform.OS === 'ios' ? 20 : 0,
+    hacker: Platform.OS === 'ios' ? 0 : 25,
   },
   window: {
     height: height,

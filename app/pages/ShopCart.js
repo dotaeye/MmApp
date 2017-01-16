@@ -249,7 +249,8 @@ class ShopCart extends Component {
     return (
       <ListView
         style={{
-          marginTop: 10
+          marginTop: 10,
+          marginBottom:50
         }}
         ref={(view) => this.listView = view }
         removeClippedSubviews

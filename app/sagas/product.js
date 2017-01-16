@@ -49,7 +49,10 @@ function* searchProduct(payload) {
 function* getVipProduct(payload) {
   try {
     const list = yield call(new Request().get, 'category/list', {
-      params: payload
+      params: {
+        ...payload,
+        isAgreeActive: true
+      }
     });
     yield put({
       type: actionTypes.GET_VIP_PRODUCT_SUCCESS,
@@ -96,12 +99,14 @@ function* getVipProductDetail(payload) {
 
 function* getVipAlbumCategory(payload) {
   try {
-    const categories = yield call(new Request().get, 'product/vipAlbumCategory', {
+    const categories = yield call(new Request().get, 'category/vipAlbum', {
       params: payload
     });
     yield put({
       type: actionTypes.GET_VIP_ALBUM_CATEGORY_SUCCESS,
-      albumCategory: categories
+      payload: {
+        list: categories
+      }
     });
     if (payload.success) {
       yield call(payload.success);

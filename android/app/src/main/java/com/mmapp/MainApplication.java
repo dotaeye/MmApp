@@ -6,7 +6,6 @@ import android.util.Log;
 import com.facebook.react.ReactApplication;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.beefe.picker.PickerViewPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.cboy.rn.splashscreen.SplashScreenReactPackage;
 import com.theweflex.react.WeChatPackage;
@@ -32,7 +31,6 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new WebViewBridgePackage(),
             new PickerViewPackage(),
-            new RNDeviceInfo(),
             new VectorIconsPackage(),
             new SplashScreenReactPackage(),
             new WeChatPackage()

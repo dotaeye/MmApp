@@ -62,26 +62,12 @@ class VipAlbumCateTab extends Component {
     return (
       <View style={[
         UI.CommonStyles.rowContainer,
-        UI.CommonStyles.bb,
-        {
-          marginTop: 10
-        }]}>
-        <Image source={require('../images/products/product.jpg')} style={{width: 120, height: 120, marginRight: 10}}/>
-        <View style={[
-          UI.CommonStyles.rowContainer,
-          UI.CommonStyles.bb,
-          {
-            padding: 10,
-            justifyContent: 'space-between'
-
-          }]}>
-          <Text>{item.name}</Text>
-          <Text>{item.desc}</Text>
-        </View>
+        UI.CommonStyles.bb
+        ]}>
+        <Image source={{uri:getImageUrl(item.bannerUrl)}} style={{height: 120, resizeMode:'cover', width: UI.Size.window.width}}/>
       </View>
     )
   }
-
 
   render() {
     const {product} = this.props;
@@ -105,7 +91,7 @@ class VipAlbumCateTab extends Component {
               colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
             />
           }
-        >
+          >
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: 16}}>
               目前没有数据，请刷新重试……

@@ -16,7 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import SwiperBox from '../components/SwiperBox';
-import ScrollNavs from '../components/home/ScrollNavs';
+import ScrollNavs from '../components/home/scrollNavs';
 import SixBox from '../components/home/SixBox';
 import UI from '../common/UI';
 import {getImageUrl} from '../utils';

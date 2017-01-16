@@ -25,7 +25,7 @@ import CheckBoxList from '../components/CheckBoxList';
 import Stepper from '../components/Stepper';
 import ViewPages from '../components/ViewPages';
 import UI from '../common/UI';
-import {getImageUrl,getShopCartCount} from '../utils';
+import {getImageUrl,getShopCartCount, getImageSource} from '../utils';
 import * as productActions from '../actions/product';
 import * as shopCartActions from '../actions/shopCart';
 
@@ -146,7 +146,7 @@ class Product extends Component {
       const formData = {
         productId: entity.id,
         name: entity.name,
-        imageUrl: entity.imageUrl.split(',')[0],
+        imageUrl: getImageSource(entity.imageUrl),
         ownerId: entity.ownerId,
         unitPrice: this.getUnitPrice(),
         quantity: this.state.number,
@@ -174,9 +174,9 @@ class Product extends Component {
 
   renderProduct() {
     const {entity}=this.props;
-    const imageUrls = entity.imageUrl.split(',').map((uri, index) => {
+    const imageUrls = (entity.imageUrl ? entity.imageUrl.split(',') : []).map((uri, index) => {
       return {
-        uri: getImageUrl(uri, {mid: true}),
+        uri: getImageSource(uri, {mid: true}),
         id: index
       }
     });
@@ -189,7 +189,7 @@ class Product extends Component {
           height={UI.Size.window.width * UI.Size.homeSwiper.scale}
           renderRow={this.renderBannerRow.bind(this)}
           source={imageUrls}
-        />
+          />
         <View style={UI.CommonStyles.product_title}>
           <Text>{entity.name}</Text>
           <Text style={UI.CommonStyles.product_price}>￥
@@ -201,7 +201,7 @@ class Product extends Component {
           onPress={() => {
             this.modal.open()
           }}
-        >
+          >
           <Text style={UI.CommonStyles.product_select_label}>已选</Text>
           <Text
             style={UI.CommonStyles.product_select_text}>{this.getAttributeValues().join('、')} {this.state.number}件</Text>
@@ -259,13 +259,13 @@ class Product extends Component {
           <TouchableOpacity
             style={UI.CommonStyles.product_suggest_item}
             activeOpacity={0.75}
-          >
+            >
             <View style={UI.CommonStyles.product_suggest_item_img_wrap}>
               <Image
                 source={require('../images/products/product.jpg')}
                 resizeMode="cover"
                 style={UI.CommonStyles.product_suggest_item_img}
-              />
+                />
             </View>
             <View style={UI.CommonStyles.product_suggest_item_text}>
               <Text numberOfLines={2}>新款秋冬棉衣 欧美潮流 pu 皮衣男士棉衣外套皮外套连帽M141236 黑色</Text>
@@ -275,13 +275,13 @@ class Product extends Component {
           <TouchableOpacity
             style={UI.CommonStyles.product_suggest_item}
             activeOpacity={0.75}
-          >
+            >
             <View style={UI.CommonStyles.product_suggest_item_img_wrap}>
               <Image
                 source={require('../images/products/product.jpg')}
                 resizeMode="cover"
                 style={UI.CommonStyles.product_suggest_item_img}
-              />
+                />
             </View>
             <View style={UI.CommonStyles.product_suggest_item_text}>
               <Text numberOfLines={2}>新款秋冬棉衣 欧美潮流 pu 皮衣男士棉衣外套皮外套连帽M141236 黑色</Text>
@@ -293,13 +293,13 @@ class Product extends Component {
           <TouchableOpacity
             style={UI.CommonStyles.product_suggest_item}
             activeOpacity={0.75}
-          >
+            >
             <View style={UI.CommonStyles.product_suggest_item_img_wrap}>
               <Image
                 source={require('../images/products/product.jpg')}
                 resizeMode="cover"
                 style={UI.CommonStyles.product_suggest_item_img}
-              />
+                />
             </View>
 
             <View style={UI.CommonStyles.product_suggest_item_text}>
@@ -310,13 +310,13 @@ class Product extends Component {
           <TouchableOpacity
             style={UI.CommonStyles.product_suggest_item}
             activeOpacity={0.75}
-          >
+            >
             <View style={UI.CommonStyles.product_suggest_item_img_wrap}>
               <Image
                 source={require('../images/products/product.jpg')}
                 resizeMode="cover"
                 style={UI.CommonStyles.product_suggest_item_img}
-              />
+                />
             </View>
             <View style={UI.CommonStyles.product_suggest_item_text}>
               <Text numberOfLines={2}>新款秋冬棉衣 欧美潮流 pu 皮衣男士棉衣外套皮外套连帽M141236 黑色</Text>
@@ -335,14 +335,14 @@ class Product extends Component {
         key={2}
         tabLabel='详情'
         style={UI.CommonStyles.product_tab}>
-        {entity.detailUrl.split(',').map((url, index) => {
+        {(entity.detailUrl?entity.detailUrl.split(','):[]).map((url, index) => {
           return (
             <ImageBox
               key={index}
               style={UI.CommonStyles.product_details_img}
               width={UI.Size.window.width}
-              source={{uri: getImageUrl(url, {max: true})}}
-            />
+              source={{uri: getImageSource(url, {max: true})}}
+              />
           )
         })}
       </ScrollView>
@@ -358,7 +358,7 @@ class Product extends Component {
         style={UI.CommonStyles.product_modal}
         swipeToClose={false}
         position="bottom"
-      >
+        >
         <View style={UI.CommonStyles.product_modal_header}>
           <Text style={UI.CommonStyles.product_modal_header_price}>￥ {this.getUnitPrice()}</Text>
           <Text style={UI.CommonStyles.product_modal_header_num}>商品编号:{entity.id}</Text>
@@ -367,17 +367,17 @@ class Product extends Component {
             onPress={() => {
               this.modal.close();
             }}
-          >
+            >
             <Icon name="ios-close" size={22} color={UI.Colors.black}/>
           </TouchableOpacity>
         </View>
 
         <View style={UI.CommonStyles.product_focus_box}>
           <Image
-            source={{uri: getImageUrl(entity.imageUrl.split(',')[0])}}
+            source={{uri: getImageSource(entity.imageUrl)}}
             resizeMode="cover"
             style={UI.CommonStyles.product_focus_img}
-          />
+            />
         </View>
 
         <ScrollView>
@@ -406,7 +406,7 @@ class Product extends Component {
                     value={defaultValues}
                     options={productValues}
                     onChange={this.onAttributeChange.bind(this)}
-                  />
+                    />
                 </View>
               )
             })}
@@ -422,7 +422,7 @@ class Product extends Component {
         <TouchableOpacity
           style={UI.CommonStyles.product_modal_button}
           onPress={this.addToShopCart.bind(this)}
-        >
+          >
           <Text style={UI.CommonStyles.product_modal_button_text}>加入购物车</Text>
         </TouchableOpacity>
       </Modal>
@@ -443,14 +443,14 @@ class Product extends Component {
           }}
           style={UI.CommonStyles.product_tool_car}>
           <Icon name="ios-cart-outline" size={24}/>
-          {shopCart.list.length > 0&&(
+          {shopCart.list.length > 0 && (
             <Text style={UI.CommonStyles.product_tool_car_badge}>{getShopCartCount(shopCart.list)}</Text>
           )}
         </TouchableOpacity>
         <TouchableOpacity
           style={UI.CommonStyles.product_tool_add}
           onPress={this.addToShopCart.bind(this)}
-        >
+          >
           <Text style={UI.CommonStyles.product_tool_add_text}>加入购物车</Text>
         </TouchableOpacity>
       </View>
@@ -476,7 +476,7 @@ class Product extends Component {
           tabBarUnderlineStyle={{backgroundColor: 'black', height: 2}}
           tabBarActiveTextColor="black"
           tabBarInactiveTextColor="black"
-        >
+          >
           {this.renderProduct()}
           {this.renderDetail()}
         </ScrollableTabView>

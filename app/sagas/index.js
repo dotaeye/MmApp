@@ -39,6 +39,7 @@ export default function* rootSaga() {
     fork(product.watchSearchProduct),
     fork(product.watchGetVipProduct),
     fork(product.watchGetVipAlbumProduct),
+    fork(product.watchGetVipAlbumCategory),
     fork(product.watchProductDetail),
 
     fork(search.watchSearchList),

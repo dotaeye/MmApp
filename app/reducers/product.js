@@ -13,6 +13,7 @@ const initialState = {
   vipList: {
     list: []
   },
+  vipAlbumCategories:{},
   vipAlbumProduct: {},
   vipAlbumProductDetail: {}
 };
@@ -65,6 +66,7 @@ export default function product(state = initialState, action = {}) {
       return {
         ...state,
         vipList: {
+          ...state.vipList,
           loading: true,
           loadMore: payload.loadMore || false,
           refreshing: payload.refreshing || false,
@@ -75,10 +77,11 @@ export default function product(state = initialState, action = {}) {
       return {
         ...state,
         vipList: {
+          ...state.vipList,
           loading: false,
           hasMore: payload.hasMore,
           refreshing: false,
-          list: payload.loadMore ? loadMore(state, payload) : payload.list,
+          list: payload.loadMore ? loadMore(state.vipList.list, payload) : payload.list,
           loadMore: false,
           loaded: true
         }
@@ -87,42 +90,44 @@ export default function product(state = initialState, action = {}) {
       return {
         ...state,
         vipList: {
+          ...state.vipList,
           loading: false,
           refreshing: false,
-        },
-        error: action.error
+        }
       };
 
     case actionTypes.GET_VIP_PRODUCT_DETAIL:
       return {
         ...state,
         vipProductDetail: {
+          ...state.vipProductDetail,
           [payload.id]: {
             loading: true
-          },
-          ...state.vipProductDetail
+          }
         }
       };
+
     case actionTypes.GET_VIP_PRODUCT_DETAIL_SUCCESS:
       return {
         ...state,
         vipProductDetail: {
+          ...state.vipProductDetail,
           [payload.id]: {
             loading: false,
             loaded: true,
             entity: payload.entity
-          },
-          ...state.vipProductDetail
+          }
         }
       };
+
     case actionTypes.GET_VIP_PRODUCT_DETAIL_FAIL:
       return {
         ...state,
         vipProductDetail: {
+          ...state.vipProductDetail,
           [payload.id]: {
             loading: false
           },
-          ...state.vipProductDetail
         }
       };
 
@@ -134,6 +139,7 @@ export default function product(state = initialState, action = {}) {
           loading: true
         }
       };
+
     case actionTypes.GET_VIP_ALBUM_CATEGORY_SUCCESS:
       return {
         ...state,
@@ -154,19 +160,20 @@ export default function product(state = initialState, action = {}) {
       return {
         ...state,
         vipAlbumProduct: {
+          ...state.vipAlbumProduct,
           [payload.id]: {
             loading: true,
             loadMore: payload.loadMore || false,
             refreshing: payload.refreshing || false,
             pageIndex: payload.pageIndex
-          },
-          ...state.vipAlbumProduct
+          }
         }
       };
     case actionTypes.GET_VIP_ALBUM_PRODUCT_SUCCESS:
       return {
         ...state,
         vipAlbumProduct: {
+          ...state.vipAlbumProduct,
           [payload.id]: {
             loading: false,
             hasMore: payload.hasMore,
@@ -174,14 +181,14 @@ export default function product(state = initialState, action = {}) {
             list: payload.loadMore ? loadMore(state, payload) : payload.list,
             loadMore: false,
             loaded: true
-          },
-          ...state.vipAlbumProduct
+          }
         }
       };
     case actionTypes.GET_VIP_ALBUM_PRODUCT_FAIL:
       return {
         ...state,
         vipAlbumProduct: {
+          ...state.vipAlbumProduct,
           [payload.id]: {
             loading: false,
           }

@@ -171,7 +171,7 @@ class CheckOut extends Component {
             justifyContent:'center'
           }}
           onPress={this.onToolButtonClick.bind(this)}
-        >
+          >
           <Text style={{color:UI.Colors.white}}>去付款</Text>
         </TouchableOpacity>
 
@@ -226,7 +226,7 @@ class CheckOut extends Component {
           {
             flexDirection: 'column',
             justifyContent: 'center',
-            marginBottom:10
+            marginBottom:50
           }]}>
         {items.map((item, index)=> {
           return (
@@ -242,26 +242,12 @@ class CheckOut extends Component {
               <View style={[
                 UI.CommonStyles.container,
                 UI.CommonStyles.columnContainer]}>
-                <View style={[
-                UI.CommonStyles.rowContainer,
-                {
-                  justifyContent:'space-between',
-                }]}>
-                  <Text>{item.name}</Text>
-                  <Text>x{item.quantity}</Text>
-                </View>
-                <View style={[
-                UI.CommonStyles.rowContainer,
-                {
-                  justifyContent:'space-between'
-
-                }]}>
-                  <Text style={{
-                    fontSize:UI.Size.font.ms,
-                    color:UI.Colors.grayFont,
-                    marginTop:5
-                  }}>{item.attributesXml}</Text>
-                </View>
+                <Text numberOfLines={2}>{item.name} </Text>
+                <Text style={{
+                  fontSize: UI.Size.font.ms,
+                  color: UI.Colors.grayFont,
+                  marginTop: 5
+                }}>{item.attributesXml} 共{item.quantity}个商品</Text>
                 <View style={[
                 UI.CommonStyles.rowContainer,
                 {
@@ -288,12 +274,12 @@ class CheckOut extends Component {
         style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{justifyContent:'flex-start',backgroundColor:UI.Colors.gray}]}>
         {this.renderNav()}
         {address.loaded ? (
-          <View style={{flex:1}}>
+          <ScrollView style={{flex:1}}>
             {this.renderAddress()}
             {this.renderPrice()}
             {this.renderProduct()}
             {this.renderBottom()}
-          </View>
+          </ScrollView>
         ) : <Loading/>}
       </View>
     )

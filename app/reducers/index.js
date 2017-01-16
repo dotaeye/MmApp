@@ -3,7 +3,7 @@ import product from './product';
 import search from './search';
 import category from './category';
 import home from './home';
-import carCate from './carCate';
+import carCate from './carcate';
 import address from './address';
 import city from './city';
 import order from './order'
