@@ -24,6 +24,7 @@ class SwiperBox extends Component {
         height={height}
         loop={loop}
         autoplay={autoplay}
+        autoplayTimeout={2.5}
         showsPagination={showsPagination}
         dot={<View style={UI.CommonStyles.swiper_dot}/>}
         activeDot={<View style={[UI.CommonStyles.swiper_dot, UI.CommonStyles.swiper_dot_active]}/>}

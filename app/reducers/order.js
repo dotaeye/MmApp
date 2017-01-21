@@ -17,6 +17,10 @@ const initialState = {
 export default function order(state = initialState, action = {}) {
   const {payload}=action;
   switch (action.type) {
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
     case actionTypes.ORDER_LIST:
       return {
         ...state,

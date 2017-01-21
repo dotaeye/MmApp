@@ -7,6 +7,10 @@ const initialState = {
 
 export default function product(state = initialState, action = {}) {
   switch (action.type) {
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
     case actionTypes.STORAGE_LIST:
       return {
         ...state,

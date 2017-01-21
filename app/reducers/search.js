@@ -9,7 +9,10 @@ const initialState = {
 
 export default function search(state = initialState, action = {}) {
   switch (action.type) {
-    
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
     case actionTypes.SEARCH_LIST:
       return {
         ...state,

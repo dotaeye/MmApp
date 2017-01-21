@@ -8,6 +8,10 @@ const initialState = {
 export default function city(state = initialState, action = {}) {
 
   switch (action.type) {
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
     case actionTypes.CITY_LIST:
       return {
         ...state,

@@ -77,5 +77,5 @@ export function getShopCartCount(list) {
 }
 
 export function isVip(user) {
-  return user.user && user.user.userRoleId == 2;
+  return user.user && user.user.userRoleId > 2;
 }

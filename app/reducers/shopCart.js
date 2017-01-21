@@ -10,6 +10,10 @@ const initialState = {
 export default function shopCart(state = initialState, action = {}) {
   const {payload}=action;
   switch (action.type) {
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
     case actionTypes.SHOP_CART_LIST:
       return {
         ...state,

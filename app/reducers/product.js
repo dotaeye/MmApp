@@ -21,6 +21,10 @@ const initialState = {
 export default function product(state = initialState, action = {}) {
   const {payload}=action;
   switch (action.type) {
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
     case actionTypes.SEARCH_PRODUCT:
       return {
         ...state,

@@ -11,6 +11,12 @@ const initialState = {
 export default function address(state = initialState, action = {}) {
 
   switch (action.type) {
+
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
+
     case actionTypes.ADDRESS_LIST:
       return {
         ...state

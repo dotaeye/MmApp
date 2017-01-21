@@ -114,6 +114,9 @@ function* logout(payload) {
     yield put({
       type: actionTypes.LOGOUT_SUCCESS
     });
+    yield put({
+      type: 'RESET_STATE'
+    });
     if (payload.success) {
       yield call(payload.success);
     }

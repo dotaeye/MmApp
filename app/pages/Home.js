@@ -90,6 +90,7 @@ export default class Home extends Component {
     return (
       <SwiperBox
         height={UI.Size.window.width * UI.Size.homeSwiper.scale}
+        autoplay={true}
         renderRow={this.renderBannerRow.bind(this)}
         source={sources}
       />

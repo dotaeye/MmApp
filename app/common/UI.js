@@ -827,9 +827,7 @@ const CommonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 80,
-    height: 50,
-    borderLeftWidth: Size.border.size,
-    borderLeftColor: Colors.border
+    height: 50
   },
 
   product_tool_car_badge: {

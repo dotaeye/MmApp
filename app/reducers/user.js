@@ -5,6 +5,10 @@ const initialState = {
 
 export default function user(state = initialState, action = {}) {
   switch (action.type) {
+    case 'RESET_STATE':
+      return {
+        ...initialState
+      };
 
     case actionTypes.REGISTER:
       return {

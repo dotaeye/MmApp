@@ -56,7 +56,7 @@ class My extends Component {
             alignItems:'center',
           }]}
           source={require('../images/my/background.jpg')}
-        >
+          >
           <View style={[UI.CommonStyles.rowContainer,{
           backgroundColor:UI.Colors.transparent,
           alignItems:'center'
@@ -310,12 +310,14 @@ class My extends Component {
         justifyContent:'flex-start',
         backgroundColor:UI.Colors.gray
       }]}>
-        {this.renderAvatar()}
-        {this.renderOrders()}
-        {this.renderList()}
-        {this.renderAbout()}
-        {this.renderClear()}
-        {this.renderLogout()}
+        <ScrollView>
+          {this.renderAvatar()}
+          {this.renderOrders()}
+          {this.renderList()}
+          {this.renderAbout()}
+          {this.renderClear()}
+          {this.renderLogout()}
+        </ScrollView>
       </View>
     )
   }

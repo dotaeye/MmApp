@@ -49,7 +49,7 @@ class VipAlbumProductCards extends Component {
     return (
       <View
         key={index}
-        style={[UI.CommonStyles.columnContainer, {width: UI.Size.window.width, height: UI.Size.window.height}]}>
+        style={[UI.CommonStyles.columnContainer, {width: UI.Size.window.width, height: UI.Size.window.height-UI.Size.statusBar.hacker}]}>
         <View style={[UI.CommonStyles.columnContainer, {justifyContent: 'center', alignItems: 'center', flex: 1}]}>
           <Image source={{uri: getImageSource(product.imageUrl, {max: true})}}
                  style={{width: UI.Size.window.width, height: UI.Size.window.width, resizeMode: 'cover'}}/>
