@@ -9,6 +9,7 @@ const initialState = {
   loaded: false,
   refreshing: {},
   loadMore: {},
+  orderDetail: {},
   checkOrder: {},
   status: {},
   detailLoading: {}

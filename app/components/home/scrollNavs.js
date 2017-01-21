@@ -35,7 +35,7 @@ export default class ScrollNavs extends Component {
       >
         <Image
           source={nav.uri}
-          resizeMode="cover"
+          resizeMode="contain"
           style={UI.CommonStyles.scroll_nav_img}
         />
       </TouchableOpacity>

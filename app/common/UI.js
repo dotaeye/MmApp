@@ -414,8 +414,8 @@ const CommonStyles = StyleSheet.create({
   scroll_nav_img: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100,
-    width: Size.getPercent(Size.window.width, 25)
+    height: 145,
+    width: Size.getPercent(Size.window.width, 30)
   },
 
   /***************

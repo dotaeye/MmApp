@@ -30,7 +30,7 @@ function getStringParams(data) {
 function timeoutFetch(ms, promise) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
-      reject(new Error("请求超市,请刷新再试"));
+      reject(new Error("请求超时,请刷新再试"));
     }, ms);
     promise.then(
       (res) => {

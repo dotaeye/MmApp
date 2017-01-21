@@ -18,7 +18,7 @@ import UI from '../common/UI';
 import NavBar from '../components/NavBar';
 import ViewPages from '../components/ViewPages';
 import moment from 'moment';
-import {getImageUrl} from '../utils';
+import {getImageSource} from '../utils';
 import Loading from '../components/Loading';
 import * as orderActions from '../actions/order';
 
@@ -27,6 +27,10 @@ class OrderDetail extends Component {
   constructor(props) {
     super(props);
     this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   fetchData() {
@@ -60,7 +64,8 @@ class OrderDetail extends Component {
 
   renderDetail() {
     const {order:{orderDetail}, id}=this.props;
-    const order = orderDetail[id];
+    const entity = orderDetail[id];
+
     return (
       <View style={[
         UI.CommonStyles.columnContainer,
@@ -69,8 +74,11 @@ class OrderDetail extends Component {
           padding: 10,
           justifyContent: 'flex-start'
         }]}>
-        <Text>下单时间: <Text>{moment(order.createTime).format('YYYY-MM-DD HH:mm')}</Text></Text>
-        <Text>订单编号: <Text>{order.outTradeNo}</Text></Text>
+        <View style={{marginBottom: 10}}>
+          <Text>下单时间: <Text>{moment(entity.createTime).format('YYYY-MM-DD HH:mm')}</Text></Text>
+        </View>
+
+        <Text>订单编号: <Text>{entity.outTradeNo}</Text></Text>
 
         <View style={[UI.CommonStyles.rowContainer, UI.CommonStyles.bt, {
           paddingTop: 10,
@@ -81,16 +89,19 @@ class OrderDetail extends Component {
           <Text>实付:<Text
             style={{
               color: UI.Colors.danger
-            }}>￥ {order.orderTotal}</Text>
+            }}>￥ {entity.orderTotal}</Text>
           </Text>
-          {order.orderStatusId == 10 && (
+          {entity.orderStatusId == 10 && (
             <View style={[
               UI.CommonStyles.rowContainer
             ]}>
-              <TouchableOpacity style={[UI.CommonStyles.button, {marginRight: 10}]}>
-                <Text>取消订单</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={UI.CommonStyles.button}>
+              <TouchableOpacity
+                style={UI.CommonStyles.button}
+                onPress={() => {
+                  this.props.router.push(ViewPages.pay(), {
+                    order: entity
+                  })
+                }}>
                 <Text>付款</Text>
               </TouchableOpacity>
             </View>
@@ -122,22 +133,25 @@ class OrderDetail extends Component {
         </View>
         {order.shopCartItems.map((shopCart, index) => {
           return (
-            <View key={index} style={[UI.CommonStyles.rowContainer, {padding: 10}]}>
-              <Image source={getImageUrl(shopCart.imageUrl)} style={{width: 80, height: 80}}/>
+            <View key={index} style={[UI.CommonStyles.rowContainer, UI.CommonStyles.bb, {padding: 10}]}>
+              <Image source={{uri: getImageSource(shopCart.imageUrl)}} style={{width: 80, height: 80}}/>
               <View style={[UI.CommonStyles.container, UI.CommonStyles.columnContainer]}>
-                <View style={[UI.CommonStyles.rowContainer, {justifyContent: 'space-between',}]}>
-                  <Text>{shopCart.name}</Text>
-                  <Text>x{shopCart.quantity}</Text>
-                </View>
+                <Text numberOfLines={2}>{shopCart.name}</Text>
                 <View style={[UI.CommonStyles.rowContainer, {justifyContent: 'space-between'}]}>
                   <Text style={{
                     fontSize: UI.Size.font.ms,
                     color: UI.Colors.grayFont,
                     marginTop: 5
                   }}>{shopCart.attributesXml}</Text>
+                  <Text>x{shopCart.quantity}</Text>
                 </View>
                 <View style={[UI.CommonStyles.rowContainer, {justifyContent: 'space-between'}]}>
-                  <Text style={{fontSize: UI.Size.font.ms, marginTop: 5}}>￥ {shopCart.price}</Text>
+                  <Text
+                    style={{
+                      fontSize: UI.Size.font.ms,
+                      marginTop: 5,
+                      color: UI.Colors.danger
+                    }}>￥ {shopCart.price}</Text>
                 </View>
               </View>
             </View>
@@ -152,6 +166,16 @@ class OrderDetail extends Component {
     const order = orderDetail[id];
     return (
       <View style={[UI.CommonStyles.columnContainer]}>
+        <View style={[
+          UI.CommonStyles.rowContainer,
+          UI.CommonStyles.bb,
+          {
+            padding: 10,
+            justifyContent: 'space-between'
+
+          }]}>
+          <Text>收货信息</Text>
+        </View>
         <View style={[UI.CommonStyles.rowContainer, {padding: 10}]}>
           <Text style={{marginRight: 10}}>{order.addressDTO.name}</Text>
           <Text>{order.addressDTO.phoneNumber}</Text>
@@ -165,7 +189,7 @@ class OrderDetail extends Component {
   }
 
   render() {
-    const {order:{orderLoading}, id}=this.props;
+    const {order:{orderDetail}, id}=this.props;
     return (
       <View style={[
         UI.CommonStyles.container,
@@ -175,13 +199,12 @@ class OrderDetail extends Component {
           backgroundColor: UI.Colors.gray
         }]}>
         {this.renderNav()}
-        {(!orderLoading || orderLoading[id])
-          ? (<Loading/>)
-          : (<View>
+        {!orderDetail[id] ? (<Loading/>)
+          : (<ScrollView style={{flex: 1}}>
           {this.renderDetail()}
           {this.renderProduct()}
           {this.renderAddress()}
-        </View>)}
+        </ScrollView>)}
       </View>
     )
   }

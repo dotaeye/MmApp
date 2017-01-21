@@ -16,6 +16,10 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import UI from '../common/UI';
 import NavBar from '../components/NavBar'
 import ViewPages from '../components/ViewPages';
+import WebViewBridge from 'react-native-webview-bridge';
+import BridgeScripts from '../components/bridge';
+
+const injectScript = `(${BridgeScripts.toString()}());`;
 
 class Topic extends Component {
 
@@ -31,12 +35,12 @@ class Topic extends Component {
         iconName: 'ios-arrow-back',
         iconSize: 20,
         iconColor: UI.Colors.black,
-        onPress: ()=> {
+        onPress: () => {
           router.pop();
         }
       }],
       Center: [{
-        text: '专题页面',
+        text: '麦盟介绍',
         isText: true
       }],
       Right: []
@@ -47,34 +51,40 @@ class Topic extends Component {
     )
   }
 
-  onNavigationChange(event) {
-    if (event.url.indexOf('#') > 0) {
-      const productId = event.url.substr(event.url.indexOf('#') + 1);
-      this.props.router.push(ViewPages.product(), {
-        id: productId
-      });
+
+  onBridgeMessage(message) {
+    const {router}=this.props;
+    const getParam = (str, index = 1) => str.split('|')[index];
+    const command = getParam(message, 0);
+    const include = (str) => command.indexOf(str) > -1;
+    const getJsonParam = (str) => JSON.parse(getParam(str));
+    if (include('goToVip')) {
+      router.push(ViewPages.list());
     }
   }
 
   render() {
     return (
-      <View style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{
-        backgroundColor:UI.Colors.gray,
-        justifyContent:'flex-start'
+      <View style={[UI.CommonStyles.container, UI.CommonStyles.columnContainer, {
+        backgroundColor: UI.Colors.gray,
+        justifyContent: 'flex-start'
       }]}>
         {this.renderNav()}
-        <WebView
-          source={{uri:'http://www.lm123.cc/home/topic'}}
+        <WebViewBridge
+          source={{uri: 'http://www.lm123.cc/home/topic'}}
           scalesPageToFit={false}
           javaScriptEnabled={true}
+          onBridgeMessage={this.onBridgeMessage.bind(this)}
           mediaPlaybackRequiresUserAction={true}
-          onNavigationStateChange={this.onNavigationChange.bind(this)}
-          renderError={()=>{return(
-            <ActivityIndicator
-              animating={true}
-              style={[{height: 80}]}
-              size="large"
-            />)}}
+          injectedJavaScript={injectScript}
+          renderError={() => {
+            return (
+              <ActivityIndicator
+                animating={true}
+                style={[{height: 80}]}
+                size="large"
+              />)
+          }}
         />
       </View>
     )

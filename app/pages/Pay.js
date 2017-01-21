@@ -55,7 +55,22 @@ class Pay extends Component {
         ]
       )
     } else {
-      this.props.router.replace(ViewPages.order());
+      const {order, router, user}=this.props;
+      if (user && user.user.userRoleId < 2 && order.orderTotal >= 500) {
+        Alert.alert(
+          '支付成功!',
+          '你当前单笔购买超500元自动升级为VIP会员，重新登陆即可享受会员权益！',
+          [
+            {
+              text: '确定', onPress: () => {
+              router.replace(ViewPages.login());
+            }
+            }
+          ]
+        )
+      } else {
+        router.replace(ViewPages.order());
+      }
     }
   }
 
@@ -66,7 +81,7 @@ class Pay extends Component {
         iconName: 'ios-arrow-back',
         iconSize: 20,
         iconColor: UI.Colors.black,
-        onPress: ()=> {
+        onPress: () => {
           Alert.alert(
             '确认要放弃付款?',
             '订单会保留一段时间,请尽快支付',
@@ -108,7 +123,7 @@ class Pay extends Component {
             'package': 'Sign=WXPay',    // 商家根据财付通文档填写的数据和签名
             sign: order.weChatSign
           };
-          WeChat.pay(options).then((result)=> {
+          WeChat.pay(options).then((result) => {
             console.log(result);
           })
         } else {
@@ -120,16 +135,19 @@ class Pay extends Component {
   render() {
     return (
       <View
-        style={[UI.CommonStyles.container,UI.CommonStyles.columnContainer,{justifyContent:'flex-start',backgroundColor:UI.Colors.gray}]}>
+        style={[UI.CommonStyles.container, UI.CommonStyles.columnContainer, {
+          justifyContent: 'flex-start',
+          backgroundColor: UI.Colors.gray
+        }]}>
         {this.renderNav()}
         <View
-          style={[UI.CommonStyles.rowContainer,UI.CommonStyles.bb,{
-            marginTop:10,
-            height:45,
-            alignItems:'center'
+          style={[UI.CommonStyles.rowContainer, UI.CommonStyles.bb, {
+            marginTop: 10,
+            height: 45,
+            alignItems: 'center'
           }]}>
-          <Icon name='ios-checkmark-circle' size={20} color={UI.Colors.danger} style={{marginLeft:10}}/>
-          <Image source={require('../images/pay/wechat.png')} style={{width:20,height:18,marginHorizontal:10}}/>
+          <Icon name='ios-checkmark-circle' size={20} color={UI.Colors.danger} style={{marginLeft: 10}}/>
+          <Image source={require('../images/pay/wechat.png')} style={{width: 20, height: 18, marginHorizontal: 10}}/>
           <Text>微信支付</Text>
         </View>
         <TouchableOpacity
@@ -149,7 +167,9 @@ Pay.defaultProps = {
   popNumber: 1
 };
 
-export default connect((state, props) => ({}), dispatch => ({
+export default connect((state, props) => ({
+  user: state.user
+}), dispatch => ({
   orderActions: bindActionCreators(orderActions, dispatch)
 }), null, {
   withRef: true

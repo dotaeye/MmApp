@@ -135,7 +135,7 @@ function* getOrder(payload) {
       token
     });
     yield put({
-      type: actionTypes.CANCEL_ORDER_SUCCESS,
+      type: actionTypes.ORDER_DETAIL_SUCCESS,
       order,
       payload: {
         id: payload.id
@@ -144,7 +144,7 @@ function* getOrder(payload) {
     if (payload.success) {
       yield call(payload.success);
     }
-    return result;
+    return order;
   } catch (error) {
     if (error && error.message !== '') {
       Toast.info(error.message);

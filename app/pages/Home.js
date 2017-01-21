@@ -72,9 +72,16 @@ export default class Home extends Component {
 
   renderBannerRow(item, index) {
     return (
-      <Image
-        key={index} source={{uri: item.uri}}
-        style={{width: UI.Size.window.width, height: UI.Size.window.width * UI.Size.homeSwiper.scale}}/>
+      <TouchableOpacity
+        key={index}
+        onPress={() => {
+          this.props.router.push(ViewPages.Topic())
+        }}
+      >
+        <Image
+          source={{uri: item.uri}}
+          style={{width: UI.Size.window.width, height: UI.Size.window.width * UI.Size.homeSwiper.scale}}/>
+      </TouchableOpacity>
     )
   }
 
