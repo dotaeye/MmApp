@@ -166,16 +166,16 @@ class ProductList extends Component {
         onPress={() => {
           router.replace(ViewPages.search());
         }}
-        >
+      >
         <Icon
           style={UI.CommonStyles.search_box_icon}
           name="ios-search"
           size={16}
           color={UI.Colors.grayFont}
-          />
+        />
         <Text
           style={[UI.CommonStyles.search_box_input, UI.CommonStyles.search_box_input_empty]}
-          >{this.state.keywords ? this.state.keywords : '搜索'}</Text>
+        >{this.state.keywords ? this.state.keywords : '搜索'}</Text>
       </TouchableOpacity>
     )
   }
@@ -190,12 +190,12 @@ class ProductList extends Component {
             id: product.id
           })
         }}
-        >
+      >
         <Image source={{uri: getImageUrl(product.imageUrl)}} style={UI.CommonStyles.product_list_img}/>
         <Text
           style={UI.CommonStyles.product_list_name}
           numberOfLines={2}
-          >{product.name}</Text>
+        >{product.name}</Text>
         <Text style={UI.CommonStyles.product_list_price}>￥{product.price}</Text>
       </TouchableOpacity>
     )
@@ -221,24 +221,24 @@ class ProductList extends Component {
           onPress={() => {
             this.panel.open();
           }}
-          >
+        >
           <Text>综合</Text>
           <Icon
             style={UI.CommonStyles.list_bar_item_icon}
             name="md-arrow-dropdown"
             size={12}
-            />
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={UI.CommonStyles.list_bar_item}
           onPress={this.onOrderBy.bind(this, sortStatus.SoldCount)}
-          >
+        >
           <Text style={[orderBy == sortStatus.SoldCount && {color: UI.Colors.danger}]}>销量</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={UI.CommonStyles.list_bar_item}
           onPress={this.onOrderBy.bind(this, sortStatus.PriceDesc == orderBy ? sortStatus.PriceAsc : sortStatus.PriceDesc)}
-          >
+        >
           <Text
             style={[[sortStatus.PriceDesc, sortStatus.PriceAsc].includes(orderBy) && {color: UI.Colors.danger}]}>价格</Text>
           {[sortStatus.PriceDesc, sortStatus.PriceAsc].includes(orderBy) && (
@@ -247,7 +247,7 @@ class ProductList extends Component {
               color={UI.Colors.danger}
               name={`md-arrow-${sortStatus.PriceDesc == orderBy ? 'dropdown' : 'dropup'}`}
               size={12}
-              />
+            />
           )}
         </TouchableOpacity>
         <TouchableOpacity
@@ -255,13 +255,13 @@ class ProductList extends Component {
           onPress={() => {
             this.slide.open();
           }}
-          >
+        >
           <Text>筛选</Text>
           <Icon
             style={UI.CommonStyles.list_bar_item_icon}
             name="ios-funnel-outline"
             size={12}
-            />
+          />
         </TouchableOpacity>
       </View>
     )
@@ -276,7 +276,7 @@ class ProductList extends Component {
       <FadePanel
         ref={ref => this.panel = ref}
         top={UI.Size.navBar.height + UI.Size.statusBar.height + 40}
-        >
+      >
         <View style={[UI.CommonStyles.columnContainer]}>
           <TouchableOpacity
             onPress={this.onOrderBy.bind(this, sortStatus.Position)}
@@ -293,7 +293,7 @@ class ProductList extends Component {
                 name="ios-checkmark"
                 color={UI.Colors.danger}
                 size={20}
-                />
+              />
             )}
           </TouchableOpacity>
           <TouchableOpacity
@@ -311,7 +311,7 @@ class ProductList extends Component {
                 name="ios-checkmark"
                 color={UI.Colors.danger}
                 size={20}
-                />
+              />
             )}
           </TouchableOpacity>
         </View>
@@ -331,22 +331,22 @@ class ProductList extends Component {
           width: UI.Size.window.width - 60,
           height: UI.Size.window.height,
           backgroundColor: UI.Colors.white,
-          flexDirection:'column',
-          justifyContent:'flex-start',
-          alignItems:'flex-start'
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start'
         }}
         position={'right'}
         offset={UI.Size.window.width - 60}
-        >
+      >
         <View
           style={{
-            flexDirection:'column',
-            justifyContent:'flex-start',
-            alignItems:'flex-start',
-            height: UI.Size.window.height-40-UI.Size.statusBar.height-UI.Size.statusBar.hacker,
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            height: UI.Size.window.height - 40 - UI.Size.statusBar.height - UI.Size.statusBar.hacker,
             width: UI.Size.window.width - 60
           }}>
-          <Text style={{ marginTop:15,marginLeft:15,fontSize:UI.Size.font.lg}}>规格过滤</Text>
+          <Text style={{marginTop: 15, marginLeft: 15, fontSize: UI.Size.font.lg}}>规格过滤</Text>
           {filteredItems.map((item, index) => {
             let defaultValues;
             const checkOptions = item.specificationOptions.map(option => {
@@ -359,14 +359,14 @@ class ProductList extends Component {
               }
             });
             return (
-              <View key={index} style={{marginVertical: 15,paddingHorizontal:15}}>
+              <View key={index} style={{marginVertical: 15, paddingHorizontal: 15}}>
                 <Text>{item.specificationAttributeName}</Text>
                 <CheckBoxList
                   ref={`attribute_${item.specificationAttributeId}`}
                   value={defaultValues}
                   onChange={this.onSpecsChange.bind(this)}
                   options={checkOptions}
-                  />
+                />
               </View>
             )
           })}
@@ -387,7 +387,7 @@ class ProductList extends Component {
               flex: 1
             }}
             onPress={this.onResetFilter.bind(this)}
-            >
+          >
             <Text>重置</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -398,7 +398,7 @@ class ProductList extends Component {
               flex: 1
             }}
             onPress={this.onFilter.bind(this)}
-            >
+          >
             <Text style={{
               color: UI.Colors.white
             }}>筛选</Text>
@@ -409,7 +409,7 @@ class ProductList extends Component {
   }
 
   render() {
-    const {router, product, carId, carName}=this.props;
+    const {router, product, carId, carName, user}=this.props;
     const nav = {
       Left: [{
         source: require('../images/icon/back@2x.png'),
@@ -428,8 +428,11 @@ class ProductList extends Component {
           height: 20
         },
         onPress: () => {
-          // this.panel.open();
-          router.push(ViewPages.shopCart());
+          if (user.user) {
+            router.push(ViewPages.shopCart());
+          } else {
+            router.push(ViewPages.login());
+          }
         }
       }]
     };
@@ -478,7 +481,7 @@ class ProductList extends Component {
                 onRefresh={this.onRefresh.bind(this)}
               />
             }
-            />
+          />
         )}
         {this.renderOrder()}
         {this.renderFilter()}
@@ -488,7 +491,8 @@ class ProductList extends Component {
 }
 
 export default connect((state, props) => ({
-  product: state.product
+  product: state.product,
+  user: state.user
 }), dispatch => ({
   productActions: bindActionCreators(productActions, dispatch)
 }), null, {

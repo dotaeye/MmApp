@@ -19,10 +19,12 @@ import SwiperBox from '../components/SwiperBox';
 import ScrollNavs from '../components/home/scrollNavs';
 import SixBox from '../components/home/SixBox';
 import UI from '../common/UI';
-import {getImageUrl} from '../utils';
+import {getImageUrl, isVip} from '../utils';
 import SplashScreen from 'react-native-splash-screen'
 import Loading from '../components/Loading';
 import ViewPages from '../components/ViewPages';
+
+
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 const SCROLL_HEIGHT = UI.Size.window.width * UI.Size.homeSwiper.scale - UI.Size.statusBar.height - UI.Size.navBar.height;
 const DISTANCE = SCROLL_HEIGHT / 2;
@@ -60,7 +62,12 @@ export default class Home extends Component {
   }
 
   onNavPress() {
-    this.props.router.push(ViewPages.vipProduct())
+    const {router, user}=this.props;
+    if (isVip(user)) {
+      router.push(ViewPages.vipProduct());
+    } else {
+      router.push(ViewPages.Topic());
+    }
   }
 
   renderBannerRow(item, index) {

@@ -75,3 +75,7 @@ export function getShopCartCount(list) {
   });
   return count;
 }
+
+export function isVip(user) {
+  return user.user && user.user.userRoleId == 2;
+}

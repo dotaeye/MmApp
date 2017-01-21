@@ -13,7 +13,7 @@ const initialState = {
   vipList: {
     list: []
   },
-  vipAlbumCategories:{},
+  vipAlbumCategories: {},
   vipAlbumProduct: {},
   vipAlbumProductDetail: {}
 };
@@ -161,11 +161,14 @@ export default function product(state = initialState, action = {}) {
         ...state,
         vipAlbumProduct: {
           ...state.vipAlbumProduct,
-          [payload.id]: {
+          [payload.categoryId]: {
             loading: true,
             loadMore: payload.loadMore || false,
             refreshing: payload.refreshing || false,
-            pageIndex: payload.pageIndex
+            pageIndex: payload.pageIndex,
+            list: {
+              products: []
+            }
           }
         }
       };
@@ -174,11 +177,11 @@ export default function product(state = initialState, action = {}) {
         ...state,
         vipAlbumProduct: {
           ...state.vipAlbumProduct,
-          [payload.id]: {
+          [payload.categoryId]: {
             loading: false,
             hasMore: payload.hasMore,
             refreshing: false,
-            list: payload.loadMore ? loadMore(state, payload) : payload.list,
+            list: payload.list,
             loadMore: false,
             loaded: true
           }
@@ -189,7 +192,7 @@ export default function product(state = initialState, action = {}) {
         ...state,
         vipAlbumProduct: {
           ...state.vipAlbumProduct,
-          [payload.id]: {
+          [payload.categoryId]: {
             loading: false,
           }
         }

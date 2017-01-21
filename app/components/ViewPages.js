@@ -121,10 +121,10 @@ export default ViewPage = {
       name: 'topic'
     }
   },
-  vipAlbumProductList: () => {
+  VipAlbumProductCards: () => {
     return {
-      component: Pages.VipAlbumProductList,
-      name: 'vipAlbumProductList'
+      component: Pages.VipAlbumProductCards,
+      name: 'VipAlbumProductCards'
     }
   },
   vipProduct: () => {

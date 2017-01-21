@@ -42,7 +42,7 @@ class ProductTab extends Component {
     this.prevLoadMoreTime = 0;
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.fetchData();
     });

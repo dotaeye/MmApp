@@ -121,13 +121,19 @@ function* getVipAlbumCategory(payload) {
 
 function* getVipAlbumProduct(payload) {
   try {
-    const albumProducts = yield call(new Request().get, 'product/vipAlbumProduct', {
-      params: payload
+    const albumProducts = yield call(new Request().get, 'category/list', {
+      params: {
+        ...payload,
+        album: true
+      }
     });
     yield put({
       type: actionTypes.GET_VIP_ALBUM_PRODUCT_SUCCESS,
-      albumProducts: albumProducts,
-      payload: payload
+      payload: {
+        ...payload,
+        hasMore: albumProducts.totalCount > (payload.pageIndex + 1) * payload.pageSize,
+        list: albumProducts
+      }
     });
     if (payload.success) {
       yield call(payload.success);

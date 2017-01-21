@@ -60,12 +60,20 @@ class VipAlbumCateTab extends Component {
   renderRow(item) {
     const {router}=this.props;
     return (
-      <View style={[
-        UI.CommonStyles.rowContainer,
-        UI.CommonStyles.bb
-        ]}>
-        <Image source={{uri:getImageUrl(item.bannerUrl)}} style={{height: 120, resizeMode:'cover', width: UI.Size.window.width}}/>
-      </View>
+      <TouchableOpacity
+        style={[
+          UI.CommonStyles.rowContainer,
+          UI.CommonStyles.bb
+        ]}
+        onPress={() => {
+          router.push(ViewPages.VipAlbumProductCards(), {
+            categoryId: item.id
+          })
+        }}
+      >
+        <Image source={{uri: getImageUrl(item.bannerUrl)}}
+               style={{height: 120, resizeMode: 'cover', width: UI.Size.window.width}}/>
+      </TouchableOpacity>
     )
   }
 
@@ -91,7 +99,7 @@ class VipAlbumCateTab extends Component {
               colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
             />
           }
-          >
+        >
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: 16}}>
               目前没有数据，请刷新重试……
